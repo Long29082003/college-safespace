@@ -19,7 +19,6 @@ export function MainDisplay() {
     //? States passed from App level
     const states = useContext(States);
     const isScrolling = states.isScrolling;
-    console.log(states);
 
     //? Ref
     const tiltingContainer = useRef(null);

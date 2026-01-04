@@ -16,7 +16,7 @@
             background-color: transparent;
             transform-style: preserve-3d;
             transform: perspective(1500px);
-            transition: transform 2s ease-in-out;
+            transition: transform 2s cubic-bezier(0.66, 0.02, 0.25, 1);
 
             .post {
                 position: absolute;
@@ -119,6 +119,7 @@
         position: absolute;
         right: 15px;
         top: 15px;
+        transition: all 1.5s cubic-bezier(0.66, 0.02, 0.25, 1);
 
         #more-button {
             width: 70px;
@@ -137,6 +138,7 @@
         position: absolute;
         left: 15px;
         bottom: 90px;
+        transition: all 1.5s cubic-bezier(0.66, 0.02, 0.25, 1);
 
         #contact-button {
             width: 65px;
@@ -155,6 +157,8 @@
         position: absolute;
         left: 15px;
         bottom: 15px;
+        transition: all 1.5s cubic-bezier(0.66, 0.02, 0.25, 1);
+
         #info-button {
             width: 65px;
             height: 65px;
@@ -189,13 +193,26 @@
 
 
 /* ----------------------------------------------------------- */
-/* When there is .is.not-scrolling class .scrolling-container go up */
+/* When there's .is.not-scrolling class .scrolling-container go up, buttons move */
 .is-not-scrolling .main-display .tilting-container .scrolling-container {
     transform: translateY(-1000px) perspective(1500px);
 }   
 
 .is-not-scrolling .main-display .tilting-container .scrolling-container .post {
     animation-play-state: paused;
+}
+
+/* * Buttons move */
+.is-not-scrolling .main-display #more-button-hover-area {
+    right: calc(-100% - 10px);
+}
+
+.is-not-scrolling .main-display #contact-button-hover-area {
+    left: calc(-100% - 10px);
+}
+
+.is-not-scrolling .main-display #info-button-hover-area {
+    left: calc(-100% - 10px);
 }
 
 @keyframes postScrolling {

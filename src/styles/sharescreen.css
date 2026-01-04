@@ -1,0 +1,193 @@
+.share-screen {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+
+    .steps-display {
+        position: absolute;
+        top: 10%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 10px;
+        font-size: 50px;
+
+        .line {
+            width: 50px;
+            height: 5px;
+            background-color: black;
+        }
+    }
+
+    form {
+        position: relative;
+        width: min(100vw, 800px);
+        height: min(100vh, 550px);
+ 
+        opacity: 0;
+        transform: translateY(30%);
+        transition: opacity 1250ms ease,
+                    transform 1500ms ease;
+
+        .question-one, .question-two, .question-three, .question-submit {
+            position: absolute;
+            transform: translateX(120%);
+            height: 80%;
+            width: 100%;
+            padding: 0px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            color: white;
+            opacity: 0;
+            transition: opacity 500ms ease,
+                        transform 1s ease;
+            pointer-events: none;
+
+            h1 {
+                font-size: 50px;
+                font-family: "Poppins", sans-serif;
+                line-height: 55px;
+                text-align: center;
+            }
+
+            p {
+                font-size: 30px;
+                font-family: "Poppins", sans-serif;
+                font-style: italic;
+            }
+            
+            .questions-button-container {
+                width: 90%;
+                position: absolute;
+                top: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            input[type="text"] {
+                height: 45px;
+                width: min(80%, 450px);
+                border-radius: 20px;
+                border: unset;
+                padding: 5px 15px;
+                font-size: 25px;
+                font-family: "Raleway", sans-serif;
+                font-weight: 500;
+                transition: transform 250ms ease;
+            }
+
+            textarea {
+                resize: none;
+                width: 80%;
+                height: 300px;
+                border-radius: 20px;
+                border: unset;
+                padding: 25px 30px;
+                font-size: 20px;
+                font-family: "Raleway", sans-serif;
+                font-weight: 600;
+                transition: transform 250ms ease;
+            }
+
+            input[type="text"]:hover, textarea:hover {
+                transform: scale(1.02);
+            }
+
+            textarea:focus {
+                border: 5px solid var(--main-color);
+                transform: scale(1.04);
+            }
+        }
+
+        .question-three {
+            margin-top: 35px;
+        }
+    }
+
+    .background {
+        position: absolute;
+        inset: 0 0 0 0;
+        z-index: -1;
+        background-color: rgb(45, 1, 57);
+        opacity: 0;
+        transition: opacity 3s ease;
+    }
+}
+
+/* ----------------------------------------------------------------- */
+/* When there's .share-screen-active class .background become darker */
+/* ----------------------------------------------------------------- */
+.share-screen-active .share-screen {
+    top: 0;
+}
+
+.share-screen-active .share-screen form {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.share-screen-active .share-screen .background {
+    opacity: 0.6;
+}
+
+/* --------------------------------------------------*/
+/* Form question transition based on class of <form> */
+/* ------------------------------------------------- */
+
+.share-screen-active .share-screen form.question-one-active {
+    .question-one {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+        pointer-events: auto;
+    }
+}
+
+.share-screen-active .share-screen form.question-two-active {
+    .question-one {
+        opacity: 0;
+        transform: translateX(-120%) translateY(0);
+        pointer-events: none;
+    }
+
+    .question-two {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+        pointer-events: auto;
+    }
+}
+
+.share-screen-active .share-screen form.question-three-active {
+    .question-two {
+        opacity: 0;
+        transform: translateX(-120%) translateY(0);
+        pointer-events: none;
+    }
+
+    .question-three {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+        pointer-events: auto;
+    }
+}
+
+.share-screen-active .share-screen form.question-submit-active {
+    .question-three {
+        opacity: 0;
+        transform: translateX(-120%) translateY(0);
+        pointer-events: none;
+    }
+
+    .question-submit {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+        pointer-events: auto;
+    }
+}
