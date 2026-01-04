@@ -1,9 +1,11 @@
-//Todo: Add animation to the steps-display
-//Todo: Change the active class to the outer class so that the icons can also get access to it
+//Todo: Add animation to the steps-display ✅
+//Todo: Change the active class to the outer class so that the icons can also get access to it ✅
+//Todo: Figure out a smooth exist transition ✅
 //Todo: Finish the submit and work on the backend
-
+import clsx from "clsx";
 import { Button } from "../utilcomponents/button.jsx";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { States } from "../App.jsx";
 
 import { MdOutlinePermIdentity } from "react-icons/md";
 import { CgMailForward } from "react-icons/cg";
@@ -13,7 +15,9 @@ import { CiCircleCheck } from "react-icons/ci";
 import "../styles/sharescreen.css";
 
 export function ShareScreen () {
+    //? States
     const [formQuestionState, setFormQuestionState] = useState("question-one-active");
+    const states = useContext(States);
     
     const handleQuestionOneNextButtonClick = () => {
         setFormQuestionState("question-two-active");
@@ -40,7 +44,7 @@ export function ShareScreen () {
     };
 
     return (
-        <div className="share-screen">
+        <div className={clsx("share-screen", formQuestionState)}>
 
             <div className="steps-display">
                 <div className="question-one-icon"><MdOutlinePermIdentity /></div>
@@ -52,10 +56,10 @@ export function ShareScreen () {
                 <div className="question-submit-icon"><CiCircleCheck /></div>
             </div>
 
-            <form action="" className = {formQuestionState}>
+            <form action="">
                 <div className="question-one">
-                    <h1>How should we call you?</h1>
-                    <p>You will be "Anonymous" if left blank</p>
+                    <h1>You will be remembered as</h1>
+                    <p>"Anonymous" if left blank</p>
                     <input type="text" name = "name" placeholder = "Anonymous"/>
                     <div className="questions-button-container">
                         <div className="placeholder"></div>
@@ -89,6 +93,8 @@ export function ShareScreen () {
                     </div>
                 </div>
             </form>
+
+            <Button id = "form-exit-button" callback = {() => {states.setStates(true, null)}}>X</Button> 
 
             <div className="background"></div>
         </div>

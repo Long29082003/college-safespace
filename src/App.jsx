@@ -28,6 +28,11 @@ export function App() {
     setIsScrolling(true);
   };
 
+  const setStates = (scrollingState, activeScreenState) => {
+    setIsScrolling(scrollingState);
+    setActiveScreen(activeScreenState);
+  };
+
   const buttonClicked = () => {
     setActiveScreen("share-screen");
     setIsScrolling(prev => !prev);
@@ -38,7 +43,7 @@ export function App() {
       <LoadingScreen 
         buttonOnClick = {enterMain}
       />
-      <States.Provider value = {{isEnterMain, isScrolling, buttonClicked}}>
+      <States.Provider value = {{isEnterMain, isScrolling, buttonClicked, setStates}}>
         <div className="main-screen">
           <Background />
           <MainDisplay />

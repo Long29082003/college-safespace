@@ -1,13 +1,13 @@
 .share-screen {
     position: absolute;
     left: 0;
-    top: 100%;
+    top: 0;
     width: 100vw;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
+    z-index: 1;
 
     .steps-display {
         position: absolute;
@@ -17,11 +17,18 @@
         align-items: center;
         column-gap: 10px;
         font-size: 50px;
+        transform: translateY(-300px);
+        opacity: 0;
+        transition: transform 1.25s ease;
 
         .line {
             width: 50px;
             height: 5px;
             background-color: black;
+        }
+
+        .question-one-icon, .question-two-icon, .question-three-icon, .question-submit-icon {
+            transition: color 750ms ease;
         }
     }
 
@@ -112,6 +119,26 @@
         }
     }
 
+    /* *This is for the exit button */
+    #form-exit-button-hover-area {
+        position: absolute;
+        bottom: 5%;
+        transform: translateY(300%);
+        transition: transform 1.25s ease;
+
+        #form-exit-button {
+            width: 80px;
+            height: 80px;
+            font-family: sans-serif;
+            font-weight: 200;
+            font-size: 40px;
+
+            &::after {
+                background-color: rgb(244, 85, 85);
+            }
+        }
+    }
+
     .background {
         position: absolute;
         inset: 0 0 0 0;
@@ -127,10 +154,20 @@
 /* ----------------------------------------------------------------- */
 .share-screen-active .share-screen {
     top: 0;
+    z-index: 3;
+}
+
+.share-screen-active .share-screen .steps-display {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .share-screen-active .share-screen form {
     opacity: 1;
+    transform: translateY(0);
+}
+
+.share-screen-active .share-screen #form-exit-button-hover-area {
     transform: translateY(0);
 }
 
@@ -142,44 +179,66 @@
 /* Form question transition based on class of <form> */
 /* ------------------------------------------------- */
 
-.share-screen-active .share-screen form.question-one-active {
-    .question-one {
+.share-screen-active .share-screen.question-one-active {
+    .steps-display .question-one-icon {
+        color: rgb(239, 238, 237);
+    }
+
+    form .question-one {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
     }
 }
 
-.share-screen-active .share-screen form.question-two-active {
-    .question-one {
+.share-screen-active .share-screen.question-two-active {
+    .steps-display .question-one-icon,
+    .steps-display .question-two-icon {
+        color: rgb(239, 238, 237);
+    }
+
+    form .question-one {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
     }
 
-    .question-two {
+    form .question-two {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
     }
 }
 
-.share-screen-active .share-screen form.question-three-active {
-    .question-two {
+.share-screen-active .share-screen.question-three-active {
+    .steps-display .question-one-icon,
+    .steps-display .question-two-icon,
+    .steps-display .question-three-icon {
+        color: rgb(239, 238, 237);
+    }
+
+    form .question-two {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
     }
 
-    .question-three {
+    form .question-three {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
     }
 }
 
-.share-screen-active .share-screen form.question-submit-active {
-    .question-three {
+.share-screen-active .share-screen.question-submit-active {
+    .steps-display .question-one-icon,
+    .steps-display .question-two-icon,
+    .steps-display .question-three-icon,
+    .steps-display .question-submit-icon {
+        color: rgb(239, 238, 237);
+    }
+
+    form .question-three {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
