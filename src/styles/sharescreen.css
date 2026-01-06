@@ -5,7 +5,6 @@
     width: 100vw;
     height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
     z-index: 1;
 
@@ -18,7 +17,6 @@
         column-gap: 10px;
         font-size: 50px;
         transform: translateY(-300px);
-        opacity: 0;
         transition: transform 1.25s ease;
 
         .line {
@@ -27,97 +25,268 @@
             background-color: black;
         }
 
-        .question-one-icon, .question-two-icon, .question-three-icon, .question-submit-icon {
+        .question-one-icon, .question-two-icon, .question-three-icon, .question-four-icon, .question-submit-icon {
             transition: color 750ms ease;
         }
     }
 
-    form {
-        position: relative;
-        width: min(100vw, 800px);
-        height: min(100vh, 550px);
- 
-        opacity: 0;
-        transform: translateY(30%);
-        transition: opacity 1250ms ease,
-                    transform 1500ms ease;
+    .tilting-container {
+        position: absolute;
+        inset: 0 0 0 0;
+        display: grid;
+        place-items: center;
+        transition: transform 700ms ease;
 
-        .question-one, .question-two, .question-three, .question-submit {
-            position: absolute;
-            transform: translateX(120%);
-            height: 80%;
-            width: 100%;
-            padding: 0px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-evenly;
-            color: white;
+        form {
+            position: relative;
+            width: min(100vw, 800px);
+            height: min(100vh, 550px);
+    
             opacity: 0;
-            transition: opacity 500ms ease,
-                        transform 1s ease;
-            pointer-events: none;
+            transform: translateY(30%);
+            transition: opacity 1250ms ease,
+                        transform 1500ms ease;
 
-            h1 {
-                font-size: 50px;
-                font-family: "Poppins", sans-serif;
-                line-height: 55px;
-                text-align: center;
-            }
-
-            p {
-                font-size: 30px;
-                font-family: "Poppins", sans-serif;
-                font-style: italic;
-            }
-            
-            .questions-button-container {
-                width: 90%;
+            .question-one, .question-two, .question-three, .question-four, .question-submit {
                 position: absolute;
-                top: 100%;
+                transform: translateX(120%);
+                height: max(80%, 500px);
+                width: 100%;
+                padding: 0px 20px 20px;
                 display: flex;
-                justify-content: space-between;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-evenly;
+                color: white;
+                opacity: 0;
+                transition: opacity 500ms ease,
+                            transform 1s ease;
+                pointer-events: none;
+
+                h1 {
+                    font-size: 50px;
+                    font-family: "Poppins", sans-serif;
+                    line-height: 55px;
+                    text-align: center;
+                }
+
+                p {
+                    font-size: 30px;
+                    font-family: "Poppins", sans-serif;
+                    font-style: italic;
+                }
+                
+                .questions-button-container {
+                    width: 90%;
+                    position: absolute;
+                    top: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                input[type="text"] {
+                    height: 45px;
+                    width: min(80%, 450px);
+                    border-radius: 20px;
+                    border: unset;
+                    padding: 5px 15px;
+                    font-size: 25px;
+                    font-family: "Raleway", sans-serif;
+                    font-weight: 500;
+                    transition: transform 250ms ease;
+                }
+
+                textarea {
+                    resize: none;
+                    width: 80%;
+                    height: 300px;
+                    border-radius: 20px;
+                    border: unset;
+                    padding: 25px 30px;
+                    font-size: 20px;
+                    font-family: "Raleway", sans-serif;
+                    font-weight: 600;
+                    transition: transform 250ms ease;
+                }
+
+                input[type="text"]:hover, textarea:hover {
+                    transform: scale(1.02);
+                }
+
+                textarea:focus {
+                    border: 5px solid var(--main-color);
+                    transform: scale(1.04);
+                }
             }
 
-            input[type="text"] {
-                height: 45px;
-                width: min(80%, 450px);
-                border-radius: 20px;
-                border: unset;
-                padding: 5px 15px;
-                font-size: 25px;
-                font-family: "Raleway", sans-serif;
-                font-weight: 500;
-                transition: transform 250ms ease;
+            .question-three {
+                position: absolute;
+                display: flex;
+                justify-content: unset;
+                padding-top: 60px;
+
+                .feelings-container {
+                    margin-top: 50px;
+                    margin-inline: auto;
+                    width: 90%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    column-gap: 11px;
+                    row-gap: 15px;
+                    opacity: 1;
+                    transition: opacity 500ms ease,
+                                transform 500ms ease;
+
+                    .feeling-chip {
+                        font-size: 20px;
+                        font-family: "Poppins", sans-serif;
+                        font-weight: 500;
+                        color: black;
+                        border-radius: 6px;
+                        background-color: white;
+                        padding: 4px 10px;
+                        transition: background-color 1s ease,
+                                    color 250ms ease,
+                                    transform 500ms ease;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: var(--mainc-color);
+                            color: white;
+                        }
+                    }
+                }
+
+                #feeling-expand-button {
+                    margin-top: 50px;
+                    height: 40px;
+                    padding: 10px 20px;
+                    border-radius: 15px;
+                    border: unset;
+                    font-family: "Aboreto", sans-serif;
+                    font-weight: 700;
+                    font-size: 17px;
+                    background-color: white;
+                    transition: background-color 250ms ease,
+                                transform 500ms ease,
+                                opacity 500ms ease;
+
+                    &:hover {
+                        background-color: rgb(237, 194, 245);
+                        color: black;
+                        transform: scale(1.1);
+                    }
+
+                    &:active {
+                        background-color: black;
+                        color: white;
+                        transform: scale(1.1);
+                    }
+                }
+
+                .hidden-feelings-container {
+                    position: absolute;
+                    top: 120px;
+                    width: 95%;
+                    margin-top: 30px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    
+                    column-gap: 30px;
+                    row-gap: 40px;
+                    height: 300px;
+                    overflow-y: auto;
+
+                    opacity: 0;
+                    pointer-events: none;
+                    transform: translateY(30%);
+                    transition: opacity 750ms ease,
+                                transform 1s ease;
+
+                    .feelings-column {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        row-gap: 10px;
+
+                        .column-head {
+                            font-family: "Poppins";
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-bottom: 15px;
+                        }
+
+                        .feeling-chip {
+                            font-size: 20px;
+                            font-family: "Poppins", sans-serif;
+                            font-weight: 500;
+                            color: black;
+                            border-radius: 6px;
+                            background-color: white;
+                            padding: 4px 10px;
+                            transition: background-color 1s ease,
+                                        color 250ms ease,
+                                        transform 500ms ease;
+                            cursor: pointer;
+
+                            &:hover {
+                                background-color: var(--mainc-color);
+                                color: white;
+                            }
+                        }
+                    }
+
+                    &::-webkit-scrollbar {
+                        width: 15px;
+                    }
+
+                    &::-webkit-scrollbar-track {
+                        background-color: black;
+                        border-radius: 100vw;
+                    }
+
+                    &::-webkit-scrollbar-thumb {
+                        background-color: white;
+                        border-radius: 100vw;
+                    }
+
+                    &::-webkit-scrollbar-thumb:hover {
+                        background-color: var(--main-color);
+                    }
+                }
+
+                &.show-hidden {
+                    .feelings-container {
+                        transform: translateY(-30%);
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+
+                    #feeling-expand-button {
+                        transform: translateY(-30%);
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+
+                    .hidden-feelings-container {
+                        transform: translateY(0);
+                        opacity: 1;
+                        pointer-events: auto;
+                    }
+                } 
             }
 
-            textarea {
-                resize: none;
-                width: 80%;
-                height: 300px;
-                border-radius: 20px;
-                border: unset;
-                padding: 25px 30px;
-                font-size: 20px;
-                font-family: "Raleway", sans-serif;
-                font-weight: 600;
-                transition: transform 250ms ease;
+            .question-four {
+                margin-top: 35px;
             }
-
-            input[type="text"]:hover, textarea:hover {
-                transform: scale(1.02);
-            }
-
-            textarea:focus {
-                border: 5px solid var(--main-color);
-                transform: scale(1.04);
-            }
-        }
-
-        .question-three {
-            margin-top: 35px;
         }
     }
+
 
     /* *This is for the exit button */
     #form-exit-button-hover-area {
@@ -159,10 +328,9 @@
 
 .share-screen-active .share-screen .steps-display {
     transform: translateY(0);
-    opacity: 1;
 }
 
-.share-screen-active .share-screen form {
+.share-screen-active .share-screen .tilting-container form {
     opacity: 1;
     transform: translateY(0);
 }
@@ -184,7 +352,7 @@
         color: rgb(239, 238, 237);
     }
 
-    form .question-one {
+    .tilting-container form .question-one {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
@@ -197,13 +365,13 @@
         color: rgb(239, 238, 237);
     }
 
-    form .question-one {
+    .tilting-container form .question-one {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
     }
 
-    form .question-two {
+    .tilting-container form .question-two {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
@@ -217,13 +385,34 @@
         color: rgb(239, 238, 237);
     }
 
-    form .question-two {
+    .tilting-container form .question-two {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
     }
 
-    form .question-three {
+    .tilting-container form .question-three {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+        pointer-events: auto;
+    }
+}
+
+.share-screen-active .share-screen.question-four-active {
+    .steps-display .question-one-icon,
+    .steps-display .question-two-icon,
+    .steps-display .question-three-icon,
+    .steps-display .question-four-icon {
+        color: rgb(239, 238, 237);
+    }
+
+    .tilting-container form .question-three {
+        opacity: 0;
+        transform: translateX(-120%) translateY(0);
+        pointer-events: none;
+    }
+
+    .tilting-container form .question-four {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
@@ -234,17 +423,18 @@
     .steps-display .question-one-icon,
     .steps-display .question-two-icon,
     .steps-display .question-three-icon,
+    .steps-display .question-four-icon,
     .steps-display .question-submit-icon {
         color: rgb(239, 238, 237);
     }
 
-    form .question-three {
+    .tilting-container form .question-four {
         opacity: 0;
         transform: translateX(-120%) translateY(0);
         pointer-events: none;
     }
 
-    .question-submit {
+    .tilting-container form .question-submit {
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;

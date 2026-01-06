@@ -23,6 +23,7 @@
             border: unset;
             background-color: transparent;
 
+            cursor: pointer;
             z-index: 2;
 
             &::after {
