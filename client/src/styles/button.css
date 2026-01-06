@@ -1,0 +1,60 @@
+.button-hover-area { 
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .button-container {
+        position: relative;
+        background-color: white;
+        border-radius: 50px;
+        overflow: hidden;
+        border: unset;
+        transition: all 250ms ease-out;
+
+        button {
+            position: relative;
+            height: 50px;
+            white-space: nowrap;
+            font-size: 22px;
+            padding: 5px 24px;
+            font-family: "Raleway", sans-serif;
+            border-radius: 50%;
+            border: unset;
+            background-color: transparent;
+
+            cursor: pointer;
+            z-index: 2;
+
+            &::after {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                height: 100%;
+                border-radius: 50px;
+                background-color: var(--main-color);
+                transition: top 250ms ease;
+                z-index: -1;
+            }
+
+            &:hover {
+                color: white;
+
+                &::after {
+                    top: 0;
+                }
+            }
+
+            &:active {
+                color: black;
+                
+                &::after {
+                    background-color: white;
+                }
+            }
+        }
+    }
+}
