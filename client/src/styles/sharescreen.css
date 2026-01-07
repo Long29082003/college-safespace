@@ -117,6 +117,45 @@
                     border: 5px solid var(--main-color);
                     transform: scale(1.04);
                 }
+
+                .status-animations-container {
+                    position: relative;
+                    display: grid;
+                    place-items: center;
+
+                    .submitted-animation-container {
+                        position: absolute;
+                        transform: translateY(-40%);
+                        opacity: 0;
+                        transition: transform 500ms ease,
+                                    opacity 300ms ease;              
+                    }
+
+                    .loading-animation-container {
+                        position: absolute;
+                        transform: translateY(40%);
+                        opacity: 0;
+                        transition: transform 500ms ease,
+                                    opacity 300ms ease;
+                    }
+                }
+
+                #share-form-submit-button-hover-area {
+                    width: 180px;
+                    height: 80px;
+
+                    .button-container {
+                        background-color: rgb(217, 120, 206);
+
+                        #share-form-submit-button {
+                            height: 60px;
+                            width: 150px;
+                            font-size: 24px;
+                            font-weight: 700;
+                            color: white;
+                        }
+                    }
+                }
             }
 
             .question-three {
@@ -438,5 +477,41 @@
         opacity: 1;
         transform: translateX(0) translateY(0);
         pointer-events: auto;
+    }
+}
+
+
+/* ------------------------------------------------------------------------------*/
+/* Submit button change color and loading animation appears while submit loading */
+/* ------------------------------------------------------------------------------*/
+.share-screen-active .share-screen.submit-loading .tilting-container form .question-submit {
+    .status-animations-container .loading-animation-container {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.share-screen-active .share-screen.form-submitted .tilting-container form .question-submit {
+    .status-animations-container .submitted-animation-container {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.share-screen-active .share-screen.submit-loading .tilting-container form .question-submit,
+.share-screen-active .share-screen.form-submitted .tilting-container form .question-submit {
+    #share-form-submit-button-hover-area {
+        .button-container {
+            background-color: rgb(171, 161, 173);
+
+            #share-form-submit-button {
+                color: black;
+                pointer-events: none;
+
+                &::after {
+                    background-color: rgb(171, 161, 173);
+                }
+            }
+        }
     }
 }

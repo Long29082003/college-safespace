@@ -1,7 +1,8 @@
 //Todo: Add animation to the steps-display ✅
 //Todo: Change the active class to the outer class so that the icons can also get access to it ✅
 //Todo: Figure out a smooth exist transition ✅
-//Todo: Adding more emotion. Press the button then present the emotion in 4 columns
+//Todo: Adding more emotion. Press the button then present the emotion in 4 columns ✅
+//Todo: Adding loading and submit complete animation ✅
 //Todo: Finish the submit and work on the backend
 import clsx from "clsx";
 import { Button } from "../utilcomponents/button.jsx";
@@ -13,6 +14,7 @@ import { CgMailForward } from "react-icons/cg";
 import { TbMoodEdit } from "react-icons/tb";
 import { IoMdJournal } from "react-icons/io";
 import { FaCheckCircle } from "react-icons/fa";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import { feelings, expandedFeelings } from "../utilcomponents/feelingchips.js";
 import "../styles/sharescreen.css";
@@ -24,10 +26,13 @@ export function ShareScreen () {
     const [formQuestionState, setFormQuestionState] = useState("question-one-active");
     const [activeFeelings, setActiveFeelings] = useState([]);
     const [showHiddenFeelingsContainer, setShowHiddenFeelingsContainer] = useState(false);
+    const [formSubmitLoading, setFormSubmitLoading] = useState(null);
     const states = useContext(States);
 
     //? Ref
     const tiltingContainer = useRef(null);
+    const loadingAnimation = useRef(null);
+    const submittedAnimation = useRef(null);
 
     //? UI rendering
 
@@ -101,7 +106,11 @@ export function ShareScreen () {
         )
     };
 
-    //? Next and previous button-handling
+    const handleTilting = (event) => {
+        tilting(event, tiltingContainer, 0.05, 5);
+    };
+
+    //? Handle the clicking of "next", "previous", "expand feelings", "submit" buttons 
     const handleQuestionOneNextButtonClick = () => {
         setFormQuestionState("question-two-active");
     };
@@ -138,12 +147,65 @@ export function ShareScreen () {
         setShowHiddenFeelingsContainer(true);
     };
 
-    const handleTilting = (event) => {
-        tilting(event, tiltingContainer, 0.05, 5);
+    const handleFormPostSubmit = (formData) => {
+        const name = formData.get("name");
+        const recipient = formData.get("to");
+        const feelings = [...activeFeelings];
+        const message = formData.get("message");
+        setFormSubmitLoading("submit-loading");
+        loadingAnimation.current.play();
+
+        const loading = async () => {
+            try {
+                const result = await fetch("/api/submit/post", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({name, recipient, feelings, message})
+                });
+
+                //? Delay complete for 2s
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                if (result) {
+                    setFormSubmitLoading("form-submitted");
+                    submittedAnimation.current.play();
+                    setTimeout(() => handleExit(), 3000);
+                } else if (!result) {
+                    console.log("Cannot submit your form");
+                };
+                
+            } catch (error) {
+                //! Placeholder for now
+                console.log("Internal server error")
+            };
+        }
+        
+        loading();
     };
 
+    const handleExit = () => {
+        states.setAppStates(true, null);
+        setTimeout(() => {
+            console.log("1s passed");
+            setFormQuestionState("question-one-active");
+            setActiveFeelings([]);
+            setShowHiddenFeelingsContainer(false);
+            setFormSubmitLoading(null);
+        }, 1000)
+    }
+
     return (
-        <div className={clsx("share-screen", formQuestionState)} onMouseMove = {handleTilting}>
+        <div 
+            className={clsx(
+                "share-screen", 
+                formQuestionState, 
+                formSubmitLoading === "submit-loading" && "submit-loading",
+                formSubmitLoading === "form-submitted" && "form-submitted"
+            )} 
+            onMouseMove = {handleTilting}
+        >
 
             <div className="steps-display">
                 <div className="question-one-icon"><MdOutlinePermIdentity /></div>
@@ -158,7 +220,7 @@ export function ShareScreen () {
             </div>
 
             <div className="tilting-container" ref = {tiltingContainer}>
-                <form action="">
+                <form action={handleFormPostSubmit}>
                     <div className="question-one">
                         <h1>You will be remembered as</h1>
                         <p>"Anonymous" if left blank</p>
@@ -209,16 +271,40 @@ export function ShareScreen () {
                     </div>
 
                     <div className="question-submit">
-                        <h1>Thank you for your submission</h1>
+                        <h1>Whoever you are, your voice is heard</h1>
+                        <div className="status-animations-container">
+                            <div className="submitted-animation-container">
+                                <DotLottieReact
+                                    src="lottie-animation/submit_complete_animation.lottie"
+                                    loop = {false}
+                                    style={{width: 170, height: 170}}
+                                    dotLottieRefCallback={(dotLottie) => {
+                                        submittedAnimation.current = dotLottie;
+                                    }}
+                                />
+                            </div>    
+                            <div className="loading-animation-container">
+                                <DotLottieReact
+                                    src="lottie-animation/loading_animation.lottie"
+                                    loop
+                                    // autoplay
+                                    style={{width: 170, height: 170}}
+                                    dotLottieRefCallback={(dotLottie) => {
+                                        loadingAnimation.current = dotLottie
+                                    }}
+                                />
+                            </div>                   
+                        </div>
+                        <Button type = "submit" id = "share-form-submit-button">Submit</Button>
                         <div className="questions-button-container">
                             <Button type = "button" callback = {handleQuestionSubmitPreviousButtonClick}>Previous</Button>
-                            <Button type = "button">Submit</Button>
+                            <div className="placeholder"></div>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <Button id = "form-exit-button" callback = {() => {states.setStates(true, null)}}>X</Button> 
+            <Button id = "form-exit-button" callback = {handleExit}>X</Button> 
 
             <div className="background"></div>
         </div>

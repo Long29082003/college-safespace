@@ -28,7 +28,7 @@ export function App() {
     setIsScrolling(true);
   };
 
-  const setStates = (scrollingState, activeScreenState) => {
+  const setAppStates = (scrollingState, activeScreenState) => {
     setIsScrolling(scrollingState);
     setActiveScreen(activeScreenState);
   };
@@ -43,7 +43,7 @@ export function App() {
       <LoadingScreen 
         buttonOnClick = {enterMain}
       />
-      <States.Provider value = {{isEnterMain, isScrolling, buttonClicked, setStates}}>
+      <States.Provider value = {{isEnterMain, isScrolling, buttonClicked, setAppStates}}>
         <div className="main-screen">
           <Background />
           <MainDisplay />

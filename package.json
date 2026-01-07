@@ -1,0 +1,24 @@
+{
+  "name": "safe-space",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Long29082003/college-safespace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Long29082003/college-safespace/issues"
+  },
+  "homepage": "https://github.com/Long29082003/college-safespace#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

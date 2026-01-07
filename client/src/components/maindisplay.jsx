@@ -28,21 +28,6 @@ export function MainDisplay() {
     const handleOnMouseMove = (event) => {
         if (!isScrolling) return;
         tilting(event, tiltingContainer, 0.07, 10);
-        // const {clientX, clientY} = event;
-        // const rect = event.currentTarget.getBoundingClientRect();
-        // const middleScreenX = rect.left + rect.width/2;
-        // const middleScreenY = rect.top + rect.height/2;
-        // const dx = (clientX - middleScreenX);
-        // const dy = (clientY - middleScreenY);
-        // const translateXPixel = -dx * 0.07;
-        // const translateYPixel = -dy * 0.07;
-        // const tiltYDegree = dx/middleScreenX * 10;
-        // const tiltXDegree = -dy/middleScreenY * 10;    
-
-        // tiltingContainer.current.style.transform = `rotateX(${tiltXDegree}deg) 
-        //                                             rotateY(${tiltYDegree}deg)
-        //                                             translateX(${translateXPixel}px)
-        //                                             translateY(${translateYPixel}px)`;
     };
 
     return (
