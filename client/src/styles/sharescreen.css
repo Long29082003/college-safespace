@@ -498,6 +498,7 @@
     }
 }
 
+.share-screen-active .share-screen.submit-button-disabled .tilting-container form .question-submit,
 .share-screen-active .share-screen.submit-loading .tilting-container form .question-submit,
 .share-screen-active .share-screen.form-submitted .tilting-container form .question-submit {
     #share-form-submit-button-hover-area {

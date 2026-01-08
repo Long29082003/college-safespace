@@ -1,7 +1,7 @@
 // Todo: Work on the titling of the .main-display. ✅
 // Todo: Ask chatgpt about how to delete Post after aniamtion. ✅
 // Todo: Create a submit button ✅
-// Todo: Work on creating a form sequence
+// Todo: Work on creating a form sequence ✅
 // Todo: Create a simple backend to store the form data
 // Todo: Display the rolling data
 import "../styles/maindisplay.css";

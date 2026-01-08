@@ -27,6 +27,7 @@ export function ShareScreen () {
     const [activeFeelings, setActiveFeelings] = useState([]);
     const [showHiddenFeelingsContainer, setShowHiddenFeelingsContainer] = useState(false);
     const [formSubmitLoading, setFormSubmitLoading] = useState(null);
+    const [textInTextArea, setTextInTextArea] = useState("");
     const states = useContext(States);
 
     //? Ref
@@ -147,6 +148,10 @@ export function ShareScreen () {
         setShowHiddenFeelingsContainer(true);
     };
 
+    const handleTextAreaInput = (event) => {
+        setTextInTextArea(event.currentTarget.value);
+    };
+
     const handleFormPostSubmit = (formData) => {
         const name = formData.get("name");
         const recipient = formData.get("to");
@@ -173,6 +178,7 @@ export function ShareScreen () {
                     submittedAnimation.current.play();
                     setTimeout(() => handleExit(), 3000);
                 } else if (!result) {
+                    //! Placeholder for now
                     console.log("Cannot submit your form");
                 };
                 
@@ -188,7 +194,6 @@ export function ShareScreen () {
     const handleExit = () => {
         states.setAppStates(true, null);
         setTimeout(() => {
-            console.log("1s passed");
             setFormQuestionState("question-one-active");
             setActiveFeelings([]);
             setShowHiddenFeelingsContainer(false);
@@ -201,6 +206,7 @@ export function ShareScreen () {
             className={clsx(
                 "share-screen", 
                 formQuestionState, 
+                textInTextArea.length <= 5 && "submit-button-disabled",
                 formSubmitLoading === "submit-loading" && "submit-loading",
                 formSubmitLoading === "form-submitted" && "form-submitted"
             )} 
@@ -232,7 +238,7 @@ export function ShareScreen () {
                     </div>
 
                     <div className="question-two">
-                        <h1>To whom or what you want to address?</h1>
+                        <h1>This message is addressed to</h1>
                         <input type="text" name = "to" placeholder = "The multiverse"/>
                         <div className="questions-button-container">
                             <Button type = "button" callback = {handleQuestionTwoPreviousButtonClick}>Previous</Button>
@@ -263,7 +269,7 @@ export function ShareScreen () {
 
                     <div className="question-four">
                         <h1>Write your message</h1>
-                        <textarea name = "message"/>
+                        <textarea name = "message" onInput = {handleTextAreaInput}/>
                         <div className="questions-button-container">
                             <Button type = "button" callback = {handleQuestionFourPreviousButtonClick}>Previous</Button>
                             <Button type = "button" callback = {handleQuestionFourNextButtonClick}>Next</Button>
