@@ -14,7 +14,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        column-gap: 10px;
+        column-gap: 40px;
         font-size: 50px;
         transform: translateY(-300px);
         transition: transform 1.25s ease;
@@ -87,26 +87,41 @@
                 input[type="text"] {
                     height: 45px;
                     width: min(80%, 450px);
-                    border-radius: 20px;
-                    border: unset;
-                    padding: 5px 15px;
+                    background-color: transparent;
+                    border-radius: 5px;
+                    border: 4px solid white;
+                    padding: 20px 15px;
                     font-size: 25px;
                     font-family: "Raleway", sans-serif;
                     font-weight: 500;
+                    color: white;
                     transition: transform 250ms ease;
+
+                    &::placeholder {
+                        color: rgb(241, 236, 248);
+                    }
+
+                    &:focus {
+                        outline: unset;
+                    }
                 }
 
                 textarea {
                     resize: none;
-                    width: 80%;
-                    height: 300px;
-                    border-radius: 20px;
-                    border: unset;
+                    width: 95%;
+                    height: 200px;
+                    border: 4px solid white;
+                    border-radius: 5px;
                     padding: 25px 30px;
                     font-size: 20px;
                     font-family: "Raleway", sans-serif;
                     font-weight: 600;
+                    color: black;
                     transition: transform 250ms ease;
+
+                    &:focus {
+                        outline: unset;
+                    }
                 }
 
                 input[type="text"]:hover, textarea:hover {
@@ -114,7 +129,6 @@
                 }
 
                 textarea:focus {
-                    border: 5px solid var(--main-color);
                     transform: scale(1.04);
                 }
 
@@ -145,7 +159,7 @@
                     height: 80px;
 
                     .button-container {
-                        background-color: rgb(217, 120, 206);
+                        background-color: var(--main-color);
 
                         #share-form-submit-button {
                             height: 60px;
@@ -153,6 +167,14 @@
                             font-size: 24px;
                             font-weight: 700;
                             color: white;
+
+                            &:hover {
+                                color: black;
+                            }
+
+                            &::after {
+                                background-color: white;
+                            }
                         }
                     }
                 }
@@ -318,10 +340,6 @@
                         pointer-events: auto;
                     }
                 } 
-            }
-
-            .question-four {
-                margin-top: 35px;
             }
         }
     }

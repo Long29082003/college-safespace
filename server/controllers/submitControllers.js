@@ -14,7 +14,7 @@ export async function handlePostSubmit (req, res) {
     await db.run(`INSERT INTO posts 
                 (name, recipient, feelings, message) 
                 VALUES (?, ?, ?, ?)
-            `, [name, recipient, feelings, message]);
+            `, [name, recipient, JSON.stringify(feelings), message]);
     await db.close();
 
     res.json({message: "data received succesfully"})

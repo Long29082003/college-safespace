@@ -12,8 +12,9 @@ const createTable = async () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             recipient TEXT NOT NULL,
-            feelings TEXT[] NOT NULL,
-            message TEXT NOT NULL
+            feelings TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`);
 
     await db.close();

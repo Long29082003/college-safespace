@@ -21,7 +21,7 @@
             .post {
                 position: absolute;
                 width: 150px;
-                animation: postScrolling 20s linear infinite;        
+                animation: postScrolling 20s linear forwards;        
 
                 .post-head {
                     display: flex;
@@ -40,16 +40,24 @@
                     }
                 }
 
+                .recipient {
+                    font-family: "Raleway", sans-serif;
+                    font-size: 12.5px;
+                    font-weight: 400;
+                    margin: 2px 0px 1px;
+                }
+
                 .feeling {
                     display: flex;
                     flex-direction: row;
                     column-gap: 9px;
+                    font-weight: 500;
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 300;
+                    font-size: 9px;
+
 
                     span {
-                        font-size: 8px;
-                        font-family: "Poppins", sans-serif;
-                        font-weight: 200;
-
                         &::before {
                             content: "•";
                             margin-right: 1.5px;
@@ -58,6 +66,7 @@
                 }
 
                 .expandable-view {
+                    margin-top: 7px;
                     background-color: white;
                     border-radius: 5px;
                     padding: 5px 8px;
@@ -86,8 +95,7 @@
                     position: absolute;
                     inset: 0 0 0 0;
                     z-index: -1;
-                    background-color: rgb(220, 239, 249);
-                    opacity: 0.5;
+                    opacity: 1;
                     border-radius: 10px;
                     transform: scale(0, 0.5);
                     transition: transform 100ms ease;
@@ -271,7 +279,7 @@
     }
 
     82% {
-        opacity: 0.8;
+        opacity: 0.5;
         transform:
             translateX(75%)
             translateY(230%)

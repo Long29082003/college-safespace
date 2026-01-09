@@ -3,7 +3,7 @@
 //Todo: Figure out a smooth exist transition ✅
 //Todo: Adding more emotion. Press the button then present the emotion in 4 columns ✅
 //Todo: Adding loading and submit complete animation ✅
-//Todo: Finish the submit and work on the backend
+//Todo: Finish the submit and work on the backend ✅
 import clsx from "clsx";
 import { Button } from "../utilcomponents/button.jsx";
 import { useState, useContext, useRef } from "react";
@@ -215,13 +215,9 @@ export function ShareScreen () {
 
             <div className="steps-display">
                 <div className="question-one-icon"><MdOutlinePermIdentity /></div>
-                <div className="line"></div>
                 <div className="question-two-icon"><CgMailForward /></div>
-                <div className="line"></div>
                 <div className="question-three-icon"><TbMoodEdit /></div>
-                <div className="line"></div>
                 <div className="question-four-icon"><IoMdJournal /></div>
-                <div className="line"></div>
                 <div className="question-submit-icon"><FaCheckCircle /></div>
             </div>
 
@@ -229,7 +225,6 @@ export function ShareScreen () {
                 <form action={handleFormPostSubmit}>
                     <div className="question-one">
                         <h1>You will be remembered as</h1>
-                        <p>"Anonymous" if left blank</p>
                         <input type="text" name = "name" placeholder = "Anonymous"/>
                         <div className="questions-button-container">
                             <div className="placeholder"></div>
