@@ -3,7 +3,9 @@
 // Todo: Create a submit button ✅
 // Todo: Work on creating a form sequence ✅
 // Todo: Create a simple backend to store the form data ✅
-// Todo: try to fetch data from backend to the queue 
+// Todo: try to fetch data from backend to the queue ✅
+// Todo: when use tab out find a way to stop the spawning interval
+// Todo (next after initla fetch): confitional fetching when queue running low
 
 // * The way the setTimeout work is that its like a ticking bomb. After the interval
 // * the bomb will explode take one post from queue put it in animating list and becasue
@@ -49,24 +51,25 @@ export function MainDisplay() {
             };
         };
 
-        fetchPosts(20);
+        fetchPosts(30);
         return () => {};
     }, []);
 
     useEffect(() => {
         if (!isScrolling) {
-            console.log("hello world!")
             clearInterval(intervalRef.current);
             intervalRef.current = null;
             return;
         };
+
+        if (postsQueue.length === 0) return;
 
         intervalRef.current = setInterval(() => {
             const post = postsQueue[0];
             setAnimatingPosts(prev => {
                 return [
                     ...prev,
-                    <Post postInfo={post}/>
+                    <Post key = {post.id} postInfo={post}/>
                 ];
             });
             setPostsQueue(prev => prev.slice(1));

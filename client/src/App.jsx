@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
 import { Background } from "./components/background.jsx";
@@ -12,30 +12,49 @@ export function App() {
   //? States
   const [isEnterMain, setIsEnterMain] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [hideScroll, setHideScroll] = useState(true);
   const [activeScreen, setActiveScreen] = useState(null);
+
+  //? useEffect to check if user tab out;
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsScrolling(false);
+      } else {
+        setIsScrolling(true);
+      };
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    return () => {};
+  }, []);
 
   const displayClasses = () => {
     return clsx({
       "main-page": true,
       "enter-main": isEnterMain,
+      "is-hiding-scrolling": hideScroll,
       "is-not-scrolling": !isScrolling,
       "share-screen-active": activeScreen === "share-screen",
     })
   };
 
   const enterMain = () => {
+    setHideScroll(false);
     setIsEnterMain(true);
     setIsScrolling(true);
   };
 
-  const setAppStates = (scrollingState, activeScreenState) => {
+  const setAppStates = (hideScrollState, scrollingState, activeScreenState) => {
+    setHideScroll(hideScrollState);
     setIsScrolling(scrollingState);
     setActiveScreen(activeScreenState);
   };
 
   const buttonClicked = () => {
-    setActiveScreen("share-screen");
+    setHideScroll(prev => !prev);
     setIsScrolling(prev => !prev);
+    setActiveScreen("share-screen");
   };
 
   return (

@@ -5,7 +5,7 @@
     .tilting-container {
         position: absolute;
         inset: 0 0 0 0;
-        transition: all 250ms ease;
+        transition: all 100ms linear;
         
         .scrolling-container {
             position: absolute;
@@ -37,6 +37,10 @@
                     .date {
                         font-size: 10px;
                         font-family: "Aboreto", sans-serif;
+                        transform: translateX(50%);
+                        opacity: 0;
+                        transition: transform 250ms ease-out,
+                                    opacity 100ms ease-out;
                     }
                 }
 
@@ -55,7 +59,8 @@
                     font-family: "Poppins", sans-serif;
                     font-weight: 300;
                     font-size: 9px;
-
+                    color: black;
+                    transition: color 150ms linear;
 
                     span {
                         &::before {
@@ -66,16 +71,32 @@
                 }
 
                 .expandable-view {
+                    position: relative;
                     margin-top: 7px;
-                    background-color: white;
-                    border-radius: 5px;
                     padding: 5px 8px;
-                    font-weight: 300;
-                    font-family: "Raleway", sans-serif;
-                    font-size: 9px;
-                    opacity: 0;
-                    transform: translateY(20%) scale(0.9, 1);
-                    transition: opacity 250ms ease, transform 200ms ease-out;
+
+                    .message {
+                        position: relative;
+                        z-index: 1;
+                        font-weight: 400;
+                        font-family: "Raleway", sans-serif;
+                        font-size: 9px;
+                        color: black;
+                        transform: translateX(-5px);
+                        transition: transform 250ms ease-out,
+                                    color 150ms linear;
+                    }
+
+                    .expandable-view-background {
+                        z-index: 0;
+                        position: absolute;
+                        inset: 0 0 0 0;
+                        background-color: white;
+                        border-radius: 5px;
+                        opacity: 0;
+                        transform: translateY(20%) scale(0.9, 1);
+                        transition: opacity 250ms ease, transform 200ms ease-out;
+                    }
                 }
 
                 .click-icon-container {
@@ -104,6 +125,15 @@
                 &:hover {
                     cursor: pointer;
 
+                    .post-head .date {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+
+                    .feeling {
+                        color: var(--text-color);
+                    }
+
                     .background {
                         transform: scale(1.1, 1.2);
                     }
@@ -114,8 +144,15 @@
                     }
 
                     .expandable-view {
-                        opacity: 1;
-                        transform: translateY(0) scale(1, 1);
+                        .message {
+                            transform: translateX(0);
+                            color: var(--text-color);
+                        }
+
+                        .expandable-view-background {
+                            opacity: 1;
+                            transform: translateY(0) scale(1, 1);
+                        }
                     }
                 }
             }
@@ -204,8 +241,8 @@
 
 /* ----------------------------------------------------------- */
 /* When there's .is.not-scrolling class .scrolling-container go up, buttons move */
-.is-not-scrolling .main-display .tilting-container .scrolling-container {
-    transform: translateY(-1000px) perspective(1500px);
+.is-hiding-scrolling .main-display .tilting-container .scrolling-container {
+    transform: translateY(-1300px) perspective(1500px);
 }   
 
 .is-not-scrolling .main-display .tilting-container .scrolling-container .post {
@@ -233,64 +270,64 @@
     0% {
         opacity: 0;
         transform:
-            translateX(0%)
-            translateY(-120%)
+            translateX(calc(0% + var(--left-position)))
+            translateY(calc(-120% + var(--top-position)))
             translateZ(-200px);
     }
 
     12% {
         opacity: 0.6;
         transform:
-            translateX(7%)
-            translateY(-60%)
+            translateX(calc(7% + var(--left-position)))
+            translateY(calc(-60% + var(--top-position)))
             translateZ(0px);
     }
 
     25% {
         opacity: 0.9;
         transform:
-            translateX(16%)
-            translateY(10%)
+            translateX(calc(16% + var(--left-position)))
+            translateY(calc(10% + var(--top-position)))
             translateZ(200px);
     }
 
     40% {
         opacity: 1;
         transform:
-            translateX(30%)
-            translateY(70%)
+            translateX(calc(30% + var(--left-position)))
+            translateY(calc(70% + var(--top-position)))
             translateZ(500px);
     }
 
     55% {
         opacity: 1;
         transform:
-            translateX(44%)
-            translateY(110%)
+            translateX(calc(44% + var(--left-position)))
+            translateY(calc(110% + var(--top-position)))
             translateZ(800px);
     }
 
     68% {
         opacity: 1;
         transform:
-            translateX(60%)
-            translateY(165%)
+            translateX(calc(60% + var(--left-position)))
+            translateY(calc(165% + var(--top-position)))
             translateZ(950px);
     }
 
     82% {
         opacity: 0.5;
         transform:
-            translateX(75%)
-            translateY(230%)
+            translateX(calc(75% + var(--left-position)))
+            translateY(calc(230% + var(--top-position)))
             translateZ(1050px);
     }
 
     100% {
         opacity: 0;
         transform:
-            translateX(90%)
-            translateY(310%)
+            translateX(calc(90% + var(--left-position)))
+            translateY(calc(310% + var(--top-position)))
             translateZ(1150px);
     }
 }
