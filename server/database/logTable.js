@@ -8,8 +8,16 @@ const logTable = async () => {
         driver: sqlite.Database
     });
 
-    const res = await db.all("SELECT * FROM posts");
+
+    const res = await db.all(`
+                SELECT *
+                FROM posts
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 10
+        `);
+
 
     console.table(res);
+    console.log("Log table succesfully");
 };
 logTable();

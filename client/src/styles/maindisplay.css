@@ -21,7 +21,7 @@
             .post {
                 position: absolute;
                 width: 150px;
-                animation: postScrolling 20s linear forwards;        
+                /* animation: postScrolling 20s linear forwards;         */
 
                 .post-head {
                     display: flex;

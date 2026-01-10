@@ -4,8 +4,12 @@
 // Todo: Work on creating a form sequence ✅
 // Todo: Create a simple backend to store the form data ✅
 // Todo: try to fetch data from backend to the queue ✅
-// Todo: when use tab out find a way to stop the spawning interval
-// Todo (next after initla fetch): confitional fetching when queue running low
+// Todo: when use tab out find a way to stop the spawning interval. Cant but I can reset them ✅
+// Todo (next after initla fetch): confitional fetching when queue running low ✅
+//! Todo: Important: change the date in the app to UTC so that it is congruent everywhere
+// Todo: fix the front end so that it update the earliest date only if earlier
+// Todo: Work on Inspiration page
+// Todo: Maybe watch video to see scroll animation
 
 // * The way the setTimeout work is that its like a ticking bomb. After the interval
 // * the bomb will explode take one post from queue put it in animating list and becasue
@@ -33,32 +37,41 @@ export function MainDisplay() {
     
     //? Ref
     const tiltingContainer = useRef(null);
-    // const firstAnimation = useRef(false);
     const intervalRef = useRef(null);
+    //* These following refs are anchors used to search the database
+    const earliestPostTime = useRef("");
+    const latestPostTime = useRef("");
+    const latestPostId = useRef("");
+
     const intervalToDisplayPosts = 6000;
 
     //? useEffect
-    //* Inital fetch
+    //* Fetch posts into queue after the queue run low
     useEffect(() => {
         async function fetchPosts (limit) {
-            const respond = await fetch(`/api/get/post?limit=${limit}`);
+            const respond = await fetch(`/api/get/post?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
             if (respond) {
                 const data = await respond.json();
-                setPostsQueue(prev => [...prev, ...data]);
-                // firstAnimation.current = true;
+                console.log(data.posts);
+    
+                const newEarliestTime = new Date(data["new_earliest_time"]);
+                earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
+                latestPostTime.current = new Date(data["new_latest_time"]);
+                latestPostId.current = data["new_latest_id"];
+                setPostsQueue(prev => [...prev, ...data.posts]);
             } else {
                 console.log("Internal server error!");
             };
         };
 
-        fetchPosts(30);
+        if (postsQueue.length <= 5) fetchPosts(10);
+        else return;
+
         return () => {};
-    }, []);
+    }, [postsQueue]);
 
     useEffect(() => {
         if (!isScrolling) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
             return;
         };
 
@@ -76,6 +89,7 @@ export function MainDisplay() {
         }, intervalToDisplayPosts);
 
         return () => {
+            //? How do I detect changing the postsQueue in the right way
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         };
