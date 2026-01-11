@@ -1,24 +1,28 @@
-import sqlite from "sqlite3";
-import {open} from "sqlite";
+import sqlite3 from "sqlite3";
+import { execute } from "./wrapper-functions.js";
 import path from "node:path";
 
 const createTable = async () => {
-    const db = await open({
-        filename: path.join("database", "database.db"),
-        driver: sqlite.Database
-    });
+    const db = new sqlite3.Database(path.join("database", "database.db"));
 
-    await db.exec(`CREATE TABLE IF NOT EXISTS posts (
+    const sql = `CREATE TABLE IF NOT EXISTS posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             recipient TEXT NOT NULL,
             feelings TEXT NOT NULL,
             message TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )`);
+            created_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP
+        )`;
 
-    await db.close();
-    console.log("Table create succesfully");
+    try {
+        await execute(db, sql)
+    } catch (error) {
+        console.log("Error in the process of creating table")
+    } finally {
+        db.close();
+    }
+
+    console.log("Function ended");
 };
 
 createTable();

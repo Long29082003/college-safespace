@@ -22,7 +22,6 @@ export function Post ({postInfo}) {
     useEffect(() => {
         postAnimationRef.current = postRef.current.animate(postScrollingKeyFrames, postScrollingTiming);
         postAnimationRef.current.finished.then(() => {
-            console.log("xin chao the gioi")
             postAnimationRef.current = null;
         });
 

@@ -1,14 +1,25 @@
 import { getDbConnection } from "../database/getDbConnection.js";
+import sqlite3 from "sqlite3";
+import { fetchAll } from "../database/wrapper-functions.js";
+import path from "node:path"
 
 export const handleGetPosts = async (req, res) => {
     
-    const db = await getDbConnection();
+    const db = new sqlite3.Database(path.join("database", "database.db"));
 
     let { limit, earliest_time, latest_time, latest_id } = req.query;
 
     if (!limit) limit = 10;
     else limit = Number(limit);
     
+    if (earliest_time) {
+        earliest_time = earliest_time.replace("T", " ");
+        latest_time = latest_time.replace("T", " ");
+        earliest_time = earliest_time.slice(0, earliest_time.length - 5);
+        latest_time = latest_time.slice(0, latest_time.length - 5);
+        console.log(earliest_time);
+        console.log(latest_time);
+    };
     if (latest_id) latest_id = Number(latest_id);
 
     console.log("Limit: ", limit);
@@ -21,30 +32,30 @@ export const handleGetPosts = async (req, res) => {
 
     if (isFirstFetch) {
         console.log("is first fetch");
-        posts = await db.all(
-            `
+        posts = await fetchAll(db, `
                 SELECT *
                 FROM posts
                     ORDER BY created_at DESC, id DESC
                     LIMIT ?
-            `, [limit]
-        );
+            `, [limit]);
     } else {
         console.log("not first fetch");
-        posts = await db.all(
-            `
-                SELECT * FROM posts
+        posts = await fetchAll(db, `
+                SELECT *
+                FROM posts
                     WHERE created_at > ?
                     OR (created_at = ? AND id < ?)
                     OR created_at < ?
                     ORDER BY created_at DESC, id DESC
                     LIMIT ? 
-            `, [earliest_time, latest_time, latest_id, latest_time, limit]
-        );
+            `, [earliest_time, latest_time, latest_id, latest_time, limit])
     };
+//2026-01-11 01:26:29.000
+//2026-01-11 01:26:29
+    db.close();
 
-    const newEarliestTime = posts[0]["created_at"];
-    const newLatestTime = posts[posts.length - 1]["created_at"];
+    const newEarliestTime = posts[0]["created_at"].replace(" ", "T") + "Z";
+    const newLatestTime = posts[posts.length - 1]["created_at"].replace(" ", "T") + "Z";
     const newLatestId = posts[posts.length - 1]["id"];
 
     res.json({

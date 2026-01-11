@@ -1,9 +1,11 @@
-import { getDbConnection } from "./getDbConnection.js";
+import sqlite3 from "sqlite3";
+import { execute } from "./wrapper-functions.js";
+import path from "node:path";
 
 const seedTable = async () => {
-    const db = await getDbConnection();
+    const db = new sqlite3.Database(path.join("database", "database.db"));
 
-    await db.run(`
+    const sql = `
                 INSERT INTO posts (name, recipient, feelings, message) VALUES
         ('Alex', 'You', '["Grateful","Hopeful"]', 'Thanks for taking a moment to slow down and read this.'),
         ('Jamie', 'Everyone', '["Lonely","Confused"]', 'Some days feel quiet in a way that’s hard to explain.'),
@@ -35,11 +37,16 @@ const seedTable = async () => {
         ('Mila', 'Everyone', '["Lonely","Hopeful"]', 'Even alone, I still believe connection is possible.'),
         ('Theo', 'My Thoughts', '["Confused","Overwhelmed"]', 'My mind feels loud today, but I’m listening anyway.'),
         ('Grace', 'You', '["Grateful","Caring"]', 'Thanks for existing exactly as you are.');
-        `);
-    
-    await db.close();
+        `
+    try {
+        await execute(db, sql);
+    } catch (error) {
+        console.log(`Error in seeding the table: `, error);
+    } finally {
+        db.close();
+    }
 
-    console.log("Seed table succesfully")
+    console.log("Seed table ended")
 };
 
 seedTable();

@@ -6,7 +6,9 @@
 // Todo: try to fetch data from backend to the queue ✅
 // Todo: when use tab out find a way to stop the spawning interval. Cant but I can reset them ✅
 // Todo (next after initla fetch): confitional fetching when queue running low ✅
-//! Todo: Important: change the date in the app to UTC so that it is congruent everywhere
+//! Todo: Important: change the date in the app to UTC so that it is congruent everywhere ✅ Basically done. Can clean up the code a little bit later
+//! Problem: Dont know why when fetching all data in dataset it somehow rerun the cycle? Which is good but unexpected
+// Todo: If fetch all the data already, then fetch but randomized. 
 // Todo: fix the front end so that it update the earliest date only if earlier
 // Todo: Work on Inspiration page
 // Todo: Maybe watch video to see scroll animation
@@ -52,8 +54,8 @@ export function MainDisplay() {
             const respond = await fetch(`/api/get/post?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
             if (respond) {
                 const data = await respond.json();
-                console.log(data.posts);
-    
+                
+                console.log(data);
                 const newEarliestTime = new Date(data["new_earliest_time"]);
                 earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
                 latestPostTime.current = new Date(data["new_latest_time"]);
