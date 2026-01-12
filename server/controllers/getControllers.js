@@ -17,15 +17,13 @@ export const handleGetPosts = async (req, res) => {
         latest_time = latest_time.replace("T", " ");
         earliest_time = earliest_time.slice(0, earliest_time.length - 5);
         latest_time = latest_time.slice(0, latest_time.length - 5);
-        console.log(earliest_time);
-        console.log(latest_time);
     };
     if (latest_id) latest_id = Number(latest_id);
 
-    console.log("Limit: ", limit);
-    console.log("Earliest time: ", typeof(earliest_time), earliest_time);
-    console.log("Latest time: ", typeof(latest_time), latest_time);
-    console.log("Latest id: ", typeof(latest_id), latest_id);
+    // console.log("Limit: ", limit);
+    // console.log("Earliest time: ", typeof(earliest_time), earliest_time);
+    // console.log("Latest time: ", typeof(latest_time), latest_time);
+    // console.log("Latest id: ", typeof(latest_id), latest_id);
 
     const isFirstFetch = !earliest_time && !latest_time && !latest_id;
     let posts;
@@ -48,7 +46,8 @@ export const handleGetPosts = async (req, res) => {
                     OR created_at < ?
                     ORDER BY created_at DESC, id DESC
                     LIMIT ? 
-            `, [earliest_time, latest_time, latest_id, latest_time, limit])
+            `, [earliest_time, latest_time, latest_id, latest_time, limit]);
+        console.log(posts);
     };
 //2026-01-11 01:26:29.000
 //2026-01-11 01:26:29
@@ -63,5 +62,45 @@ export const handleGetPosts = async (req, res) => {
         new_earliest_time: newEarliestTime,
         new_latest_time: newLatestTime,
         new_latest_id: newLatestId
+    });
+};
+
+export const handleGetRandomPosts = async (req, res) => {
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    let { earliest_time, limit } = req.query;
+
+    earliest_time = earliest_time.replace("T", " ");
+    earliest_time = earliest_time.slice(0, earliest_time.length - 5);
+
+    const posts = await fetchAll(db, `
+            WITH recent AS (
+                SELECT * 
+                FROM posts
+                WHERE created_at > ?
+                ORDER BY created_at DESC
+                LIMIT ?
+            ), fill AS (
+                SELECT *
+                FROM posts
+                WHERE created_at <= ?
+                AND id NOT IN (SELECT id FROM recent)
+                ORDER BY RANDOM()
+                LIMIT (10 - (SELECT COUNT(*) FROM recent))
+            )
+            SELECT * FROM recent
+            UNION
+            SELECT * FROM fill
+            ORDER BY created_at DESC;
+        `, [earliest_time, limit, earliest_time]
+    );
+
+    db.close();
+
+    const newEarliestTime = posts[0]["created_at"].replace(" ", "T") + "Z";
+
+    res.json({
+        posts,
+        new_earliest_time: newEarliestTime
     });
 };

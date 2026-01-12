@@ -7,9 +7,8 @@
 // Todo: when use tab out find a way to stop the spawning interval. Cant but I can reset them ✅
 // Todo (next after initla fetch): confitional fetching when queue running low ✅
 //! Todo: Important: change the date in the app to UTC so that it is congruent everywhere ✅ Basically done. Can clean up the code a little bit later
-//! Problem: Dont know why when fetching all data in dataset it somehow rerun the cycle? Which is good but unexpected
-// Todo: If fetch all the data already, then fetch but randomized. 
-// Todo: fix the front end so that it update the earliest date only if earlier
+//! Problem: Dont know why when fetching all data in dataset it somehow rerun the cycle? Which is good but unexpected ✅ This is fixed by adding random fetch to prevent any unexpected behavior
+// Todo: If fetch all the data already, then fetch but randomized. ✅
 // Todo: Work on Inspiration page
 // Todo: Maybe watch video to see scroll animation
 
@@ -22,6 +21,7 @@ import { IoIosMore } from "react-icons/io";
 import { GrContact } from "react-icons/gr";
 import { FaInfo } from "react-icons/fa6";
 import { FaPenToSquare } from "react-icons/fa6";
+import { v4 as uuidv4 } from "uuid"; 
 
 import { Button } from "../utilcomponents/button.jsx";
 import { Post } from "../utilcomponents/post.jsx";
@@ -44,6 +44,7 @@ export function MainDisplay() {
     const earliestPostTime = useRef("");
     const latestPostTime = useRef("");
     const latestPostId = useRef("");
+    const reachEndDB = useRef(false);
 
     const intervalToDisplayPosts = 6000;
 
@@ -54,20 +55,37 @@ export function MainDisplay() {
             const respond = await fetch(`/api/get/post?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
             if (respond) {
                 const data = await respond.json();
+                console.log(`Fetch posts: `, data.posts);
                 
-                console.log(data);
                 const newEarliestTime = new Date(data["new_earliest_time"]);
                 earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
                 latestPostTime.current = new Date(data["new_latest_time"]);
                 latestPostId.current = data["new_latest_id"];
+                if (data["new_latest_id"] === 1) reachEndDB.current = true;
                 setPostsQueue(prev => [...prev, ...data.posts]);
             } else {
                 console.log("Internal server error!");
             };
         };
 
-        if (postsQueue.length <= 5) fetchPosts(10);
-        else return;
+        async function fetchRandomPosts (limit) {
+            const respond = await fetch(`/api/get/random_post?limit=${limit}&earliest_time=${earliestPostTime.current}`);
+            if (respond) {
+                const data = await respond.json();
+                console.log(`Fetch random posts: `, data.posts);
+                
+                const newEarliestTime = new Date(data["new_earliest_time"]);
+                earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
+                setPostsQueue(prev => [...prev, ...data.posts]);
+            } else {
+                console.log("Internal server error!");
+            };
+        }
+
+        if (postsQueue.length <= 5) {
+            if (!reachEndDB.current) fetchPosts(10);
+            else if (reachEndDB.current) fetchRandomPosts(10);
+        } else return;
 
         return () => {};
     }, [postsQueue]);
@@ -84,14 +102,13 @@ export function MainDisplay() {
             setAnimatingPosts(prev => {
                 return [
                     ...prev,
-                    <Post key = {post.id} postInfo={post}/>
+                    <Post key = {uuidv4()} postInfo={post}/>
                 ];
             });
             setPostsQueue(prev => prev.slice(1));
         }, intervalToDisplayPosts);
 
         return () => {
-            //? How do I detect changing the postsQueue in the right way
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         };
