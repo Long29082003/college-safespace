@@ -364,15 +364,6 @@
             }
         }
     }
-
-    .background {
-        position: absolute;
-        inset: 0 0 0 0;
-        z-index: -1;
-        background-color: rgb(45, 1, 57);
-        opacity: 0;
-        transition: opacity 3s ease;
-    }
 }
 
 /* ----------------------------------------------------------------- */
@@ -396,7 +387,7 @@
     transform: translateY(0);
 }
 
-.share-screen-active .share-screen .background {
+.share-screen-active .share-screen .dark-background {
     opacity: 0.6;
 }
 

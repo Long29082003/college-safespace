@@ -6,6 +6,7 @@
 //Todo: Finish the submit and work on the backend ✅
 import clsx from "clsx";
 import { Button } from "../utilcomponents/button.jsx";
+import { DarkBackground } from "../utilcomponents/darkbackground.jsx";
 import { useState, useContext, useRef } from "react";
 import { States } from "../App.jsx";
 
@@ -307,7 +308,7 @@ export function ShareScreen () {
 
             <Button id = "form-exit-button" callback = {handleExit}>X</Button> 
 
-            <div className="background"></div>
+            <DarkBackground />
         </div>
     )
 };

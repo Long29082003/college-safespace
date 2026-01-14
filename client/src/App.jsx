@@ -5,6 +5,7 @@ import { LoadingScreen } from "./components/loadingscreen.jsx";
 import { Background } from "./components/background.jsx";
 import { MainDisplay } from "./components/maindisplay.jsx";
 import { ShareScreen } from "./components/sharescreen.jsx";
+import { InspirationScreen } from "./components/inspirationscreen.jsx";
 
 const States = createContext(null); 
 
@@ -36,6 +37,7 @@ export function App() {
       "is-hiding-scrolling": hideScroll,
       "is-not-scrolling": !isScrolling,
       "share-screen-active": activeScreen === "share-screen",
+      "inspiration-screen-active": activeScreen === "inspiration-screen"
     })
   };
 
@@ -51,22 +53,17 @@ export function App() {
     setActiveScreen(activeScreenState);
   };
 
-  const buttonClicked = () => {
-    setHideScroll(prev => !prev);
-    setIsScrolling(prev => !prev);
-    setActiveScreen("share-screen");
-  };
-
   return (
     <main className = {displayClasses()}>
       <LoadingScreen 
         buttonOnClick = {enterMain}
       />
-      <States.Provider value = {{isEnterMain, isScrolling, buttonClicked, setAppStates}}>
+      <States.Provider value = {{isEnterMain, isScrolling, setAppStates}}>
         <div className="main-screen">
           <Background />
           <MainDisplay />
           <ShareScreen />
+          <InspirationScreen />
         </div>
       </States.Provider>
     </main>

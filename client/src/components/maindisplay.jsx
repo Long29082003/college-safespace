@@ -129,8 +129,8 @@ export function MainDisplay() {
 
             <Button id = "more-button"><IoIosMore id = "more-icon"/></Button>
             <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
-            <Button id = "info-button"><FaInfo id = "info-icon"/></Button>
-            <Button id = "share-button" callback = {states.buttonClicked}><FaPenToSquare />Share your feelings</Button>
+            <Button id = "info-button" callback = {() => states.setAppStates(true, false, "inspiration-screen")}><FaInfo id = "info-icon"/></Button>
+            <Button id = "share-button" callback = {() => states.setAppStates(true, false, "share-screen")}><FaPenToSquare />Share your feelings</Button>
         </div>
     )
 }

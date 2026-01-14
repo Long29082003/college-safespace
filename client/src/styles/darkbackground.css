@@ -1,0 +1,8 @@
+.dark-background {
+    position: absolute;
+    inset: 0 0 0 0;
+    z-index: -1;
+    background-color: rgb(45, 1, 57);
+    opacity: 0;
+    transition: opacity 3s ease;
+}
