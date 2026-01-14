@@ -13,6 +13,7 @@ export function InspirationScreen () {
     const states = useContext(States);
 
     //? Refs
+    const container = useRef(null);
     const tiltingContainer = useRef(null);
     
     const handleTilting = (event) => {
@@ -20,12 +21,15 @@ export function InspirationScreen () {
     };
 
     const handleExit = () => {
-        window.scrollTo(0, 0);
+        container.current.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
         states.setAppStates(false, true, null);
     };
 
     return (
-        <div className="inspiration-screen"  onMouseMove = {handleTilting}>
+        <div className="inspiration-screen"  ref = {container} onMouseMove = {handleTilting}>
             <div className="tilting-container" ref = {tiltingContainer}>
                 <div className="creator-note">
                     <h1 className="header">Purpose</h1>
