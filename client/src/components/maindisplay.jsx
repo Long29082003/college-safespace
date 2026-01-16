@@ -9,8 +9,8 @@
 //! Todo: Important: change the date in the app to UTC so that it is congruent everywhere ✅ Basically done. Can clean up the code a little bit later
 //! Problem: Dont know why when fetching all data in dataset it somehow rerun the cycle? Which is good but unexpected ✅ This is fixed by adding random fetch to prevent any unexpected behavior
 // Todo: If fetch all the data already, then fetch but randomized. ✅
-// Todo: Work on Inspiration page
-// Todo: Maybe watch video to see scroll animation
+// Todo: Work on Inspiration page ✅
+// Todo: Maybe watch video to see scroll animation ✅
 
 // * The way the setTimeout work is that its like a ticking bomb. After the interval
 // * the bomb will explode take one post from queue put it in animating list and becasue
@@ -53,9 +53,9 @@ export function MainDisplay() {
     useEffect(() => {
         async function fetchPosts (limit) {
             const respond = await fetch(`/api/get/post?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
-            if (respond) {
+            if (respond.ok) {
                 const data = await respond.json();
-                console.log(`Fetch posts: `, data.posts);
+                // console.log(`Fetch posts: `, data.posts);
                 
                 const newEarliestTime = new Date(data["new_earliest_time"]);
                 earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
@@ -127,7 +127,7 @@ export function MainDisplay() {
                 </div>
             </div>
 
-            <Button id = "more-button"><IoIosMore id = "more-icon"/></Button>
+            <Button id = "more-button" callback = {() => states.setAppStates(true, false, "post-screen")}><IoIosMore id = "more-icon"/></Button>
             <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
             <Button id = "info-button" callback = {() => states.setAppStates(true, false, "inspiration-screen")}><FaInfo id = "info-icon"/></Button>
             <Button id = "share-button" callback = {() => states.setAppStates(true, false, "share-screen")}><FaPenToSquare />Share your feelings</Button>

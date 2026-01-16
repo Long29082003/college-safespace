@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { execute } from "./wrapper-functions.js";
 import path from "node:path";
 
-const seedTable = async () => {
+const seedPostsTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
@@ -49,4 +49,71 @@ const seedTable = async () => {
     console.log("Seed table ended")
 };
 
-seedTable();
+const seedCommentsTable = async () => {
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `INSERT INTO comments (name, message, post_id) VALUES
+                    (
+                    'Anonymous',
+                    'I didn’t realize how much I needed to read this until I did. Thank you.',
+                    38
+                    ),
+                    (
+                    'L',
+                    'This feels like something I could have written myself on a bad night.',
+                    38
+                    ),
+                    (
+                    'Quiet soul',
+                    'You’re not weak for feeling this way. You’re human.',
+                    37
+                    ),
+                    (
+                    'Sam',
+                    'I hope you find a little peace today, even if it’s just for a moment.',
+                    37
+                    ),
+                    (
+                    'Anonymous',
+                    'It’s comforting to know someone else feels this too.',
+                    36
+                    ),
+                    (
+                    'E',
+                    'I keep rereading this. It really stuck with me.',
+                    36
+                    ),
+                    (
+                    'Someone',
+                    'Thank you for trusting this space with something so personal.',
+                    35
+                    ),
+                    (
+                    'M',
+                    'I don’t have the right words, but I’m glad you shared this.',
+                    35
+                    ),
+                    (
+                    'Alex',
+                    'This reminded me that healing isn’t linear, and that’s okay.',
+                    34
+                    ),
+                    (
+                    'Anonymous',
+                    'Even if things feel heavy now, I hope lighter days come for you.',
+                    33
+                    );`
+        
+    try {
+        await execute(db, sql);
+        console.log("Seed table succesfully");
+    } catch (error) {
+        console.log("Error occurred when seeding table: ", error);
+    } finally {
+        db.close();
+    };
+
+    console.log("Function ended");
+};
+
+seedCommentsTable();

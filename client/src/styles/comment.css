@@ -1,0 +1,30 @@
+.comment {
+    width: 100%;
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px 25px;
+
+    .comment-header {
+        display: flex;
+        flex-direction: column;
+
+        .name {
+            font-family: "Raleway", sans-serif;
+            font-weight: 600;
+            font-size: 30px;
+        }
+
+        .date {
+            font-family: "Aboreto", sans-serif;
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.6);
+        }
+    }
+
+    .comment-text {
+        margin-top: 15px;
+        font-size: 22px;
+        font-family: "Raleway", sans-serif;
+        font-weight: 500;
+    }
+}

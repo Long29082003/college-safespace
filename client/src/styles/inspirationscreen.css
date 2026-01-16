@@ -179,9 +179,9 @@
                 top: 35%;
                 left: -8%;
                 width: 300px;
-                font-family: "Tinos", sans-serif;
-                font-weight: 600;
-                font-size: 23px;
+                font-family: "Poppins", sans-serif;
+                font-weight: 400;
+                font-size: 22px;
                 color: rgb(250, 226, 226);
                 line-height: 28px;
                 transform: translateX(0px);
@@ -209,7 +209,8 @@
         position: fixed;
         z-index: 2;
         top: 15px;
-        right: 30px;
+        right: -100px;
+        transition: right 1s ease;
 
 
         #page-exit-button {
@@ -259,6 +260,10 @@
 .inspiration-screen-active .inspiration-screen {
     z-index: 3;
     top: 0;
+}
+
+.inspiration-screen-active .inspiration-screen #page-exit-button-hover-area {
+    right: 30px;
 }
 
 

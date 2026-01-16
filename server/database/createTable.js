@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { execute } from "./wrapper-functions.js";
 import path from "node:path";
 
-const createTable = async () => {
+const createPostsTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `CREATE TABLE IF NOT EXISTS posts (
@@ -25,4 +25,29 @@ const createTable = async () => {
     console.log("Function ended");
 };
 
-createTable();
+const createCommentsTable = async () => {
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        CREATE TABLE IF NOT EXISTS comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            post_id INTEGER REFERENCES posts(id),
+            created_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP
+        )
+    `;
+
+    try {
+        await execute(db, sql)
+        console.log("Create table succesfully");
+    } catch (error) {
+        console.log("Error creating table", error);
+    } finally {
+        db.close();
+    };
+
+    console.log("Function ended");
+};
+
+createCommentsTable();

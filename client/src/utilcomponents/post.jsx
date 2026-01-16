@@ -41,7 +41,7 @@ export function Post ({postInfo}) {
         return () => {};
     }, [isScrolling])
 
-    let {id, name, recipient, feelings, message, created_at} = postInfo;
+    let { name, recipient, feelings, message, created_at} = postInfo;
     const timeStamp = new Date(created_at);
     const formattedDate = timeStamp.toLocaleDateString("en-US", {
         month: "short",
@@ -71,8 +71,21 @@ export function Post ({postInfo}) {
         "--left-position": `${Math.round(Math.random() * 160) - 80}px`
     };
 
+
+    //? Handle button click on .post
+    const handlePostClick = () => {
+        states.setAppStates(true, false, "post-screen", {
+                                                        id: postInfo.id,
+                                                        name: postInfo.name,
+                                                        recipient: postInfo.recipient,
+                                                        feelings: postInfo.feelings,
+                                                        message: postInfo.message,
+                                                        created_at: postInfo.created_at
+                                                    });
+    };
+
     return (
-        <div className="post" style = {spawnPositionRef.current} ref = {postRef}>
+        <div className="post" style = {spawnPositionRef.current} ref = {postRef} onClick = {handlePostClick}>
             <div className="post-head">
                 <h2 className="name">{name}</h2>
                 <p className="date">{formattedDate}</p>

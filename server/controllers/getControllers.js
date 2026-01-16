@@ -53,8 +53,15 @@ export const handleGetPosts = async (req, res) => {
 //2026-01-11 01:26:29
     db.close();
 
-    const newEarliestTime = posts[0]["created_at"].replace(" ", "T") + "Z";
-    const newLatestTime = posts[posts.length - 1]["created_at"].replace(" ", "T") + "Z";
+    posts = posts.map(post => {
+        return {
+            ...post,
+            "created_at": post["created_at"].replace(" ", "T") + "Z"
+        };
+    });
+
+    const newEarliestTime = posts[0]["created_at"]
+    const newLatestTime = posts[posts.length - 1]["created_at"]
     const newLatestId = posts[posts.length - 1]["id"];
 
     res.json({
@@ -73,7 +80,7 @@ export const handleGetRandomPosts = async (req, res) => {
     earliest_time = earliest_time.replace("T", " ");
     earliest_time = earliest_time.slice(0, earliest_time.length - 5);
 
-    const posts = await fetchAll(db, `
+    let posts = await fetchAll(db, `
             WITH recent AS (
                 SELECT * 
                 FROM posts
@@ -97,10 +104,42 @@ export const handleGetRandomPosts = async (req, res) => {
 
     db.close();
 
-    const newEarliestTime = posts[0]["created_at"].replace(" ", "T") + "Z";
+    posts = posts.map(post => {
+        return {
+            ...post,
+            "created_at": post["created_at"].replace(" ", "T") + "Z"
+        };
+    });
+
+    const newEarliestTime = posts[0]["created_at"];
 
     res.json({
         posts,
         new_earliest_time: newEarliestTime
     });
+};
+
+export const handleGetComments = async (req, res) => {
+
+    const { post_id } = req.query;
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        SELECT * FROM comments
+            WHERE post_id = ?
+    `;
+
+    let comments = await fetchAll(db, sql, [Number(post_id)]);
+
+    db.close();
+
+    comments = comments.map(comment => {
+        return {
+            ...comment,
+            "created_at": comment["created_at"].replace(" ", "T") + "Z"
+        }
+    })
+
+    res.json(comments);
 };
