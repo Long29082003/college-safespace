@@ -178,6 +178,10 @@
                         }
                     }
                 }
+
+                &:focus {
+                    outline: none;
+                }
             }
 
             .question-three {

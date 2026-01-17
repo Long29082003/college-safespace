@@ -54,6 +54,7 @@
                 .feeling {
                     display: flex;
                     flex-direction: row;
+                    flex-wrap: wrap;
                     column-gap: 9px;
                     font-weight: 500;
                     font-family: "Poppins", sans-serif;

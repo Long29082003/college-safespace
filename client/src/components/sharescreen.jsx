@@ -35,6 +35,12 @@ export function ShareScreen () {
     const tiltingContainer = useRef(null);
     const loadingAnimation = useRef(null);
     const submittedAnimation = useRef(null);
+    const submitForm = useRef(null);
+    const questionOne = useRef(null);
+    const questionTwo = useRef(null);
+    const questionThree = useRef(null);
+    const questionFourth = useRef(null);
+    const questionSubmit = useRef(null);
 
     //? UI rendering
 
@@ -114,34 +120,42 @@ export function ShareScreen () {
 
     //? Handle the clicking of "next", "previous", "expand feelings", "submit" buttons 
     const handleQuestionOneNextButtonClick = () => {
+        questionTwo.current.focus();
         setFormQuestionState("question-two-active");
     };
 
     const handleQuestionTwoPreviousButtonClick = () => {
+        questionOne.current.focus();
         setFormQuestionState("question-one-active");
     };
 
     const handleQuestionTwoNextButtonClick = () => {
+        questionThree.current.focus();
         setFormQuestionState("question-three-active");
     };
 
     const handleQuestionThreePreviousButtonClick = () => {
+        questionTwo.current.focus();
         setFormQuestionState("question-two-active");
     };
 
     const handleQuestionThreeNextButtonClick = () => {
+        questionFourth.current.focus();
         setFormQuestionState("question-four-active");
     };
 
     const handleQuestionFourPreviousButtonClick = () => {
+        questionThree.current.focus();
         setFormQuestionState("question-three-active");
     };
 
     const handleQuestionFourNextButtonClick = () => {
+        questionSubmit.current.focus();
         setFormQuestionState("question-submit-active");
     };
 
     const handleQuestionSubmitPreviousButtonClick = () => {
+        questionFourth.current.focus();
         setFormQuestionState("question-four-active");
     };
 
@@ -192,6 +206,24 @@ export function ShareScreen () {
         loading();
     };
 
+    //? This is to prevent form submission when user press enter in input fields in .share-screen
+    const handleOnKeyDown = (event) => {
+        if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
+            event.preventDefault();
+        };
+    };
+
+    //? If user press "Enter" in questions, change to the next state
+    const handleKeyDownOnQuestions = (event) => {
+        if (event.key !== "Enter") return;
+
+        if (formQuestionState === "question-one-active") setFormQuestionState("question-two-active");
+        else if (formQuestionState === "question-two-active") setFormQuestionState("question-three-active");
+        else if (formQuestionState === "question-three-active") setFormQuestionState("question-four-active");
+        else if (formQuestionState === "question-four-active" && event.target.tagName !== "TEXTAREA") setFormQuestionState("question-submit-active");
+        else if (formQuestionState === "question-submit-active" && textInTextArea.length > 5) submitForm.current.requestSubmit();
+    }
+
     const handleExit = () => {
         states.setAppStates(false, true, null);
         setTimeout(() => {
@@ -223,8 +255,8 @@ export function ShareScreen () {
             </div>
 
             <div className="tilting-container" ref = {tiltingContainer}>
-                <form action={handleFormPostSubmit}>
-                    <div className="question-one">
+                <form action={handleFormPostSubmit} onKeyDown = {handleOnKeyDown} ref = {submitForm}>
+                    <div className="question-one" tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionOne}>
                         <h1>You will be remembered as</h1>
                         <input type="text" name = "name" placeholder = "Anonymous"/>
                         <div className="questions-button-container">
@@ -233,7 +265,7 @@ export function ShareScreen () {
                         </div>
                     </div>
 
-                    <div className="question-two">
+                    <div className="question-two" tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionTwo}>
                         <h1>This message is addressed to</h1>
                         <input type="text" name = "to" placeholder = "The multiverse"/>
                         <div className="questions-button-container">
@@ -242,7 +274,7 @@ export function ShareScreen () {
                         </div>
                     </div>
 
-                    <div className = {clsx("question-three", showHiddenFeelingsContainer ? "show-hidden" : "")}>
+                    <div className = {clsx("question-three", showHiddenFeelingsContainer ? "show-hidden" : "")} tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionThree}>
                         <h1>Right now, I am feeling</h1>
                         <div className="feelings-container">
                             {displayFeelingsList()}
@@ -263,7 +295,7 @@ export function ShareScreen () {
                         </div>
                     </div>
 
-                    <div className="question-four">
+                    <div className="question-four" tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionFourth}>
                         <h1>Write your message</h1>
                         <textarea name = "message" onInput = {handleTextAreaInput}/>
                         <div className="questions-button-container">
@@ -272,7 +304,7 @@ export function ShareScreen () {
                         </div>
                     </div>
 
-                    <div className="question-submit">
+                    <div className="question-submit" tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionSubmit}>
                         <h1>Whoever you are, your voice is heard</h1>
                         <div className="status-animations-container">
                             <div className="submitted-animation-container">

@@ -1,8 +1,10 @@
 //* Leo has "calm" emotion that does not have in feelingsChip
 //Todo For comments section, every time activePostInPostScreen changes, use useEffect to fetch relevant comments ✅
-//Todo When user press "Enter" in sharescreen, prevent submitting form. Also find a way to let people write paragraphs in message
-//Todo Display something when there is no post (can use derived state)
-//Todo Create a comment button, maybe work on the back end of submitting comment too
+//Todo When user press "Enter" in sharescreen, prevent submitting form. Also find a way to let people write paragraphs in message ✅
+//Todo Display something when there is no post (can use derived state) ✅
+//Todo Create a comment button, maybe work on the back end of submitting comment too: WIP
+//Todo Add function to automatically adjust the textarea height bases on user's input
+//Todo Add the second question in comment form
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
 
@@ -25,6 +27,9 @@ export function PostScreen () {
     const postScreen = useRef(null);
     const messageContainer = useRef(null);
 
+    //? Derived state
+    const numberOfComments = comments.length;
+
     //? Fetch new comments every time activePostInPostScreen change
     useEffect(() => {
         async function fetchPostComments () {
@@ -35,7 +40,7 @@ export function PostScreen () {
                 setComments(data);
             } else {
                 console.log("Internal server error")
-            }
+            };
         };
 
         if (id) fetchPostComments();
@@ -43,6 +48,10 @@ export function PostScreen () {
 
     //? Rendering comment;
     const displayComments = () => {
+        if (numberOfComments === 0) {
+            return <div className="no-comment-notice">No comment on this post yet</div>
+        };
+
         return comments.map(comment => {
             return <Comment commentInfo = {comment}/>
         });
@@ -143,7 +152,22 @@ export function PostScreen () {
                 </div>
 
                 <div className="full-post-comment">
-                    <h2>Comments</h2>
+                    <div className="head">
+                        <h2>Comments</h2>
+                        <span className="comment-number">{numberOfComments}</span>
+                    </div>
+
+                    <form className="user-comment-form">
+                        <div className="input-container">
+                            <p>Enter your comment</p>
+                            <textarea name="comment" rows = "1"></textarea>
+                        </div>
+                        <div className="buttons-container" style = {textColorStyle}>
+                            <Button>Next</Button>
+                            <Button>Submit</Button>
+                        </div>
+                    </form>
+
                     <div className="comments-container">
                         {displayComments()}
                     </div>
