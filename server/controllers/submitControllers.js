@@ -30,3 +30,11 @@ export async function handlePostSubmit (req, res) {
     res.json({message: "data received succesfully"})
 
 };
+
+
+export async function handleCommentSubmit (req, res) {
+
+    const { commentText, commentorName } = req.body;
+    console.log(commentText, commentorName);
+
+};

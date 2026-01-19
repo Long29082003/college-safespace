@@ -3,8 +3,9 @@
 //Todo When user press "Enter" in sharescreen, prevent submitting form. Also find a way to let people write paragraphs in message ✅
 //Todo Display something when there is no post (can use derived state) ✅
 //Todo Create a comment button, maybe work on the back end of submitting comment too: WIP
-//Todo Add function to automatically adjust the textarea height bases on user's input
+//Todo Add function to automatically adjust the textarea height bases on user's input ✅
 //Todo Add the second question in comment form
+import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
 
@@ -19,6 +20,10 @@ export function PostScreen () {
     const states = useContext(States);
     const { activePostInPostScreen, setAppStates } = states;
     const [ comments, setComments ] = useState([]);
+    const [ commentFormState, setCommentFormState ] = useState("question-one");
+    const [ userCommentBoxText, setUserCommentBoxText ] = useState("");
+    const [ userCommentNameText, setUserCommentNameText ] = useState("");
+    const [ commentSubmitLoadingState, setCommentSubmitLoadingState ] = useState(null);
 
     const [ messageAnimationProgress, setMessageAnimationProgress ] = useState(0);
     let { id, name, recipient, feelings, message, created_at } = activePostInPostScreen;
@@ -26,9 +31,19 @@ export function PostScreen () {
     //? Refs
     const postScreen = useRef(null);
     const messageContainer = useRef(null);
+    const questionTwo = useRef(null);
+    const commentForm = useRef(null);
 
-    //? Derived state
+    //? Derived state/function
     const numberOfComments = comments.length;
+    const decideIfButtonEnabled = () => {
+        if (commentFormState === "question-one") {
+            return userCommentBoxText.length > 0;
+        } else if (commentFormState === "question-two") {
+            return userCommentBoxText.length > 0 && userCommentNameText.length > 0;
+        };
+    };
+    const canClickButton = decideIfButtonEnabled();
 
     //? Fetch new comments every time activePostInPostScreen change
     useEffect(() => {
@@ -108,10 +123,57 @@ export function PostScreen () {
         let progress = ( scrollTop + offSetEntry - messageContainerOriginalPosition ) / (messageContainerRect.height + offSetEntry + offSetExit);
         progress = clamp(0, 1, progress);
 
-        // console.log("1: ", offSetExit);
-        // console.log("Progess: ", progress * 100);
         setMessageAnimationProgress(progress * 100);
     };
+
+    const updateUserCommentText = (event) => {
+        setUserCommentBoxText(event.currentTarget.value);
+    };
+
+    const updateUserNameText = (event) => {
+        setUserCommentNameText(event.currentTarget.value);
+    };
+
+    const handleCommentNextButton = () => {
+        const commentFormSpec = commentForm.current.getBoundingClientRect();
+        const questionTwoSpec = questionTwo.current.getBoundingClientRect();
+
+        commentForm.current.style.height = `${commentFormSpec.height}px`;
+        commentForm.current.offsetHeight;
+
+        commentForm.current.style.height = `${commentFormSpec.height + questionTwoSpec.height + 20}px`;
+        setCommentFormState("question-two");
+    };
+
+    const handleCommentSubmit = () => {
+        setCommentSubmitLoadingState("loading");
+
+        const loading = async () => {
+            const response = await fetch("/api/submit/comment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "commentText": userCommentBoxText,
+                    "commentorName": userCommentNameText
+                })
+            });
+
+            console.log("Comment submitted");
+        }
+
+        loading();
+    };
+
+    const handleCommentButtonClick = () => {
+        if (commentFormState === "question-one") {
+            return canClickButton ? handleCommentNextButton() : null;
+        } else if (commentFormState === "question-two") {
+            return canClickButton ? handleCommentSubmit() : null;
+        };
+    };
+
 
     const handleExit = () => {
         postScreen.current.scrollTo({
@@ -157,14 +219,36 @@ export function PostScreen () {
                         <span className="comment-number">{numberOfComments}</span>
                     </div>
 
-                    <form className="user-comment-form">
+                    <form className={clsx("user-comment-form", `${commentFormState}-active`)} ref = {commentForm}>
                         <div className="input-container">
-                            <p>Enter your comment</p>
-                            <textarea name="comment" rows = "1"></textarea>
+                            <div className="question-one">
+                                <p>1. Enter your comment</p>
+                                <textarea 
+                                    name="comment" 
+                                    rows = "1" 
+                                    value = {userCommentBoxText} 
+                                    onInput = {updateUserCommentText}
+                                ></textarea>
+                            </div>
+                            <div className="question-two" ref = {questionTwo}>
+                                <p>2. You will be seen as</p>
+                                <input 
+                                    name = "commentor" 
+                                    type="text" 
+                                    value = {userCommentNameText}
+                                    onInput = {updateUserNameText}
+                                />
+                            </div>
                         </div>
-                        <div className="buttons-container" style = {textColorStyle}>
-                            <Button>Next</Button>
-                            <Button>Submit</Button>
+
+                        <div 
+                            className={clsx("button-container", canClickButton ? "button-enabled" : "button-disabled")} 
+                            style = {{"--text-color": canClickButton ? textColor : "rgb(146, 141, 141)"}}
+                        >
+                            <Button 
+                                type = "button" 
+                                callback = {handleCommentButtonClick}
+                            >{commentFormState === "question-one" ? "Next" : "Submit"}</Button>
                         </div>
                     </form>
 
