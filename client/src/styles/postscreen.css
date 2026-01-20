@@ -112,6 +112,7 @@
             }
 
             .user-comment-form {
+                overflow: hidden;
                 margin-top: 30px;
                 width: 100%;
                 height: auto;
@@ -122,7 +123,8 @@
                 /* On mobile, change flex-direction to column and justify-content to space-between */
                 padding: 25px 34px;
                 border-radius: 5px;
-                transition: height 1000ms cubic-bezier(0.09, 1.18, 1, 1);
+                transition: height 1000ms cubic-bezier(0.09, 1.18, 1, 1),
+                            padding 1000ms cubic-bezier(0.09, 1.18, 1, 1);
 
                 .input-container {
                     width: 85%;
@@ -189,6 +191,9 @@
                 
                 .button-container {
                     transform: translateY(2px);
+                    display: flex;
+                    flex-direction: column;
+                    /* Flex-direction: row when on mobile */
 
                     .button-hover-area {
                         height: 45px;
@@ -209,6 +214,32 @@
                                     background-color: var(--text-color);
                                 }
                             }
+                        }
+                    }
+
+                    .animations-container {
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 140px;
+                        height: 120px;
+                        overflow: hidden;
+                        
+                        .loading-animation-container {
+                            position: absolute;
+                            transform: translateY(80%);
+                            opacity: 0;
+                            transition: transform 500ms ease,
+                                        opacity 600ms ease;
+                        }
+
+                        .submitted-animation-container {
+                            position: absolute;
+                            transform: translateY(-100%);
+                            opacity: 0;
+                            transition: transform 500ms ease,
+                                        opacity 600ms ease;
                         }
                     }
                 }
@@ -286,7 +317,7 @@
 /* ----------------------------------------------------------------------- */
 /* .question-two appear when questionFormState is "question-two */
 /* ----------------------------------------------------------------------- */
-.post-screen .full-post .full-post-comment .user-comment-form.question-two-active .input-container  {
+.post-screen .full-post .full-post-comment .user-comment-form.question-two-active .input-container {
     .question-two {
         z-index: 1;
         top: 100%;
@@ -294,3 +325,20 @@
     }
 }
 
+
+/* ----------------------------------------------------------------------- */
+/* .loading-animation-container goes up when in loading state */
+/* ----------------------------------------------------------------------- */
+.post-screen .full-post .full-post-comment .user-comment-form.loading .button-container .animations-container {
+    .loading-animation-container {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.post-screen .full-post .full-post-comment .user-comment-form.submitted .button-container .animations-container {
+    .submitted-animation-container {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

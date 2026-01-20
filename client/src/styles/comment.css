@@ -28,3 +28,17 @@
         font-weight: 500;
     }
 }
+
+.comment.filler {
+    clip-path: polygon(50% 0, 50% 0, 50% 100%, 50% 100%);
+    animation: commentAppear 1200ms ease forwards 800ms;
+}
+
+@keyframes commentAppear {
+    to {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+
+

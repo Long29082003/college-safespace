@@ -2,9 +2,11 @@
 //Todo For comments section, every time activePostInPostScreen changes, use useEffect to fetch relevant comments ✅
 //Todo When user press "Enter" in sharescreen, prevent submitting form. Also find a way to let people write paragraphs in message ✅
 //Todo Display something when there is no post (can use derived state) ✅
-//Todo Create a comment button, maybe work on the back end of submitting comment too: WIP
 //Todo Add function to automatically adjust the textarea height bases on user's input ✅
-//Todo Add the second question in comment form
+//Todo Add the second question in comment form ✅
+//Todo Add loading animation when user submit comment and pop up animation of new comment after comment got submitted
+//Todo Find a way to open the comment window again after user press on another post.
+//Todo Work on the back end of submitting comment too: WIP
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
@@ -12,6 +14,7 @@ import { States } from "../App.jsx";
 import { Button } from "../utilcomponents/button.jsx";
 import { Comment } from "../utilcomponents/comment.jsx";
 
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { feelingsColors } from "../utilcomponents/feelingchips.js";
 import "../styles/postscreen.css";
 
@@ -33,6 +36,8 @@ export function PostScreen () {
     const messageContainer = useRef(null);
     const questionTwo = useRef(null);
     const commentForm = useRef(null);
+    const loadingAnimation = useRef(null);
+    const submittedAnimation = useRef(null);
 
     //? Derived state/function
     const numberOfComments = comments.length;
@@ -48,10 +53,17 @@ export function PostScreen () {
     //? Fetch new comments every time activePostInPostScreen change
     useEffect(() => {
         async function fetchPostComments () {
+            resetCommentForm();
             const response = await fetch(`/api/get/comment?post_id=${id}`);
             
             if (response.ok) {
-                const data = await response.json();
+                let data = await response.json();
+                data = data.map(comment => {
+                    return {
+                        ...comment,
+                        filler: false
+                    };
+                });
                 setComments(data);
             } else {
                 console.log("Internal server error")
@@ -134,6 +146,44 @@ export function PostScreen () {
         setUserCommentNameText(event.currentTarget.value);
     };
 
+    const resetCommentForm = () => {
+        commentForm.current.style.height = "auto";
+        commentForm.current.style.paddingTop = "25px";
+        commentForm.current.style.paddingBottom = "25px";
+        setCommentFormState("question-one");
+        setUserCommentBoxText("");
+        setUserCommentNameText("");
+        setCommentSubmitLoadingState(null);
+    };
+
+    const collapseCommentForm = () => {
+        const commentFormSpec = commentForm.current.getBoundingClientRect();
+
+        commentForm.current.style.height = `${commentFormSpec.height}px`;
+        commentForm.current.offsetHeight;
+
+        commentForm.current.style.height = "0px";
+        commentForm.current.style.paddingTop = "0px";
+        commentForm.current.style.paddingBottom = "0px";
+    };
+
+    const addFillerComment = (fillerCommentData) => {
+        setComments(prev => {
+            const copyOfComments = [...prev];
+            const date = new Date();
+            console.log(date.toJSON());
+            const fillerComment = {
+                                    id: "N/A",
+                                    name: fillerCommentData.commentorName,
+                                    message: fillerCommentData.commentText,
+                                    created_at: date.toJSON(),
+                                    filler: true
+                                  }
+            copyOfComments.unshift(fillerComment);
+            return copyOfComments;
+        });
+    };
+
     const handleCommentNextButton = () => {
         const commentFormSpec = commentForm.current.getBoundingClientRect();
         const questionTwoSpec = questionTwo.current.getBoundingClientRect();
@@ -147,6 +197,7 @@ export function PostScreen () {
 
     const handleCommentSubmit = () => {
         setCommentSubmitLoadingState("loading");
+        loadingAnimation.current.play();
 
         const loading = async () => {
             const response = await fetch("/api/submit/comment", {
@@ -156,11 +207,25 @@ export function PostScreen () {
                 },
                 body: JSON.stringify({
                     "commentText": userCommentBoxText,
-                    "commentorName": userCommentNameText
+                    "commentorName": userCommentNameText,
+                    "postId": id
                 })
             });
 
-            console.log("Comment submitted");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (response.ok) {
+                const data = await response.json();
+                submittedAnimation.current.play();
+                setCommentSubmitLoadingState("submitted");
+                
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                collapseCommentForm();
+                addFillerComment(data);
+            } else {
+                setCommentSubmitLoadingState("submit-failed");
+                console.log("Comment submit unsuccessfully");
+            }
         }
 
         loading();
@@ -219,7 +284,10 @@ export function PostScreen () {
                         <span className="comment-number">{numberOfComments}</span>
                     </div>
 
-                    <form className={clsx("user-comment-form", `${commentFormState}-active`)} ref = {commentForm}>
+                    <form 
+                        className={clsx("user-comment-form", `${commentFormState}-active`, commentSubmitLoadingState)} 
+                        ref = {commentForm}
+                    >
                         <div className="input-container">
                             <div className="question-one">
                                 <p>1. Enter your comment</p>
@@ -249,6 +317,32 @@ export function PostScreen () {
                                 type = "button" 
                                 callback = {handleCommentButtonClick}
                             >{commentFormState === "question-one" ? "Next" : "Submit"}</Button>
+
+                            <div className="animations-container">
+
+                                <div className="loading-animation-container">
+                                    <DotLottieReact
+                                        src="lottie-animation/comment-loading-animation.lottie"
+                                        loop
+                                        style = {{width: 160, height: 130}}
+                                        dotLottieRefCallback={(dotLottie) => {
+                                            loadingAnimation.current = dotLottie;
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="submitted-animation-container">
+                                    <DotLottieReact
+                                        src="lottie-animation/submit_complete_animation.lottie"
+                                        loop = {false}
+                                        style={{width: 110, height: 110}}
+                                        dotLottieRefCallback={(dotLottie) => {
+                                            submittedAnimation.current = dotLottie;
+                                        }}
+                                    />
+                                </div>
+
+                            </div>
                         </div>
                     </form>
 

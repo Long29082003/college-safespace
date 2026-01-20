@@ -34,7 +34,26 @@ export async function handlePostSubmit (req, res) {
 
 export async function handleCommentSubmit (req, res) {
 
-    const { commentText, commentorName } = req.body;
-    console.log(commentText, commentorName);
+    let { commentText, commentorName, postId } = req.body;
+    commentText = commentText.trim();
+    commentorName = commentorName.trim();
 
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        INSERT INTO comments 
+        (name, message, post_id) VALUES
+        (?, ?, ?)
+    `
+
+    try {
+        await execute(db, sql, [commentText, commentorName, postId]);
+        console.log("Submit comment successfully");  
+        res.json({ commentText, commentorName, postId }); 
+    } catch (error) {
+        console.log("Error submitting comment");
+        res.status(501).json({message: "Internal server error!"})
+    } finally {
+        db.close();
+    };
 };
