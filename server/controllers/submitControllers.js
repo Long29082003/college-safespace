@@ -57,3 +57,27 @@ export async function handleCommentSubmit (req, res) {
         db.close();
     };
 };
+
+
+export async function handleSubmitReaction (req, res) {
+
+    const { type, postId } = req.body;
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        INSERT INTO reactions 
+        (type, post_id) VALUES 
+        (?, ?)
+    `;
+
+    try {
+        await execute(db, sql, [type, postId]);
+        res.json({message: "Reaction submit successfully"});
+    } catch (error) {
+        console.log("Error connecting to database");
+        res.status(501).json({message: "Error connecting to database"});
+    } finally {
+        db.close();
+    };
+};

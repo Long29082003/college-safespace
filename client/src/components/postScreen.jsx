@@ -4,9 +4,13 @@
 //Todo Display something when there is no post (can use derived state) ✅
 //Todo Add function to automatically adjust the textarea height bases on user's input ✅
 //Todo Add the second question in comment form ✅
-//Todo Add loading animation when user submit comment and pop up animation of new comment after comment got submitted
-//Todo Find a way to open the comment window again after user press on another post.
-//Todo Work on the back end of submitting comment too: WIP
+//Todo Add loading animation when user submit comment and pop up animation of new comment after comment got submitted ✅
+//Todo Find a way to open the comment window again after user press on another post. ✅
+//Todo Work on the back end of submitting comment too: WIP ✅
+//Todo Find a way to make the reactions stick only over a certain scrolling range ✅
+//Todo Add some animation when user press the reactions icon
+//Todo Fetch reactions data for each individual posts
+//Todo Hover over reactions will display how many reactions each category has
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
@@ -35,7 +39,11 @@ export function PostScreen () {
     const postScreen = useRef(null);
     const messageContainer = useRef(null);
     const questionTwo = useRef(null);
+    const reactions = useRef(null);
     const commentForm = useRef(null);
+    const smallLikeAnimation = useRef(null); 
+    const likeAnimation = useRef(null);
+    const loveAnimation = useRef(null);
     const loadingAnimation = useRef(null);
     const submittedAnimation = useRef(null);
 
@@ -53,7 +61,16 @@ export function PostScreen () {
     //? Fetch new comments every time activePostInPostScreen change
     useEffect(() => {
         async function fetchPostComments () {
+            //? Reset comment form before fetching comments
             resetCommentForm();
+            //? Set smallLikeAnimation to frame 91 so that the icon has thumb ups
+            smallLikeAnimation.current.setFrame(91);
+            //? Run post reactions animation one time before fetching comments
+            setTimeout(() => {
+                likeAnimation.current.play();
+                loveAnimation.current.play();              
+            }, 1000)
+
             const response = await fetch(`/api/get/comment?post_id=${id}`);
             
             if (response.ok) {
@@ -146,7 +163,14 @@ export function PostScreen () {
         setUserCommentNameText(event.currentTarget.value);
     };
 
+    const collapseReactions = () => {
+        reactions.current.style.height = "0px";
+        reactions.current.style.boxShadow = "unset";
+    };
+
     const resetCommentForm = () => {
+        reactions.current.style.height = "166px";
+        reactions.current.style.boxShadow = "0px 0px 1px 1px rgb(143, 143, 143)";
         commentForm.current.style.height = "auto";
         commentForm.current.style.paddingTop = "25px";
         commentForm.current.style.paddingBottom = "25px";
@@ -193,6 +217,37 @@ export function PostScreen () {
 
         commentForm.current.style.height = `${commentFormSpec.height + questionTwoSpec.height + 20}px`;
         setCommentFormState("question-two");
+    };
+
+    const handleLikeReactionSubmit = async () => {
+        console.log("long")
+        likeAnimation.current.setFrame(0);
+        likeAnimation.current.play();
+
+        try {
+            const response = await fetch(`/api/submit/reaction`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    type: "like",
+                    postId: id
+                })
+            });
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                collapseReactions();
+            } else {
+                console.log("Rollback");
+            };
+        } catch (error) {
+            console.log("Error connecting to the server");
+        };
     };
 
     const handleCommentSubmit = () => {
@@ -252,7 +307,8 @@ export function PostScreen () {
         <div className="post-screen" onScroll = {handleOnScroll} ref = {postScreen}>
 
             <div className="full-post" style = {backgroundColorStyle}>
-                <div className="full-post-utils"></div>
+                <div className="full-post-utils">
+                </div>
 
                 <div className="full-post-header">
                     <div className="main-info-container">
@@ -260,14 +316,65 @@ export function PostScreen () {
                             <div className="name">From {name}</div>
                             <div className="recipient">to {recipient}</div>
                         </div>
-                        <div className="date">{created_at}</div>
+                        <div className="date-reactions-container">
+                            <div className="date">{created_at}</div>
+                            <div className="reactions-count">
+                                <div className="small-reactions">
+                                    <DotLottieReact
+                                        key="small-like-anim"
+                                        src="lottie-animation/comment-like-animation.lottie"
+                                        style={{width: 80, height: 80, zIndex: "2"}}
+                                        segment={[0, 105]}
+                                        dotLottieRefCallback={(dotLottie) => {
+                                            smallLikeAnimation.current = dotLottie;
+                                        }}
+                                    />
+                                    <DotLottieReact
+                                        src="lottie-animation/comment-love-animation.lottie"
+                                        style={{width: 80, height: 80, zIndex: "1", transform: "translateX(-60px)"}}
+                                    />
+                                </div>
+                                <p className="count">100</p>
+                            </div>
+                        </div>
                     </div>
                     <div className="feelings">
                         {displayFeelings()}
                     </div>
                 </div>
 
-                <div className="full-post-message" style = {{"--animation-progress": `${messageAnimationProgress}%`}} ref = {messageContainer}>
+                <div 
+                    className="full-post-message" 
+                    style = {{"--animation-progress": `${messageAnimationProgress}%`}} 
+                    ref = {messageContainer}
+                >
+                    <div className="scrollable-range">
+                        <div className="reactions-container">
+                            <div className="reactions" ref = {reactions}> 
+                                <div className="like-animation-container">
+                                    <DotLottieReact
+                                        key="like-anim"
+                                        src="lottie-animation/comment-like-animation.lottie"
+                                        dotLottieRefCallback={(dotLottie) => {
+                                            likeAnimation.current = dotLottie;
+                                        }}
+                                        segment={[0, 105]}
+                                        onClick={handleLikeReactionSubmit}
+                                    />
+                                </div>
+                                <div className="love-animation-container">
+                                    <DotLottieReact
+                                        src="lottie-animation/comment-love-animation.lottie"
+                                        dotLottieRefCallback={(dotLottie) => {
+                                            loveAnimation.current = dotLottie;
+                                        }}
+                                        speed={0.35}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <span style = {textColorStyle}>
                         {/* {message} */}
                         Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.

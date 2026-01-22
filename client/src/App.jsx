@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
 import { Background } from "./components/background.jsx";
@@ -26,8 +26,16 @@ export function App() {
                                                               });
 
   //? useEffect to check if user tab out;
+  const latestActiveScreen = useRef(null);
+
+  useEffect(() => {
+    latestActiveScreen.current = activeScreen;
+  }, [activeScreen])
+
   useEffect(() => {
     const handleVisibilityChange = () => {
+      if (latestActiveScreen.current) return;
+      
       if (document.hidden) {
         setIsScrolling(false);
       } else {
@@ -36,7 +44,9 @@ export function App() {
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange)
-    return () => {};
+    return () => {
+      document,removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const displayClasses = () => {

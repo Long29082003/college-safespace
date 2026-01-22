@@ -7,8 +7,7 @@ const logTable = async () => {
 
     const sql = `
                 SELECT *
-                FROM comments
-                    ORDER BY created_at DESC, id DESC
+                FROM reactions
             `;
 
     const res = await fetchAll(db, sql);
