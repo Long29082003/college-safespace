@@ -8,15 +8,20 @@
 //Todo Find a way to open the comment window again after user press on another post. ✅
 //Todo Work on the back end of submitting comment too: WIP ✅
 //Todo Find a way to make the reactions stick only over a certain scrolling range ✅
-//Todo Add some animation when user press the reactions icon
-//Todo Fetch reactions data for each individual posts
+//Todo Add some animation when user press the reactions icon ✅
+//Todo Creat a get reactions from the back end ✅
+//Todo Fetch reactions data for each individual posts ✅
+//Todo Update reactionsCount when user press on reactions ✅
 //Todo Hover over reactions will display how many reactions each category has
+//Todo Change the img into background-img so you can control the size of the layout
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
 
 import { Button } from "../utilcomponents/button.jsx";
 import { Comment } from "../utilcomponents/comment.jsx";
+import Confetti from "react-confetti";  
+
 
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { feelingsColors } from "../utilcomponents/feelingchips.js";
@@ -27,10 +32,12 @@ export function PostScreen () {
     const states = useContext(States);
     const { activePostInPostScreen, setAppStates } = states;
     const [ comments, setComments ] = useState([]);
+    const [ reactionsCount, setReactionsCount ] = useState(null);
     const [ commentFormState, setCommentFormState ] = useState("question-one");
     const [ userCommentBoxText, setUserCommentBoxText ] = useState("");
     const [ userCommentNameText, setUserCommentNameText ] = useState("");
     const [ commentSubmitLoadingState, setCommentSubmitLoadingState ] = useState(null);
+    const [ playConfetti, setPlayConfetti ] = useState(false);
 
     const [ messageAnimationProgress, setMessageAnimationProgress ] = useState(0);
     let { id, name, recipient, feelings, message, created_at } = activePostInPostScreen;
@@ -41,7 +48,6 @@ export function PostScreen () {
     const questionTwo = useRef(null);
     const reactions = useRef(null);
     const commentForm = useRef(null);
-    const smallLikeAnimation = useRef(null); 
     const likeAnimation = useRef(null);
     const loveAnimation = useRef(null);
     const loadingAnimation = useRef(null);
@@ -61,16 +67,6 @@ export function PostScreen () {
     //? Fetch new comments every time activePostInPostScreen change
     useEffect(() => {
         async function fetchPostComments () {
-            //? Reset comment form before fetching comments
-            resetCommentForm();
-            //? Set smallLikeAnimation to frame 91 so that the icon has thumb ups
-            smallLikeAnimation.current.setFrame(91);
-            //? Run post reactions animation one time before fetching comments
-            setTimeout(() => {
-                likeAnimation.current.play();
-                loveAnimation.current.play();              
-            }, 1000)
-
             const response = await fetch(`/api/get/comment?post_id=${id}`);
             
             if (response.ok) {
@@ -87,7 +83,36 @@ export function PostScreen () {
             };
         };
 
-        if (id) fetchPostComments();
+        async function fetchPostReactions () {
+            const response = await fetch(`/api/get/reaction?post_id=${id}`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const likeReaction = data.find(reaction => reaction.type === "like");
+                const loveReaction = data.find(reaction => reaction.type === "love");
+                const likeCount = likeReaction && likeReaction["number_of_reactions"] || 0;
+                const loveCount = loveReaction && loveReaction["number_of_reactions"] || 0;
+                setReactionsCount({
+                    like: likeCount,
+                    love: loveCount    
+                });
+            } else {
+                console.log("Internal server error");
+            };
+        };
+
+        if (id) {
+            //? Reset comment form before fetching comments
+            resetCommentForm();
+            //? Run post reactions animation one time before fetching comments
+            setTimeout(() => {
+                likeAnimation.current.play();
+                loveAnimation.current.play();              
+            }, 500)
+
+            fetchPostComments()
+            fetchPostReactions();
+        };
     }, [activePostInPostScreen]);
 
     //? Rendering comment;
@@ -174,6 +199,7 @@ export function PostScreen () {
         commentForm.current.style.height = "auto";
         commentForm.current.style.paddingTop = "25px";
         commentForm.current.style.paddingBottom = "25px";
+        setPlayConfetti(false);
         setCommentFormState("question-one");
         setUserCommentBoxText("");
         setUserCommentNameText("");
@@ -195,7 +221,6 @@ export function PostScreen () {
         setComments(prev => {
             const copyOfComments = [...prev];
             const date = new Date();
-            console.log(date.toJSON());
             const fillerComment = {
                                     id: "N/A",
                                     name: fillerCommentData.commentorName,
@@ -219,35 +244,55 @@ export function PostScreen () {
         setCommentFormState("question-two");
     };
 
-    const handleLikeReactionSubmit = async () => {
-        console.log("long")
-        likeAnimation.current.setFrame(0);
-        likeAnimation.current.play();
-
-        try {
-            const response = await fetch(`/api/submit/reaction`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    type: "like",
-                    postId: id
-                })
-            });
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                collapseReactions();
-            } else {
-                console.log("Rollback");
-            };
-        } catch (error) {
-            console.log("Error connecting to the server");
+    const handleReactionSubmit = (reactionPressed) => {
+        if (reactionPressed === "like") {
+            likeAnimation.current.setFrame(0);
+            likeAnimation.current.play();       
+        } else if (reactionPressed === "love") {
+            loveAnimation.current.setFrame(0);
+            loveAnimation.current.play();      
         };
+
+        const loading = async () => {
+            try {
+                const response = await fetch(`/api/submit/reaction`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        type: reactionPressed,
+                        postId: id
+                    })
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                if (response.ok) {
+                    setPlayConfetti(true);
+                    collapseReactions();
+                    setReactionsCount(prev => {
+                        if (reactionPressed === "like") {
+                            return {
+                                ...prev,
+                                like: prev.like + 1
+                            };
+                        } else if (reactionPressed === "love") {
+                            return {
+                                ...prev,
+                                love: prev.love + 1
+                            };
+                        };
+                    });
+                } else {
+                    console.log("Rollback");
+                };
+            } catch (error) {
+                console.log("Error connecting to the server");
+            };
+        }
+
+        loading();
     };
 
     const handleCommentSubmit = () => {
@@ -294,6 +339,21 @@ export function PostScreen () {
         };
     };
 
+    const displayConfetti = () => {
+        const reactionsSpec = reactions.current.getBoundingClientRect();
+        const { scrollTop, scrollWidth, scrollHeight } = postScreen.current;
+        return (
+            <Confetti 
+                numberOfPieces = {100}
+                width = {scrollWidth}
+                height = {scrollHeight}
+                recycle = {false}
+                confettiSource = {{x: reactionsSpec.left + reactionsSpec.width / 2, y: scrollTop + reactionsSpec.top}}
+                tweenDuration = {500}
+                onConfettiComplete={() => setPlayConfetti(false)}
+            />
+        );
+    };
 
     const handleExit = () => {
         postScreen.current.scrollTo({
@@ -320,21 +380,20 @@ export function PostScreen () {
                             <div className="date">{created_at}</div>
                             <div className="reactions-count">
                                 <div className="small-reactions">
-                                    <DotLottieReact
-                                        key="small-like-anim"
-                                        src="lottie-animation/comment-like-animation.lottie"
-                                        style={{width: 80, height: 80, zIndex: "2"}}
-                                        segment={[0, 105]}
-                                        dotLottieRefCallback={(dotLottie) => {
-                                            smallLikeAnimation.current = dotLottie;
-                                        }}
-                                    />
-                                    <DotLottieReact
-                                        src="lottie-animation/comment-love-animation.lottie"
-                                        style={{width: 80, height: 80, zIndex: "1", transform: "translateX(-60px)"}}
-                                    />
+                                    <img src="lottie-animation/like-reaction-img.png" alt="image of thumbs up icon" />
+                                    <img src="lottie-animation/love-reaction-img.png" alt="image of a heart icon" />
                                 </div>
-                                <p className="count">100</p>
+                                <p className="count">{reactionsCount ? Object.values(reactionsCount).reduce((acc, count) => acc + count) : ""}</p>
+                                <div className="counts-detail">
+                                    <div className="type">
+                                        <img src="lottie-animation/like-reaction-img.png" alt="image of thumbs up icon" />
+                                        <p>{reactionsCount ? reactionsCount["like"] : 0}</p>
+                                    </div>
+                                    <div className="type">
+                                        <img src="lottie-animation/love-reaction-img.png" alt="image of a heart icon" />
+                                        <p>{reactionsCount ? reactionsCount["love"] : 0}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -359,7 +418,7 @@ export function PostScreen () {
                                             likeAnimation.current = dotLottie;
                                         }}
                                         segment={[0, 105]}
-                                        onClick={handleLikeReactionSubmit}
+                                        onClick={() => handleReactionSubmit("like")}
                                     />
                                 </div>
                                 <div className="love-animation-container">
@@ -369,6 +428,7 @@ export function PostScreen () {
                                             loveAnimation.current = dotLottie;
                                         }}
                                         speed={0.35}
+                                        onClick = {() => handleReactionSubmit("love")}
                                     />
                                 </div>
                             </div>
@@ -458,6 +518,8 @@ export function PostScreen () {
                     </div>
                 </div>
             </div>
+
+            {playConfetti ? displayConfetti() : null}
 
             <Button id = "page-exit-button" callback = {() => handleExit()}>X</Button>
         </div>

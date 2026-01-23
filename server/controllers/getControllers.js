@@ -143,3 +143,27 @@ export const handleGetComments = async (req, res) => {
 
     res.json(comments);
 };
+
+export const handleGetReactions = async (req, res) => {
+
+    const { post_id } = req.query;
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        SELECT type, COUNT(id) as number_of_reactions
+            FROM reactions
+            WHERE post_id = ?
+            GROUP BY type
+    `
+
+    try {
+        const result = await fetchAll(db, sql, [post_id]);
+        res.json(result);
+    } catch (error) {
+        console.log("Failed to connect to database");
+        res.status(501).json({message: "Cannot connect to database"});
+    } finally {
+        db.close();
+    };
+};
