@@ -86,29 +86,37 @@
                             position: absolute;
                             top: 70%;
                             left: 0;
-                            width: 100px;
+                            width: 95px;
                             background-color: white;
                             clip-path: polygon(30% 0, 46% 15%, 100% 15%, 100% 100%, 0 100%, 0 15%, 15% 15%);
                             display: flex;
                             flex-direction: column;
-                            align-items: center;
                             border-radius: 10px;   
-                            padding-top: 5%;
+                            padding-top: 7px;
 
                             .type {
+                                padding-left: 10px;
                                 display: flex;
                                 flex-direction: row;
                                 align-items: center;
                                 transform: translate(-8px, 5px);
 
-                                img {
+                                .like-icon {
                                     width: 50px;
-                                    height: 50px;
+                                    height: 45px;
+                                    background-image: url("lottie-animation/like-reaction-img.png");
+                                    background-repeat: no-repeat;
+                                    background-position: center;
+                                    background-size: cover;
+                                }
 
-                                    /* &:nth-of-type(1) {
-                                        height: 60px;
-                                        height: 58px;
-                                    } */
+                                .love-icon {
+                                    width: 50px;
+                                    height: 45px;
+                                    background-image: url("lottie-animation/love-reaction-img.png");
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    background-size: cover;
                                 }
 
                                 p {
@@ -190,7 +198,8 @@
                         border-radius: 100vw;
                         background-color: white;
                         box-shadow: 0px 0px 1px 1px rgb(143, 143, 143);
-                        transition: height 1000ms cubic-bezier(0.09, 1.18, 1, 1);
+                        transition: height 1000ms cubic-bezier(0.09, 1.18, 1, 1),
+                                    background-color 500ms ease;
 
                         .like-animation-container, .love-animation-container {
                             display: flex;

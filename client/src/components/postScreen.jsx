@@ -37,7 +37,9 @@ export function PostScreen () {
     const [ userCommentBoxText, setUserCommentBoxText ] = useState("");
     const [ userCommentNameText, setUserCommentNameText ] = useState("");
     const [ commentSubmitLoadingState, setCommentSubmitLoadingState ] = useState(null);
+    const [ showReactionsDetail, setShowReactionsDetail ] = useState(false);
     const [ playConfetti, setPlayConfetti ] = useState(false);
+    const [ disableReactions, setDisableReactions ] = useState(false);
 
     const [ messageAnimationProgress, setMessageAnimationProgress ] = useState(0);
     let { id, name, recipient, feelings, message, created_at } = activePostInPostScreen;
@@ -52,6 +54,8 @@ export function PostScreen () {
     const loveAnimation = useRef(null);
     const loadingAnimation = useRef(null);
     const submittedAnimation = useRef(null);
+
+    const reactionJustPressed = useRef(null);
 
     //? Derived state/function
     const numberOfComments = comments.length;
@@ -188,6 +192,14 @@ export function PostScreen () {
         setUserCommentNameText(event.currentTarget.value);
     };
 
+    const handleMouseEnterReactionsDetail = () => {
+        setShowReactionsDetail(true);
+    };
+
+    const handleMouseLeaveReactionsDetail = () => {
+        setShowReactionsDetail(false);
+    };
+
     const collapseReactions = () => {
         reactions.current.style.height = "0px";
         reactions.current.style.boxShadow = "unset";
@@ -204,6 +216,7 @@ export function PostScreen () {
         setUserCommentBoxText("");
         setUserCommentNameText("");
         setCommentSubmitLoadingState(null);
+        setDisableReactions(false);
     };
 
     const collapseCommentForm = () => {
@@ -245,6 +258,8 @@ export function PostScreen () {
     };
 
     const handleReactionSubmit = (reactionPressed) => {
+        reactionJustPressed.current = reactionPressed;
+        setDisableReactions(true);
         if (reactionPressed === "like") {
             likeAnimation.current.setFrame(0);
             likeAnimation.current.play();       
@@ -355,6 +370,19 @@ export function PostScreen () {
         );
     };
 
+    const returnReactionsStyle = () => {
+        if (reactionJustPressed.current === "like") return {backgroundColor: "rgb(204, 222, 232)"};
+        else if (reactionJustPressed.current === "love") return {backgroundColor: "rgb(226, 201, 226)"};
+    };
+
+    const likeAnimationContainerStyle = {
+        backgroundColor: reactionJustPressed.current === "like" ? "white" : "rgb(238, 238, 244)"
+    };
+
+    const loveAnimationContainerStyle = {
+        backgroundColor: reactionJustPressed.current === "love" ? "white" : "rgb(238, 237, 240)"
+    };
+
     const handleExit = () => {
         postScreen.current.scrollTo({
             top: 0,
@@ -378,22 +406,26 @@ export function PostScreen () {
                         </div>
                         <div className="date-reactions-container">
                             <div className="date">{created_at}</div>
-                            <div className="reactions-count">
+                            <div 
+                                className="reactions-count" 
+                                onMouseEnter = {handleMouseEnterReactionsDetail} 
+                                onMouseLeave = {handleMouseLeaveReactionsDetail}
+                            >
                                 <div className="small-reactions">
                                     <img src="lottie-animation/like-reaction-img.png" alt="image of thumbs up icon" />
                                     <img src="lottie-animation/love-reaction-img.png" alt="image of a heart icon" />
                                 </div>
                                 <p className="count">{reactionsCount ? Object.values(reactionsCount).reduce((acc, count) => acc + count) : ""}</p>
-                                <div className="counts-detail">
+                                {showReactionsDetail ? <div className="counts-detail">
                                     <div className="type">
-                                        <img src="lottie-animation/like-reaction-img.png" alt="image of thumbs up icon" />
+                                        <div className="like-icon"></div>
                                         <p>{reactionsCount ? reactionsCount["like"] : 0}</p>
                                     </div>
                                     <div className="type">
-                                        <img src="lottie-animation/love-reaction-img.png" alt="image of a heart icon" />
+                                        <div className="love-icon"></div>
                                         <p>{reactionsCount ? reactionsCount["love"] : 0}</p>
                                     </div>
-                                </div>
+                                </div> : null}
                             </div>
                         </div>
                     </div>
@@ -409,26 +441,24 @@ export function PostScreen () {
                 >
                     <div className="scrollable-range">
                         <div className="reactions-container">
-                            <div className="reactions" ref = {reactions}> 
-                                <div className="like-animation-container">
+                            <div className="reactions" ref = {reactions} style = {disableReactions ? returnReactionsStyle() : null}> 
+                                <div className="like-animation-container" style = {disableReactions ? likeAnimationContainerStyle : null}>
                                     <DotLottieReact
-                                        key="like-anim"
                                         src="lottie-animation/comment-like-animation.lottie"
                                         dotLottieRefCallback={(dotLottie) => {
                                             likeAnimation.current = dotLottie;
                                         }}
-                                        segment={[0, 105]}
-                                        onClick={() => handleReactionSubmit("like")}
+                                        onClick={() => disableReactions ? null : handleReactionSubmit("like")}
                                     />
                                 </div>
-                                <div className="love-animation-container">
+                                <div className="love-animation-container" style = {disableReactions ? loveAnimationContainerStyle : null}>
                                     <DotLottieReact
                                         src="lottie-animation/comment-love-animation.lottie"
                                         dotLottieRefCallback={(dotLottie) => {
                                             loveAnimation.current = dotLottie;
                                         }}
                                         speed={0.35}
-                                        onClick = {() => handleReactionSubmit("love")}
+                                        onClick = {() => disableReactions ? null : handleReactionSubmit("love")}
                                     />
                                 </div>
                             </div>
