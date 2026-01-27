@@ -1,4 +1,3 @@
-import { getDbConnection } from "../database/getDbConnection.js";
 import sqlite3 from "sqlite3";
 import { fetchAll } from "../database/wrapper-functions.js";
 import path from "node:path"

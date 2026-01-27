@@ -12,8 +12,8 @@
 //Todo Creat a get reactions from the back end ✅
 //Todo Fetch reactions data for each individual posts ✅
 //Todo Update reactionsCount when user press on reactions ✅
-//Todo Hover over reactions will display how many reactions each category has
-//Todo Change the img into background-img so you can control the size of the layout
+//Todo Hover over reactions will display how many reactions each category has ✅
+//Todo Change the img into background-img so you can control the size of the layout ✅
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";

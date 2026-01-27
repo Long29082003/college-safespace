@@ -1,0 +1,145 @@
+.dashboard-screen {
+    position: absolute;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: -100%;
+    border: unset;
+    transition: top 1200ms cubic-bezier(0, 0, 0.4, 1);
+
+    .dashboard {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: white;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+
+        .stats {
+            padding: 0px 30px;
+            margin-top: 150px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            column-gap: 35px;
+
+            .stat {
+                height: 120px;
+                width: 300px;
+                border-radius: 12px;
+                padding: 10px 15px;
+                border: 3px solid black;
+
+                .head {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    h2 {
+                        font-family: "Raleway", sans-serif;
+                        font-weight: 600;
+                        font-size: 25px;
+                    }
+
+                    .total {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+
+                        .count {
+                            font-family: "Poppins", sans-serif;
+                            font-size: 22px;
+                            font-weight: 600;
+                            line-height: 25px;
+
+                            &.posts {
+                                color: rgb(127, 206, 234);
+                            }
+
+                            &.reactions {
+                                color: rgb(250, 172, 254);
+                            }
+
+                            &.comments {
+                                color: rgb(158, 225, 160)
+                            }
+                        }
+
+                        .text {
+                            font-family: "Raleway", sans-serif;
+                            font-size: 18px;
+                            font-weight: 400;
+                        }
+                    }
+                }
+
+                .detail {
+                    margin-top: 10px;
+                    display: flex;
+                    flex-direction: column;
+
+                    p {
+                        font-family: "Poppins", sans-serif;
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    #enter-button-hover-area {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        .button-container {
+            border-radius: unset;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+
+            #enter-button {
+                width: 250px;
+                height: 48px;
+                border-radius: unset;
+                font-weight: 600;
+            
+                &::after {
+                    border-radius: unset;
+                }
+            }
+        }
+    }
+
+    #exit-button-hover-area {
+        position: fixed;
+        top: 15px;
+        right: -150px;
+        transition: right 1700ms ease;
+
+        .button-container {
+            #exit-button {
+                width: 70px;
+                height: 70px;
+                border: 2px solid black;
+            }
+        }
+    }
+}
+
+/* ----------------------------------------------------------------------- */
+/* When there's .dashboard-screen-active class .dashboard-screen going up */
+/* ----------------------------------------------------------------------- */
+.dashboard-screen-active .dashboard-screen {
+    top: 0%;
+}
+
+.dashboard-screen-active .dashboard-screen #exit-button-hover-area {
+    right: 15px;
+}

@@ -1,7 +1,7 @@
 import "../styles/button.css";
 import {useRef} from "react";
 
-export function Button ({children, callback, id = "", type = "button"}) {
+export function Button ({children, callback, id = "", type = "button", hoverEffect = true}) {
     const buttonContainer = useRef(null);
 
     const handleOnMouseMove = (event) => {
@@ -19,7 +19,7 @@ export function Button ({children, callback, id = "", type = "button"}) {
     };
 
     return (
-        <div className="button-hover-area" id = {`${id}-hover-area`} onMouseMove = {handleOnMouseMove} onMouseLeave = {handleOnMouseLeave}>
+        <div className="button-hover-area" id = {`${id}-hover-area`} onMouseMove = {hoverEffect ? handleOnMouseMove : null} onMouseLeave = {handleOnMouseLeave}>
             <div className="button-container" ref = {buttonContainer}>
                 <button type = {type} id = {id} onClick = {callback}>{children}</button>
             </div>
