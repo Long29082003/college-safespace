@@ -123,5 +123,6 @@ export const feelingsColors = [
     { feeling: "Relieved",   bgColor: "#E6F4EA", textColor: "#4F8F5D" },
     { feeling: "Motivated",  bgColor: "#EEF6F1", textColor: "#4A7F63" },
     { feeling: "Inspired",   bgColor: "#F4F1FA", textColor: "#6B5CA5" }
-]
+];
+
 

@@ -9,6 +9,7 @@
     transition: top 1200ms cubic-bezier(0, 0, 0.4, 1);
 
     .dashboard {
+        padding: 30px;
         position: absolute;
         top: 0;
         left: 0;
@@ -18,73 +19,86 @@
         border-bottom-left-radius: 20px;
         border-bottom-right-radius: 20px;
 
+        h1 {
+            font-family: "Cairo", sans-serif;
+            font-size: 45px;
+            font-weight: 500;
+        }
+
         .stats {
-            padding: 0px 30px;
-            margin-top: 150px;
             display: flex;
             flex-direction: row;
-            align-items: center;
+            flex-wrap: wrap;
+            align-items: flex-start;
             column-gap: 35px;
+            row-gap: 15px;
 
-            .stat {
-                height: 120px;
-                width: 300px;
-                border-radius: 12px;
-                padding: 10px 15px;
-                border: 3px solid black;
+            .stats-container {
+                display: flex;
+                flex-direction: column;
+                row-gap: 20px;
 
-                .head {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
+                .stat {
+                    height: 120px;
+                    width: 300px;
+                    padding: 10px 15px;
 
-                    h2 {
-                        font-family: "Raleway", sans-serif;
-                        font-weight: 600;
-                        font-size: 25px;
+
+                    .head {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding-bottom: 2px;
+                        border-bottom: 2px solid black;
+
+                        h2 {
+                            font-family: "Raleway", sans-serif;
+                            font-weight: 600;
+                            font-size: 25px;
+                        }
+
+                        .total {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-end;
+
+                            .count {
+                                font-family: "Poppins", sans-serif;
+                                font-size: 22px;
+                                font-weight: 600;
+                                line-height: 25px;
+
+                                &.posts {
+                                    color: rgb(127, 206, 234);
+                                }
+
+                                &.reactions {
+                                    color: rgb(250, 172, 254);
+                                }
+
+                                &.comments {
+                                    color: rgb(158, 225, 160)
+                                }
+                            }
+
+                            .text {
+                                font-family: "Raleway", sans-serif;
+                                font-size: 18px;
+                                font-weight: 400;
+                            }
+                        }
                     }
 
-                    .total {
+                    .detail {
+                        margin-top: 10px;
                         display: flex;
                         flex-direction: column;
-                        align-items: flex-end;
 
-                        .count {
+                        p {
                             font-family: "Poppins", sans-serif;
-                            font-size: 22px;
-                            font-weight: 600;
-                            line-height: 25px;
-
-                            &.posts {
-                                color: rgb(127, 206, 234);
-                            }
-
-                            &.reactions {
-                                color: rgb(250, 172, 254);
-                            }
-
-                            &.comments {
-                                color: rgb(158, 225, 160)
-                            }
-                        }
-
-                        .text {
-                            font-family: "Raleway", sans-serif;
                             font-size: 18px;
-                            font-weight: 400;
                         }
-                    }
-                }
-
-                .detail {
-                    margin-top: 10px;
-                    display: flex;
-                    flex-direction: column;
-
-                    p {
-                        font-family: "Poppins", sans-serif;
-                        font-size: 18px;
                     }
                 }
             }

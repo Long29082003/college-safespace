@@ -15,3 +15,4 @@ export const tilting = (event, ref, translateScale, rotateScale) => {
                                                 translateX(${translateXPixel}px)
                                                 translateY(${translateYPixel}px)`;
 };
+
