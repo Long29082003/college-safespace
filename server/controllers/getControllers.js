@@ -2,6 +2,8 @@ import sqlite3 from "sqlite3";
 import { fetchAll } from "../database/wrapper-functions.js";
 import path from "node:path"
 
+import { convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
+
 export const handleGetPosts = async (req, res) => {
     
     const db = new sqlite3.Database(path.join("database", "database.db"));
@@ -12,10 +14,8 @@ export const handleGetPosts = async (req, res) => {
     else limit = Number(limit);
     
     if (earliest_time) {
-        earliest_time = earliest_time.replace("T", " ");
-        latest_time = latest_time.replace("T", " ");
-        earliest_time = earliest_time.slice(0, earliest_time.length - 5);
-        latest_time = latest_time.slice(0, latest_time.length - 5);
+        earliest_time = convertUTCStringToDbTime(earliest_time);
+        latest_time = convertUTCStringToDbTime(latest_time);
     };
     if (latest_id) latest_id = Number(latest_id);
 
@@ -55,7 +55,7 @@ export const handleGetPosts = async (req, res) => {
     posts = posts.map(post => {
         return {
             ...post,
-            "created_at": post["created_at"].replace(" ", "T") + "Z"
+            "created_at": convertDbTimeToUTCString(post["created_at"])
         };
     });
 
@@ -76,8 +76,7 @@ export const handleGetRandomPosts = async (req, res) => {
 
     let { earliest_time, limit } = req.query;
 
-    earliest_time = earliest_time.replace("T", " ");
-    earliest_time = earliest_time.slice(0, earliest_time.length - 5);
+    earliest_time = convertUTCStringToDbTime(earliest_time);
 
     let posts = await fetchAll(db, `
             WITH recent AS (
@@ -106,7 +105,7 @@ export const handleGetRandomPosts = async (req, res) => {
     posts = posts.map(post => {
         return {
             ...post,
-            "created_at": post["created_at"].replace(" ", "T") + "Z"
+            "created_at": convertDbTimeToUTCString(post["created_at"])
         };
     });
 
@@ -136,7 +135,7 @@ export const handleGetComments = async (req, res) => {
     comments = comments.map(comment => {
         return {
             ...comment,
-            "created_at": comment["created_at"].replace(" ", "T") + "Z"
+            "created_at": convertDbTimeToUTCString(comment["created_at"])
         }
     })
 

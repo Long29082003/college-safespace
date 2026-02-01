@@ -39,7 +39,6 @@
                 row-gap: 20px;
 
                 .stat {
-                    height: 120px;
                     width: 300px;
                     padding: 10px 15px;
 
@@ -98,6 +97,97 @@
                         p {
                             font-family: "Poppins", sans-serif;
                             font-size: 18px;
+                        }
+                    }
+                }
+
+                .reactions {
+
+                    h3 {
+                        font-family: "Poppins", sans-serif;
+                        font-weight: 400;
+
+                        &::before {
+                            content: "•";
+                            margin-right: 5px;
+                        }
+                    }
+
+                    .type-count {
+                        display: flex;
+                        flex-direction: column;
+                        row-gap: 8px;
+
+                        .react-count {
+                            padding-left: 15px;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            justify-content: space-between;
+                            
+                            .like-icon-image {
+                                width: 20px;
+                                height: 20px;
+                                background-image: url("/lottie-animation/like-reaction-img.png");
+                                background-repeat: no-repeat;
+                                background-position: center;
+                                background-size: cover;
+                                background-size: 270%;
+                            }
+
+                            .love-icon-image {
+                                width: 20px;
+                                height: 20px;
+                                background-image: url("/lottie-animation/love-reaction-img.png");
+                                background-repeat: no-repeat;
+                                background-position: center;
+                                background-size: cover;
+                                background-size: 250%;
+                            }
+
+                            .count {
+                                font-family: "Poppins", sans-serif;
+                                font-size: 16px;
+                            }
+                        }
+                    }
+
+                    .most-reacted-post-container {
+                        margin-top: 5px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .most-reacted-count {
+                            font-size: 17px;
+                            font-weight: 500;
+                        }
+                    }
+                }
+
+                .comments {
+
+                    h3 {
+                        font-family: "Poppins", sans-serif;
+                        font-weight: 400;
+                        max-width: 80%;
+
+                        &::before {
+                            content: "•";
+                            margin-right: 5px;
+                        }
+                    }
+
+                    .most-commented-post-container {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .most-commented-count {
+                            font-size: 17px;
+                            font-weight: 500;
                         }
                     }
                 }

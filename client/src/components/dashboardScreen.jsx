@@ -14,17 +14,37 @@ export function DashboardScreen () {
     const [ posts, setPosts ] = useState(null);
     const [ totalPost, setTotalPost ] = useState("--");
     const [ feelingCategoriesCount, setFeelingCategoriesCount ] = useState(null);
-    // console.log(feelingCategoriesCount);
+    const [ reactionSummary, setReactionSummary ] = useState(null);
+    const [ commentsSummary, setCommentsSummary ] = useState(null);
+
+    //? Derived State:
+    const totalReaction = reactionSummary && reactionSummary["reactionsByType"]["like"] && reactionSummary["reactionsByType"]["love"] ? 
+                          reactionSummary["reactionsByType"]["like"] + reactionSummary["reactionsByType"]["love"] : "--";   
+    const mostReactionCount = reactionSummary && reactionSummary["mostReactedPost"]["reaction_number"] || "--";   
+    const likeReactionCount = reactionSummary && reactionSummary["reactionsByType"]["like"] || "--";
+    const loveReactionCount = reactionSummary && reactionSummary["reactionsByType"]["love"] || "--";
+    const totalComments = commentsSummary && commentsSummary["total"] || "--";
+    const mostCommentCount = commentsSummary && commentsSummary["mostCommentedPost"]["comment_count"] || "--";
+    
 
     //? Fetch Data 
     useEffect(() => {
         const loading = async () => {
             try {
-                const result = await fetch("/api/dashboard/postinfo");
-                const data = await result.json();
-                setPosts(data["posts"]);
-                setTotalPost(data["total-post"]);
-                setFeelingCategoriesCount(data["feeling-categories-count"]);
+                const [postsResult, reactionsResult, commentsResult ] = await Promise.all([
+                    fetch("/api/dashboard/postinfo"), 
+                    fetch("/api/dashboard/reactioninfo"),
+                    fetch("/api/dashboard/commentinfo")
+                ]);
+                const postsData = await postsResult.json();
+                const reactionsData = await reactionsResult.json();
+                const commentsData =  await commentsResult.json();
+
+                setPosts(postsData["posts"]);
+                setTotalPost(postsData["total-post"]);
+                setFeelingCategoriesCount(postsData["feeling-categories-count"]);
+                setReactionSummary(reactionsData);
+                setCommentsSummary(commentsData);
             } catch (error) {
                 console.log("Cannot connect to the server");
             };
@@ -63,28 +83,46 @@ export function DashboardScreen () {
                             <div className="head">
                                 <h2>Reactions</h2>
                                 <div className="total">
-                                    <span className = "count reactions">100</span>
+                                    <span className = "count reactions">{totalReaction}</span>
                                     <span className = "text">reaction(s)</span>
                                 </div>
                             </div>
                             <div className="detail">
-                                
+                                <div className="type-count">
+                                    <h3>Types</h3>
+                                    <div className="react-count">
+                                        <div className = "like-icon-image"></div>
+                                        <div className="count">{likeReactionCount}</div>
+                                    </div>
+                                    <div className="react-count">
+                                        <div className = "love-icon-image"></div>
+                                        <div className="count">{loveReactionCount}</div>
+                                    </div>
+                                </div>
+                                <div className="most-reacted-post-container">
+                                    <h3>Most react in a post</h3>
+                                    <p className="most-reacted-count">{mostReactionCount}</p>
+                                </div>
                             </div>
                         </div>
                         <div className="comments stat">
                             <div className="head">
                                 <h2>Comments</h2>
                                 <div className="total">
-                                    <span className = "count comments">30</span>
+                                    <span className = "count comments">{totalComments}</span>
                                     <span className = "text">comment(s)</span>
                                 </div>
                             </div>
                             <div className="detail">
+                                <div className="most-commented-post-container">
+                                    <h3>Most comments in a post</h3>
+                                    <p className="most-commented-count">{mostCommentCount}</p>
+                                </div>
                             </div>
                         </div>  
                     </div>
                     <FeelingCategoryChart feelingCategoriesCount = {feelingCategoriesCount}/>
-                    <PostTimelineChart />
+                    <PostTimelineChart/>
                 </div>
 
                 <div className="posts-display">

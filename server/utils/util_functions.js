@@ -51,6 +51,38 @@ export const sortedCounts = (object) => {
             };
         });
     };
-    console.log(feelingCategoriesCount);
+
     return feelingCategoriesCount;
+};
+
+export const convertDbTimeToUTCString = (string) => {
+    return string.replace(" ", "T") + "Z";
+}
+
+export const convertUTCStringToDbTime = (string) => {
+    const str = string.replace("T", " ");
+    return str.slice(0, str.length - 5);
+};
+
+
+export const countPostOnMonth = (posts) => {
+    if (!posts) throw new Error("Invalid [posts] argument");
+
+    const months = Array.from({length: 12}, (_, index) => {
+      return {
+        month: new Date(0, index).toLocaleString("en-US", {month: "long"}),
+        count: 0
+      };
+    });
+
+    posts.forEach(post => {
+      const UTCDate = convertDbTimeToUTCString(post["created_at"]);
+      const formattedDate = new Date(UTCDate).toLocaleString("en-US", {month: "long"});
+
+      months.forEach((month, index) => {
+        if (month.month === formattedDate) months[index]["count"] += 1 
+      });
+    });
+
+    return months;
 };

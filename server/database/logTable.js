@@ -7,7 +7,7 @@ const logTable = async () => {
 
     const sql = `
                 SELECT *
-                FROM reactions
+                FROM comments
             `;
 
     const res = await fetchAll(db, sql);

@@ -5,7 +5,6 @@ import { useState } from "react";
 import "../styles/feelingcategorychart.css";
 
 export function FeelingCategoryChart({feelingCategoriesCount}) {
-    console.log(feelingCategoriesCount)
     const [ isAnimationActive, setIsAnimationActive ] = useState();
 
     return (

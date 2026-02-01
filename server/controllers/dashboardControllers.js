@@ -3,6 +3,8 @@ import sqlite3 from "sqlite3";
 import path from "node:path";
 import { sortedCounts } from "../utils/util_functions.js";
 
+import { countPostOnMonth } from "../utils/util_functions.js";
+
 export async function handlePostSummarization (req, res) {
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
@@ -16,7 +18,6 @@ export async function handlePostSummarization (req, res) {
         const posts = await fetchAll(db, sql);
 
         let counts = {};
-        counts.hasOwn
         posts.forEach(post => {
             const emotionsList = JSON.parse(post.feelings);
             emotionsList.forEach(emotion => {
@@ -29,10 +30,13 @@ export async function handlePostSummarization (req, res) {
         });
         const sortedFeelingCategoriesCount = sortedCounts(counts);
 
+        const postCountForEachMonth = countPostOnMonth(posts);
+
         res.json({
             "total-post": posts.length,
             "feeling-categories-count": sortedFeelingCategoriesCount,
-            "posts": {...posts}
+            "posts": {...posts},
+            "post-count-for-each-month": postCountForEachMonth
         });
     } catch (error) {
         console.log(error);
@@ -80,6 +84,43 @@ export async function handleReactionSummarization (req, res) {
     } catch (error) {
         console.log("There has been an error connecting to database: ", error);
         res.status(501).json({message: "Error connecting to database"});
+    } finally {
+        db.close();
+    };
+
+};
+
+export async function handleCommentSummarization (req, res) {
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const commentsGroupedByPostSql = `
+        SELECT post_id, COUNT(id) as comment_count
+        FROM comments
+        GROUP BY post_id
+        ORDER BY comment_count DESC
+    `;
+
+    const allCommentsSql = `
+        SELECT COUNT(id) as total FROM comments
+    `;
+
+    try {
+        const [ commentsGroupedByPost, allComments ] = await Promise.all([fetchAll(db, commentsGroupedByPostSql), fetchAll(db, allCommentsSql)]);
+        if (allComments[0]["total"] === 0) res.json({
+                                                mostCommentedPost: {
+                                                    post_id: null,
+                                                    comment_count: "N/A"
+                                                },
+                                                total: 0
+                                            });
+        else res.json({
+            mostCommentedPost: commentsGroupedByPost[0],
+            total: allComments[0]["total"]
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(501).json({message: "Cannot connect to database"});
     } finally {
         db.close();
     };
