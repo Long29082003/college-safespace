@@ -1,0 +1,101 @@
+.more-posts-screen {
+    position: absolute;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: -100%;
+    border: unset;
+    transition: top 1200ms cubic-bezier(0, 0, 0.4, 1);
+    background-color: white;
+
+    .nav-bar {
+        position: relative;
+        width: 100%;
+        height: 12vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 40px;
+        padding-left: 55px;
+        border-bottom: 3px solid var(--main-color);
+
+        .nav {
+            font-family: "Raleway", sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+
+            &:hover {
+                color: rgb(120, 119, 119);
+                cursor: pointer;
+                text-decoration: underline;
+            }
+
+            &.choosen {
+                text-decoration: underline;
+                pointer-events: none;
+            }
+        }
+
+        #exit-button-hover-area {
+            position: absolute;
+            top: 10px;
+            right: -150px;
+            transition: right 1700ms ease;
+
+            .button-container {
+                #exit-button {
+                    width: 70px;
+                    height: 70px;
+                    border: 2px solid black;
+                }
+            }
+        }
+    }
+
+    .content-container {
+        width: 100%;
+        height: 88vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    #enter-button-hover-area {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        .button-container {
+            border-radius: unset;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+
+            #enter-button {
+                width: 250px;
+                height: 48px;
+                border-radius: unset;
+                font-weight: 600;
+            
+                &::after {
+                    border-radius: unset;
+                }
+            }
+        }
+    }
+}
+
+/* ----------------------------------------------------------------------- */
+/* When there's .more-posts-screen-active class .more-posts-screen going up */
+/* ----------------------------------------------------------------------- */
+.is-hiding-scrolling .more-posts-screen {
+    top: -130%;
+}
+
+.more-posts-screen-active .more-posts-screen {
+    top: 0%;
+}
+
+.more-posts-screen-active .more-posts-screen .nav-bar #exit-button-hover-area {
+    right: 15px;
+}

@@ -1,0 +1,11 @@
+.more-posts {
+    padding: 30px;
+    padding-top: 15px;
+    width: 100vw;
+
+    h1 {
+        font-family: "Cairo", sans-serif;
+        font-size: 45px;
+        font-weight: 500;
+    }
+}

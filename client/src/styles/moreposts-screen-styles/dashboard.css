@@ -1,0 +1,194 @@
+.dashboard {
+    padding: 30px;
+    padding-top: 15px;
+    width: 100vw;
+    
+    h1 {
+        font-family: "Cairo", sans-serif;
+        font-size: 45px;
+        font-weight: 500;
+    }
+
+    .stats {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        column-gap: 35px;
+        row-gap: 15px;
+
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+
+            .stat {
+                width: 300px;
+                padding: 10px 15px;
+                transform: translateY(40%);
+                opacity: 0;
+
+                .head {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding-bottom: 2px;
+                    border-bottom: 2px solid black;
+
+                    h2 {
+                        font-family: "Raleway", sans-serif;
+                        font-weight: 600;
+                        font-size: 25px;
+                    }
+
+                    .total {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-end;
+
+                        .count {
+                            font-family: "Poppins", sans-serif;
+                            font-size: 22px;
+                            font-weight: 600;
+                            line-height: 25px;
+
+                            &.posts {
+                                color: rgb(127, 206, 234);
+                            }
+
+                            &.reactions {
+                                color: rgb(250, 172, 254);
+                            }
+
+                            &.comments {
+                                color: rgb(158, 225, 160)
+                            }
+                        }
+
+                        .text {
+                            font-family: "Raleway", sans-serif;
+                            font-size: 18px;
+                            font-weight: 400;
+                        }
+                    }
+                }
+
+                .detail {
+                    margin-top: 10px;
+                    display: flex;
+                    flex-direction: column;
+
+                    p {
+                        font-family: "Poppins", sans-serif;
+                        font-size: 18px;
+                    }
+                }
+            }
+
+            .posts {
+                animation: fadeIn 1000ms ease forwards 0ms;
+            }
+
+            .reactions {
+                animation: fadeIn 1000ms ease forwards 180ms;
+
+                h3 {
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 400;
+
+                    &::before {
+                        content: "•";
+                        margin-right: 5px;
+                    }
+                }
+
+                .type-count {
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 8px;
+
+                    .react-count {
+                        padding-left: 15px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+                        
+                        .like-icon-image {
+                            width: 20px;
+                            height: 20px;
+                            background-image: url("/lottie-animation/like-reaction-img.png");
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-size: cover;
+                            background-size: 270%;
+                        }
+
+                        .love-icon-image {
+                            width: 20px;
+                            height: 20px;
+                            background-image: url("/lottie-animation/love-reaction-img.png");
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-size: cover;
+                            background-size: 250%;
+                        }
+
+                        .count {
+                            font-family: "Poppins", sans-serif;
+                            font-size: 16px;
+                        }
+                    }
+                }
+
+                .most-reacted-post-container {
+                    margin-top: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .most-reacted-count {
+                        font-size: 17px;
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .comments {
+                animation: fadeIn 1000ms ease forwards 300ms;
+
+                h3 {
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 400;
+                    max-width: 80%;
+
+                    &::before {
+                        content: "•";
+                        margin-right: 5px;
+                    }
+                }
+
+                .most-commented-post-container {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .most-commented-count {
+                        font-size: 17px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}

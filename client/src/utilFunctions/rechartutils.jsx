@@ -54,7 +54,7 @@ export const renderActiveShape = (props) => {
         fontSize="16"
         fontWeight="700"
         fontFamily="Poppins" 
-        width={100}    
+        width={50}    
         fill={fill}
       >{category}</Label>
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />

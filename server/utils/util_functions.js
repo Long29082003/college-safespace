@@ -70,14 +70,14 @@ export const countPostOnMonth = (posts) => {
 
     const months = Array.from({length: 12}, (_, index) => {
       return {
-        month: new Date(0, index).toLocaleString("en-US", {month: "long"}),
+        month: new Date(0, index).toLocaleString("en-US", {month: "short"}),
         count: 0
       };
     });
 
     posts.forEach(post => {
       const UTCDate = convertDbTimeToUTCString(post["created_at"]);
-      const formattedDate = new Date(UTCDate).toLocaleString("en-US", {month: "long"});
+      const formattedDate = new Date(UTCDate).toLocaleString("en-US", {month: "short"});
 
       months.forEach((month, index) => {
         if (month.month === formattedDate) months[index]["count"] += 1 

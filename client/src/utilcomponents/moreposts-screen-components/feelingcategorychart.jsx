@@ -1,8 +1,8 @@
-import { renderActiveShape } from "../utilFunctions/rechartutils.jsx";
+import { renderActiveShape } from "../../utilFunctions/rechartutils.jsx";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, Sector, Label } from "recharts";
 import { useState } from "react";
 
-import "../styles/feelingcategorychart.css";
+import "../../styles/moreposts-screen-styles/feelingcategorychart.css";
 
 export function FeelingCategoryChart({feelingCategoriesCount}) {
     const [ isAnimationActive, setIsAnimationActive ] = useState();
@@ -11,14 +11,15 @@ export function FeelingCategoryChart({feelingCategoriesCount}) {
         <div className="feeling-category-chart">
             <h2>Reaction categories</h2>
             <ResponsiveContainer
-                width="450"
+                width="400"
                 height="330"
             >
                 <PieChart
                     margin={{
                         top: 40,
                         left: 30,
-                        right: 30
+                        right: 30,
+                        bottom: 20
                     }}
                     barGap={30}
                 >
@@ -46,7 +47,6 @@ export function FeelingCategoryChart({feelingCategoriesCount}) {
                         iconType="circle"
                         iconSize={7}
                         wrapperStyle={{fontSize:15, fill: "black", height: 100, width: "70%", paddingTop: 30, fontFamily: "Poppins"}}
-                        
                     />
                 </PieChart>
             </ResponsiveContainer>

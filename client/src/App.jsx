@@ -7,7 +7,7 @@ import { MainDisplay } from "./components/maindisplay.jsx";
 import { ShareScreen } from "./components/sharescreen.jsx";
 import { InspirationScreen } from "./components/inspirationscreen.jsx";
 import { PostScreen } from "./components/postScreen.jsx";
-import { DashboardScreen } from "./components/dashboardScreen.jsx";
+import { MorePostsScreen } from "./components/morePostsScreen.jsx";
 
 const States = createContext(null); 
 
@@ -59,7 +59,7 @@ export function App() {
       "share-screen-active": activeScreen === "share-screen",
       "inspiration-screen-active": activeScreen === "inspiration-screen",
       "post-screen-active": activeScreen === "post-screen",
-      "dashboard-screen-active": activeScreen === "dashboard-screen"
+      "more-posts-screen-active": activeScreen === "more-posts-screen"
     })
   };
 
@@ -88,7 +88,7 @@ export function App() {
           <ShareScreen />
           <InspirationScreen />
           <PostScreen />
-          <DashboardScreen />
+          <MorePostsScreen />
         </div>
       </States.Provider>
     </main>
