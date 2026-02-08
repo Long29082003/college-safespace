@@ -35,7 +35,7 @@ export async function handlePostSummarization (req, res) {
         res.json({
             "total-post": posts.length,
             "feeling-categories-count": sortedFeelingCategoriesCount,
-            "posts": {...posts},
+            "posts": posts,
             "post-count-for-each-month": postCountForEachMonth
         });
     } catch (error) {

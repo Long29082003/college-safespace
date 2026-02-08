@@ -12,7 +12,7 @@ import clsx from "clsx";
 export function MorePostsScreen () {
     //? States
     const states = useContext(States);
-    const [ contentToDisplay, setContentToDisplay ] = useState("posts");
+    const [ contentToDisplay, setContentToDisplay ] = useState(null);
 
     const handleDisplayPosts = () => {
         if (contentToDisplay === "posts") return;
@@ -28,11 +28,18 @@ export function MorePostsScreen () {
 
     const handleEnterDashboard = () => {
         states.setAppStates(true, false, "more-posts-screen");
+        setContentToDisplay("posts");
+    };
+
+    const displayContent = () => {
+        if (contentToDisplay === null) return;
+        else if (contentToDisplay === "posts") return <MorePosts/>;
+        else if (contentToDisplay === "summary") return <Dashboard/>
     };
 
     const handleExit = () => {
         states.setAppStates(false, true, null);
-        setTimeout(() => setContentToDisplay("posts"), 1000);
+        setTimeout(() => setContentToDisplay(null), 1000);
     };
     
     return (
@@ -48,7 +55,7 @@ export function MorePostsScreen () {
             </div>
 
             <div className="content-container">
-                {contentToDisplay === "summary" ? <Dashboard /> : <MorePosts/>}
+                {displayContent()}
             </div>
             
             <Button id = "enter-button" hoverEffect = {false} callback = {handleEnterDashboard}>See more posts</Button>

@@ -8,4 +8,12 @@
         font-size: 45px;
         font-weight: 500;
     }
+
+    .posts-container {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 100px;
+    }
 }
