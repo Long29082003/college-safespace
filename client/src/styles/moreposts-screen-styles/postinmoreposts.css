@@ -33,10 +33,56 @@
                 }
             }
 
-            .time {
-                font-size: 30px;
-                font-family: "Aboreto", sans-serif;
-                font-weight: 500;
+            .time-and-reaction-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: flex-end;
+                
+                .time {
+                    font-size: 30px;
+                    font-family: "Aboreto", sans-serif;
+                    font-weight: 500;
+                }
+
+                .reaction-count {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    .small-reactions {
+                        display: flex;
+                        flex-direction: row;
+
+                        .like-icon {
+                            width: 70px;
+                            height: 70px;
+                            background-image: url("lottie-animation/like-reaction-img.png");
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-size: cover;
+                            z-index: 2;
+                            transform: translateX(60px);
+                        }
+
+                        .love-icon {
+                            width: 70px;
+                            height: 70px;
+                            background-image: url("lottie-animation/love-reaction-img.png");
+                            background-position: center;
+                            background-repeat: no-repeat;
+                            background-size: cover;
+                            z-index: 1;
+                            transform: translateX(10px);
+                        }
+                    }
+
+                    p {
+                        font-size: 20px;
+                        font-family: "Poppins", sans-serif;
+                        font-weight: 400;
+                    }
+                }
             }
         }
 

@@ -86,3 +86,15 @@ export const countPostOnMonth = (posts) => {
 
     return months;
 };
+
+export const returnStringOfIds = (listOfIds = []) => {
+    if (listOfIds.length === 0) return;
+
+    let str = "";
+    listOfIds.forEach((id, index) => {
+        if (index === listOfIds.length - 1) str += `${id}`;
+        else str += `${id},`
+    });
+
+    return str;
+};

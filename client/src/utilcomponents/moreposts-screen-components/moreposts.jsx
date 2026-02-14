@@ -1,27 +1,39 @@
-//Todo: Work on joining table at the back end to fetch post and their reactions at the sasme time 
-import { useState, useEffect } from "react";
+//Todo: Work on joining table at the back end to fetch post and their reactions at the sasme time ✅
+//Todo: Disabled button when loading new post
+//Todo: Remove button when already fetch all posts
+import { useState, useEffect, useRef } from "react";
 
 import "../../styles/moreposts-screen-styles/moreposts.css";
 
 import { PostInMorePost } from "./postInMorePost.jsx";
+import { Button } from "../button.jsx";
 
 export function MorePosts () {
-    const [ posts, setPosts ] = useState(null);
+    //? States
+    const [ posts, setPosts ] = useState([]);
 
-    useEffect(() => {
-        const loading = async () => {
-            try {
-                const postsResult = await fetch("/api/dashboard/postinfo");
-                const postsData = await postsResult.json();
-                const posts = postsData["posts"];
-                
-                setPosts(posts);
-            } catch (error) {
-                console.log("Cannot connect to the server");
-            };
+    //? Reference
+    const earliestTime = useRef("");
+    const latestTime = useRef("");
+    const latestId = useRef("");
+    const reachEndDb = useRef(false);
+
+    const fetchMorePostsScreenData = async () => {
+        try {
+            const postsResult = await fetch(`/api/dashboard/postwithreactions?earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}`);
+            const data = await postsResult.json();
+            console.log(data);
+            earliestTime.current = earliestTime.current > new Date(data["earliest_time"]) ? earliestTime.current : new Date(data["earliest_time"]);
+            latestTime.current = new Date(data["latest_time"]);
+            latestId.current = data["latest_id"];
+            setPosts(prev => [...prev, ...data["reaction_added_posts"]]);
+        } catch (error) {
+            console.log("Cannot connect to the server");
         };
-
-        loading()
+    };
+    
+    useEffect(() => {
+        fetchMorePostsScreenData();
     }, []);
 
     const displayPosts = () => {
@@ -34,12 +46,21 @@ export function MorePosts () {
         });
     };
 
+    const handleLoadMoreButtonClick = () => {
+        fetchMorePostsScreenData();
+    };
+
     return (
         <div className="more-posts">
             <h1>Posts</h1>
             <div className="posts-container">
-                {posts ? displayPosts() : null}
+                {posts.length > 0 ? displayPosts() : null}
             </div>
+            <Button 
+                id = "load-more-button" 
+                hoverEffect = {false}
+                callback = {handleLoadMoreButtonClick}    
+            >Load more posts</Button>
         </div>
     );
 };

@@ -17,18 +17,13 @@ export const handleGetPosts = async (req, res) => {
         earliest_time = convertUTCStringToDbTime(earliest_time);
         latest_time = convertUTCStringToDbTime(latest_time);
     };
-    if (latest_id) latest_id = Number(latest_id);
 
-    // console.log("Limit: ", limit);
-    // console.log("Earliest time: ", typeof(earliest_time), earliest_time);
-    // console.log("Latest time: ", typeof(latest_time), latest_time);
-    // console.log("Latest id: ", typeof(latest_id), latest_id);
+    if (latest_id) latest_id = Number(latest_id);
 
     const isFirstFetch = !earliest_time && !latest_time && !latest_id;
     let posts;
 
     if (isFirstFetch) {
-        console.log("is first fetch");
         posts = await fetchAll(db, `
                 SELECT *
                 FROM posts
@@ -36,7 +31,6 @@ export const handleGetPosts = async (req, res) => {
                     LIMIT ?
             `, [limit]);
     } else {
-        console.log("not first fetch");
         posts = await fetchAll(db, `
                 SELECT *
                 FROM posts
@@ -46,10 +40,8 @@ export const handleGetPosts = async (req, res) => {
                     ORDER BY created_at DESC, id DESC
                     LIMIT ? 
             `, [earliest_time, latest_time, latest_id, latest_time, limit]);
-        console.log(posts);
     };
-//2026-01-11 01:26:29.000
-//2026-01-11 01:26:29
+
     db.close();
 
     posts = posts.map(post => {

@@ -59,6 +59,7 @@ export function App() {
       "share-screen-active": activeScreen === "share-screen",
       "inspiration-screen-active": activeScreen === "inspiration-screen",
       "post-screen-active": activeScreen === "post-screen",
+      "post-screen-from-more-posts-active": activeScreen === "post-screen-from-more-posts",
       "more-posts-screen-active": activeScreen === "more-posts-screen"
     })
   };
@@ -81,7 +82,7 @@ export function App() {
       <LoadingScreen 
         buttonOnClick = {enterMain}
       />
-      <States.Provider value = {{isEnterMain, isScrolling, setAppStates, activePostInPostScreen}}>
+      <States.Provider value = {{isEnterMain, isScrolling, activeScreen, setAppStates, activePostInPostScreen}}>
         <div className="main-screen">
           <Background />
           <MainDisplay />

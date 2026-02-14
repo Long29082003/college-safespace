@@ -1,9 +1,9 @@
 import { fetchAll } from "../database/wrapper-functions.js";
 import sqlite3 from "sqlite3";
 import path from "node:path";
-import { sortedCounts } from "../utils/util_functions.js";
+import { sortedCounts, convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
 
-import { countPostOnMonth } from "../utils/util_functions.js";
+import { countPostOnMonth, returnStringOfIds } from "../utils/util_functions.js";
 
 export async function handlePostSummarization (req, res) {
 
@@ -124,5 +124,75 @@ export async function handleCommentSummarization (req, res) {
     } finally {
         db.close();
     };
+};
+
+export async function handleGetPostForMorePostsScreen (req, res) {
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    let { earliest_time, latest_time, latest_id } = req.query;
+
+    const isFirstFetch = !earliest_time || !latest_time || !latest_id;
+    let sql;
+    let posts;
+
+    try {
+        if (isFirstFetch) {
+            sql = `
+                SELECT * FROM posts
+                    ORDER BY created_at DESC
+                    LIMIT 10
+            `;
+            posts = await fetchAll(db, sql);
+        } else {
+            earliest_time = convertUTCStringToDbTime(earliest_time);
+            latest_time = convertUTCStringToDbTime(latest_time);
+            latest_id = Number(latest_id);
+            sql = `
+                SELECT * FROM posts
+                    WHERE created_at > ?
+                    OR (created_at = ? AND id < ?)
+                    OR created_at < ?
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 10
+            `
+            posts = await fetchAll(db, sql, [earliest_time, latest_time, latest_id, latest_time])
+        };
+
+        const newEarliestTime = posts[0]["created_at"]
+        const newLatestTime = posts[posts.length - 1]["created_at"]
+        const newLatestId = posts[posts.length - 1]["id"];
+
+        const listOfIds = posts.map(post => post.id);
+        
+        const postsReactionSql = `
+                SELECT post_id, COUNT(id) as reactions_count
+                FROM reactions
+                WHERE reactions.post_id IN (${returnStringOfIds(listOfIds)})
+                GROUP BY post_id
+            `
+        
+        const postsReaction = await fetchAll(db, postsReactionSql);
+        const reactionsAddedPosts = posts.map(post => {
+            const count = postsReaction.find(postHasReaction => postHasReaction.post_id === post.id) && 
+                            postsReaction.find(postHasReaction => postHasReaction.post_id === post.id)["reactions_count"]
+                            || 0;
+
+            return {
+                ...post,
+                reaction_count: count
+            };
+        });
+        res.json({
+            earliest_time: convertDbTimeToUTCString(newEarliestTime),
+            latest_time: convertDbTimeToUTCString(newLatestTime),
+            latest_id: newLatestId,
+            reaction_added_posts: reactionsAddedPosts
+        });
+
+    } catch (error) {
+        console.log("Error connecting to db");
+        res.status(501).json({message: "Cannot connect to database"})
+    }
 
 };

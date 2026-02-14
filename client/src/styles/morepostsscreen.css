@@ -99,6 +99,15 @@
     top: 0%;
 }
 
+.post-screen-from-more-posts-active .more-posts-screen {
+    top: 0%;
+}
+
 .more-posts-screen-active .more-posts-screen .nav-bar #exit-button-hover-area {
     right: 15px;
 }
+
+/* .post-screen-from-more-posts-active .more-posts-screen .nav-bar #exit-button-hover-area {
+    right: 15px;
+} */
+

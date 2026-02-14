@@ -14,6 +14,7 @@
 //Todo Update reactionsCount when user press on reactions ✅
 //Todo Hover over reactions will display how many reactions each category has ✅
 //Todo Change the img into background-img so you can control the size of the layout ✅
+//Todo Change the react slider so that it will work on full screen too
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
 import { States } from "../App.jsx";
@@ -30,7 +31,7 @@ import "../styles/postscreen.css";
 export function PostScreen () {
     //? States
     const states = useContext(States);
-    const { activePostInPostScreen, setAppStates } = states;
+    const { activeScreen, activePostInPostScreen, setAppStates } = states;
     const [ comments, setComments ] = useState([]);
     const [ reactionsCount, setReactionsCount ] = useState(null);
     const [ commentFormState, setCommentFormState ] = useState("question-one");
@@ -388,7 +389,7 @@ export function PostScreen () {
             top: 0,
             behavior: "smooth"
         });
-        setAppStates(false, true, null);
+        setAppStates(false, true, activeScreen === "post-screen-from-more-posts" ? "more-posts-screen" : null);
     };
 
     return (
@@ -440,7 +441,7 @@ export function PostScreen () {
                     ref = {messageContainer}
                 >
                     <div className="scrollable-range">
-                        <div className="reactions-container">
+                        <div className="reactions-container" style = {{top: activeScreen === "post-screen-from-more-posts" ? "300px": "100px"}}>
                             <div className="reactions" ref = {reactions} style = {disableReactions ? returnReactionsStyle() : null}> 
                                 <div className="like-animation-container" style = {disableReactions ? likeAnimationContainerStyle : null}>
                                     <DotLottieReact
@@ -466,7 +467,10 @@ export function PostScreen () {
                     </div>
 
                     <span style = {textColorStyle}>
-                        {message}
+                        {/* {message} */}
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
                     </span>
                 </div>
 

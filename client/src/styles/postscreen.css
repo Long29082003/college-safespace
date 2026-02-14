@@ -6,8 +6,7 @@
     padding: 200px 0px;
     top: 100%;
     z-index: 3;
-    transition: top 1s ease;
-    z-index: 1;
+    transition: all 1s ease;
 
     .full-post {
         background-color: #EAF4F0;
@@ -170,6 +169,7 @@
             }
 
             .scrollable-range {
+                background-color: red;
                 position: absolute;
                 top: 0px;
                 left: 50%;
@@ -181,7 +181,6 @@
                 .reactions-container {
                     position: sticky;
                     width: 100%;
-                    top: 100px;
 
                     .reactions {
                         transform-origin: center;
@@ -430,10 +429,21 @@
 /* ----------------------------------------------------------------------- */
 .post-screen-active .post-screen {
     top: 0%;
-    z-index: 3;
 }
 
 .post-screen-active .post-screen #page-exit-button-hover-area {
+    right: 30px;
+}
+
+/** Same as above but for turning on post-screen from more-posts-screen */
+/* Remove padding of post-screen if access from more-post-screen */
+.post-screen-from-more-posts-active .post-screen {
+    padding: 0px 0px;
+    top: 0%;
+    z-index: 3;
+}
+
+.post-screen-from-more-posts-active .post-screen #page-exit-button-hover-area {
     right: 30px;
 }
 
