@@ -17,6 +17,11 @@ export function PostInMorePost ({postInfo}) {
         day: "numeric",
         year: "numeric"
     });
+    const formattedTime = timeStamp.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+    });
     
     feelings = JSON.parse(feelings);
 
@@ -50,6 +55,20 @@ export function PostInMorePost ({postInfo}) {
             onMouseEnter = {() => setIsPostHover(true)} 
             onMouseLeave = {() => setIsPostHover(false)}
         >
+            <div className="time-and-info">
+                <div className="time-and-reaction-container">
+                    <div className="time-date">{formattedDate}</div>
+                    <div className="time-hour-min">{formattedTime}</div>
+
+                    <div className="reaction-count">
+                        <div className="small-reactions">
+                            <div className="like-icon"></div>
+                            <div className="love-icon"></div>
+                        </div>
+                        <p className="count">{reaction_count}</p>
+                    </div>
+                </div>
+            </div>
             <div className="container" 
                 style = {isPostHover ? backgroundColorStyle : null}
                 onClick = {handlePostOnClick}
@@ -58,17 +77,6 @@ export function PostInMorePost ({postInfo}) {
                     <div className="persons">
                         <div className="name">From {name}</div>
                         <div className="recipient">To {recipient}</div>
-                    </div>
-                    <div className="time-and-reaction-container">
-                        <div className="time">{formattedDate}</div>
-
-                        <div className="reaction-count">
-                            <div className="small-reactions">
-                                <div className="like-icon"></div>
-                                <div className="love-icon"></div>
-                            </div>
-                            <p className="count">{reaction_count}</p>
-                        </div>
                     </div>
                 </div>
                 <div className="message" style = {isPostHover ? textColorStyle : null} >{message}</div>

@@ -187,7 +187,7 @@ export async function handleGetPostForMorePostsScreen (req, res) {
             earliest_time: convertDbTimeToUTCString(newEarliestTime),
             latest_time: convertDbTimeToUTCString(newLatestTime),
             latest_id: newLatestId,
-            reaction_added_posts: reactionsAddedPosts
+            reaction_added_posts: reactionsAddedPosts,
         });
 
     } catch (error) {

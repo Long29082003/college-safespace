@@ -1,18 +1,89 @@
 .post-in-more-posts {
     position: relative;
     width: max(85%, 400px);
+    display: flex;
+    flex-direction: row;
+
+    .time-and-info {
+        width: 300px;
+
+        .time-and-reaction-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            
+            .time-date {
+                font-size: 30px;
+                font-family: "Aboreto", sans-serif;
+                font-weight: 500;
+            }
+
+            .time-hour-min {
+                font-size: 20px;
+                font-family: "Cairo", sans-serif;
+                font-weight: 400;
+                color: rgb(43, 43, 43);
+            }
+
+            .reaction-count {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                position: relative;
+                transform: translateY(-10px) translateX(-5px);
+
+                .small-reactions {
+                    display: flex;
+                    flex-direction: row;
+                    position: absolute;
+
+                    .like-icon {
+                        position: absolute;
+                        left: -20px;
+                        width: 70px;
+                        height: 70px;
+                        background-image: url("lottie-animation/like-reaction-img.png");
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: cover;
+                        z-index: 2;
+                    }
+
+                    .love-icon {
+                        position: absolute;
+                        left: -2px;
+                        width: 70px;
+                        height: 70px;
+                        background-image: url("lottie-animation/love-reaction-img.png");
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        z-index: 1;
+                    }
+                }
+
+                p {
+                    position: absolute;
+                    top: 20px;
+                    left: 55px;
+                    font-size: 20px;
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 400;
+                }
+            }
+        }
+    }
 
     .container {
         padding: 30px 40px;
+        width: 950px;
         background-color: white;
         border-radius: 20px;
         transition: all 500ms ease;
 
         .header {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            border-bottom: 3px solid black;
+            border-bottom: 2px solid black;
             padding-bottom: 20px;
 
             .persons {
@@ -32,63 +103,11 @@
                     font-weight: 400;
                 }
             }
-
-            .time-and-reaction-container {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: flex-end;
-                
-                .time {
-                    font-size: 30px;
-                    font-family: "Aboreto", sans-serif;
-                    font-weight: 500;
-                }
-
-                .reaction-count {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-
-                    .small-reactions {
-                        display: flex;
-                        flex-direction: row;
-
-                        .like-icon {
-                            width: 70px;
-                            height: 70px;
-                            background-image: url("lottie-animation/like-reaction-img.png");
-                            background-repeat: no-repeat;
-                            background-position: center;
-                            background-size: cover;
-                            z-index: 2;
-                            transform: translateX(60px);
-                        }
-
-                        .love-icon {
-                            width: 70px;
-                            height: 70px;
-                            background-image: url("lottie-animation/love-reaction-img.png");
-                            background-position: center;
-                            background-repeat: no-repeat;
-                            background-size: cover;
-                            z-index: 1;
-                            transform: translateX(10px);
-                        }
-                    }
-
-                    p {
-                        font-size: 20px;
-                        font-family: "Poppins", sans-serif;
-                        font-weight: 400;
-                    }
-                }
-            }
         }
 
         .message {
             margin-top: 30px;
-            font-size: 20px;
+            font-size: 22px;
             font-family: "Raleway", sans-serif;
             font-weight: 400;
             line-height: 27px;

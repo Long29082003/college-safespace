@@ -1,16 +1,22 @@
 //Todo: Work on joining table at the back end to fetch post and their reactions at the sasme time ✅
-//Todo: Disabled button when loading new post
-//Todo: Remove button when already fetch all posts
+//Todo: Remove button when already fetch all posts ✅
+//Todo: Change loading state when load posts ✅
+//Todo: Disabled button when loading new post ✅
+//Todo: Fix the bug that display the wrong date
 import { useState, useEffect, useRef } from "react";
+import clsx from "clsx";
 
 import "../../styles/moreposts-screen-styles/moreposts.css";
 
 import { PostInMorePost } from "./postInMorePost.jsx";
 import { Button } from "../button.jsx";
 
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+
 export function MorePosts () {
     //? States
     const [ posts, setPosts ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
     //? Reference
     const earliestTime = useRef("");
@@ -22,10 +28,14 @@ export function MorePosts () {
         try {
             const postsResult = await fetch(`/api/dashboard/postwithreactions?earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}`);
             const data = await postsResult.json();
-            console.log(data);
+
+            await new Promise(resolve => setTimeout(resolve, 700));
+            setLoading(false);
+            
             earliestTime.current = earliestTime.current > new Date(data["earliest_time"]) ? earliestTime.current : new Date(data["earliest_time"]);
             latestTime.current = new Date(data["latest_time"]);
             latestId.current = data["latest_id"];
+            if (data["latest_id"] === 1) reachEndDb.current = true;
             setPosts(prev => [...prev, ...data["reaction_added_posts"]]);
         } catch (error) {
             console.log("Cannot connect to the server");
@@ -33,6 +43,7 @@ export function MorePosts () {
     };
     
     useEffect(() => {
+        setLoading(true);
         fetchMorePostsScreenData();
     }, []);
 
@@ -47,6 +58,7 @@ export function MorePosts () {
     };
 
     const handleLoadMoreButtonClick = () => {
+        setLoading(true);
         fetchMorePostsScreenData();
     };
 
@@ -56,11 +68,21 @@ export function MorePosts () {
             <div className="posts-container">
                 {posts.length > 0 ? displayPosts() : null}
             </div>
-            <Button 
-                id = "load-more-button" 
-                hoverEffect = {false}
-                callback = {handleLoadMoreButtonClick}    
-            >Load more posts</Button>
+            {reachEndDb.current === false ? 
+            <div className={clsx("loading-container", loading && "loading")}>
+                <Button 
+                    id = "load-more-button" 
+                    hoverEffect = {false}
+                    callback = {handleLoadMoreButtonClick}    
+                >Load more posts</Button>
+                {loading && 
+                <DotLottieReact
+                    src="lottie-animation/more-posts-loading-animation.lottie"
+                    loop
+                    autoplay
+                    style={{width: 500, height: 200, transform: "translateY(-30px) scale(1.1)"}}
+                />}
+            </div> : <h1 className = "notification">All posts fetched</h1>}
         </div>
     );
 };
