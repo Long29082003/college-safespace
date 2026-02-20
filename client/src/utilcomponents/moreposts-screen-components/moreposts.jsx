@@ -2,6 +2,8 @@
 //Todo: Remove button when already fetch all posts ✅
 //Todo: Change loading state when load posts ✅
 //Todo: Disabled button when loading new post ✅
+//Todo: Set up filter functionality using <select> <option> ✅
+//Todo: Finish the back end for default filter and anonymous filter ✅
 //Todo: Fix the bug that display the wrong date
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
@@ -19,6 +21,7 @@ export function MorePosts () {
     const [ loading, setLoading ] = useState(false);
 
     //? Reference
+    const filterState = useRef("default");
     const earliestTime = useRef("");
     const latestTime = useRef("");
     const latestId = useRef("");
@@ -26,7 +29,7 @@ export function MorePosts () {
 
     const fetchMorePostsScreenData = async () => {
         try {
-            const postsResult = await fetch(`/api/dashboard/postwithreactions?earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}`);
+            const postsResult = await fetch(`/api/dashboard/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}`);
             const data = await postsResult.json();
 
             await new Promise(resolve => setTimeout(resolve, 700));
@@ -35,7 +38,7 @@ export function MorePosts () {
             earliestTime.current = earliestTime.current > new Date(data["earliest_time"]) ? earliestTime.current : new Date(data["earliest_time"]);
             latestTime.current = new Date(data["latest_time"]);
             latestId.current = data["latest_id"];
-            if (data["latest_id"] === 1) reachEndDb.current = true;
+            reachEndDb.current = data["reach_end_db"];
             setPosts(prev => [...prev, ...data["reaction_added_posts"]]);
         } catch (error) {
             console.log("Cannot connect to the server");
@@ -57,6 +60,16 @@ export function MorePosts () {
         });
     };
 
+    const handleFilterClick = (filter) => {
+        filterState.current = filter;
+        earliestTime.current = "";
+        latestTime.current = "";
+        latestId.current = "";
+        setLoading(true);
+        setPosts([]);
+        fetchMorePostsScreenData();
+    };
+
     const handleLoadMoreButtonClick = () => {
         setLoading(true);
         fetchMorePostsScreenData();
@@ -64,7 +77,21 @@ export function MorePosts () {
 
     return (
         <div className="more-posts">
-            <h1>Posts</h1>
+            <div className="header">
+                <h1>Posts</h1>
+                <div className="utils-bar">
+                    <select name="select-filter">
+                        <button>
+                            <selectedcontent></selectedcontent>
+                        </button>
+
+                        <option value="sort-by-time" onClick = {() => handleFilterClick("default")}>Newest to oldest</option>
+                        <option value="sort-by-anonymous" onClick = {() => handleFilterClick("anonymous_filter")}>Anonymous</option>
+                        <option value="sort-by-react">Most reacted</option>
+                        <option value="randomized-sort">Randomized</option>
+                    </select>
+                </div>
+            </div>
             <div className="posts-container">
                 {posts.length > 0 ? displayPosts() : null}
             </div>

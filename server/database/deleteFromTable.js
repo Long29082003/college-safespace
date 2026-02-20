@@ -7,7 +7,7 @@ const deleteFromTable = async () => {
 
     const sql = `
         DELETE FROM posts
-            WHERE id >= 39
+            WHERE id IN(51,52)
     `;
 
     try {

@@ -3,10 +3,106 @@
     padding-top: 15px;
     width: 100vw;
 
-    h1 {
-        font-family: "Cairo", sans-serif;
-        font-size: 45px;
-        font-weight: 500;
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        h1 {
+            font-family: "Cairo", sans-serif;
+            font-size: 45px;
+            font-weight: 500;
+            padding-left: 25px;
+        }
+
+        .utils-bar {
+            display: flex;
+            align-items: center;
+            padding-right: 30px;
+
+            select, ::picker(select) {
+                appearance: base-select;
+            }
+
+            select {
+                width: 220px;
+                padding: 8px 15px;
+                border: 2px solid rgb(116, 116, 116);
+                transition: background-color 500ms ease;
+
+                button {
+                    font-family: "Poppins", sans-serif;
+                    font-size: 20px;
+                    display: flex;
+                }
+
+                &::picker-icon {
+                    transform-origin: 50% 50%;
+                    transition: transform 500ms ease;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                }
+
+                &:open::picker-icon {
+                    transform: rotate(180deg);
+                }
+
+                &:hover {
+                    background-color: plum;
+                }
+            }
+
+            ::picker(select) {
+                border: unset;
+                border-radius: 8px;
+                background-color: transparent;
+            }
+
+            option {
+                height: 40px;
+                background-color: white;
+                border: 2px solid rgb(202, 202, 202);
+                font-family: "Poppins", sans-serif;
+                font-size: 17px;
+                transition: background-color 500ms ease;
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 15px;
+
+                &:first-of-type {
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
+
+                &:last-of-type {
+                    border-bottom-left-radius: 8px;
+                    border-bottom-right-radius: 8px;
+                }
+
+                &:not(&:last-of-type) {
+                    border-bottom: none;
+                }
+
+                &:hover {
+                    background-color: plum;
+                }
+
+                &:focus {
+                    background-color: plum;
+                }
+
+                &:checked {
+                    font-weight: 600;
+                }
+
+                &::checkmark {
+                    order: 1;
+                    content: "✔️"
+                }
+            }
+        }
     }
 
     .posts-container {

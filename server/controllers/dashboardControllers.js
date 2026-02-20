@@ -126,36 +126,61 @@ export async function handleCommentSummarization (req, res) {
     };
 };
 
+const sqlBasedOnFilter = {
+    default: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                ORDER BY created_at DESC
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+            SELECT * FROM posts
+                WHERE created_at > ?
+                OR (created_at = ? AND id < ?)
+                OR created_at < ?
+                ORDER BY created_at DESC, id DESC
+                LIMIT 10
+        `
+    },
+    anonymous_filter: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                WHERE name = "Anonymous"
+                ORDER BY created_at DESC
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+            SELECT * FROM posts
+                WHERE name = "Anonymous" AND (created_at > ?
+                OR (created_at = ? AND id < ?)
+                OR created_at < ?)
+                ORDER BY created_at DESC, id DESC
+                LIMIT 10
+        `
+    }
+
+}
+
 export async function handleGetPostForMorePostsScreen (req, res) {
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
-    let { earliest_time, latest_time, latest_id } = req.query;
+    let { filter_state, earliest_time, latest_time, latest_id } = req.query;
 
+    const sqlSet = sqlBasedOnFilter[filter_state];
     const isFirstFetch = !earliest_time || !latest_time || !latest_id;
     let sql;
     let posts;
 
     try {
         if (isFirstFetch) {
-            sql = `
-                SELECT * FROM posts
-                    ORDER BY created_at DESC
-                    LIMIT 10
-            `;
+            sql = sqlSet["first-fetch-sql"];
             posts = await fetchAll(db, sql);
         } else {
             earliest_time = convertUTCStringToDbTime(earliest_time);
             latest_time = convertUTCStringToDbTime(latest_time);
             latest_id = Number(latest_id);
-            sql = `
-                SELECT * FROM posts
-                    WHERE created_at > ?
-                    OR (created_at = ? AND id < ?)
-                    OR created_at < ?
-                    ORDER BY created_at DESC, id DESC
-                    LIMIT 10
-            `
+            sql = sqlSet["subsequent-fetch-sql"];
             posts = await fetchAll(db, sql, [earliest_time, latest_time, latest_id, latest_time])
         };
 
@@ -187,6 +212,7 @@ export async function handleGetPostForMorePostsScreen (req, res) {
             earliest_time: convertDbTimeToUTCString(newEarliestTime),
             latest_time: convertDbTimeToUTCString(newLatestTime),
             latest_id: newLatestId,
+            reach_end_db: reactionsAddedPosts.length < 10,
             reaction_added_posts: reactionsAddedPosts,
         });
 

@@ -6,10 +6,10 @@ const logTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
-                SELECT post_id, COUNT(id) as reactions_count
-                FROM reactions
-                WHERE reactions.post_id IN (17)
-                GROUP BY post_id
+                SELECT * FROM posts
+                    WHERE name = "Anonymous"
+                    ORDER BY created_at DESC
+                    LIMIT 10
             `;
 
     const res = await fetchAll(db, sql);
