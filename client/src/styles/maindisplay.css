@@ -237,6 +237,58 @@
             }
         }
     }
+
+    .info-bubble {
+        z-index: 2;
+        position: absolute;
+        left: 65px;
+        bottom: 50px;
+        background-color: white;
+        width: 240px;
+        height: 150px;
+        clip-path: polygon(100% 90%, 18% 90%, 0% 100%, 2% 85%, 2% 0%, 100% 0%);
+        padding-top: 15px;
+        padding-left: 20px;
+        padding-right: 10px;
+        padding-bottom: 25px;
+
+        transition: transform 150ms ease,
+                    left 1.5s cubic-bezier(0.66, 0.02, 0.25, 1),
+                    background-color 200ms linear;
+
+        .head {
+            display: flex;
+            column-gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+
+            #popup-info-icon {
+                font-size: 32px;
+                color: rgb(136, 173, 246);
+            }
+
+            span {
+                font-family: "Raleway", sans-serif;
+                font-size: 20px;
+                font-weight: 500;
+            }
+        }
+
+        p {
+            font-family: "Raleway", sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+
+            span {
+                font-weight: bold;
+            }
+        }
+
+        &:hover {
+            transform: scale(1.05);
+            background-color: rgb(252, 252, 252);
+        }
+    }
 }
 
 
@@ -265,6 +317,10 @@
 
 .is-not-scrolling .main-display #share-button-hover-area {
     bottom: calc(-100% - 10px);
+}
+
+.is-not-scrolling .main-display .info-bubble {
+    left: calc(-100% - 10px);
 }
 
 @keyframes postScrolling {

@@ -6,11 +6,8 @@ const logTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
-                SELECT * FROM posts
-                    WHERE name = "Anonymous"
-                    ORDER BY created_at DESC
-                    LIMIT 10
-            `;
+        SELECT * FROM posts
+    `;
 
     const res = await fetchAll(db, sql);
 

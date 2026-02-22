@@ -157,6 +157,26 @@ const sqlBasedOnFilter = {
                 ORDER BY created_at DESC, id DESC
                 LIMIT 10
         `
+    },
+    randomized_filter: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                ORDER BY ((id + ?) * 1103515245 + 12345) % 2147483648
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+        WITH ordered AS (
+            SELECT *,
+                ROW_NUMBER() OVER (
+                ORDER BY ((id + ?) * 1103515245 + 12345) % 2147483648
+                ) AS rn
+            FROM posts
+            )
+            SELECT *
+            FROM ordered
+            WHERE rn > (SELECT rn FROM ordered WHERE id = ?)
+            LIMIT 10;
+        `
     }
 
 }
@@ -165,7 +185,7 @@ export async function handleGetPostForMorePostsScreen (req, res) {
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
-    let { filter_state, earliest_time, latest_time, latest_id } = req.query;
+    let { filter_state, earliest_time, latest_time, latest_id, random_seed } = req.query;
 
     const sqlSet = sqlBasedOnFilter[filter_state];
     const isFirstFetch = !earliest_time || !latest_time || !latest_id;
@@ -175,14 +195,20 @@ export async function handleGetPostForMorePostsScreen (req, res) {
     try {
         if (isFirstFetch) {
             sql = sqlSet["first-fetch-sql"];
-            posts = await fetchAll(db, sql);
+
+            if (filter_state === "default" || filter_state === "anonymous_filter") posts = await fetchAll(db, sql);
+            else if (filter_state === "randomized_filter") posts = await fetchAll(db, sql, [random_seed]);
         } else {
             earliest_time = convertUTCStringToDbTime(earliest_time);
             latest_time = convertUTCStringToDbTime(latest_time);
             latest_id = Number(latest_id);
             sql = sqlSet["subsequent-fetch-sql"];
-            posts = await fetchAll(db, sql, [earliest_time, latest_time, latest_id, latest_time])
+
+            if (filter_state === "default" || filter_state === "anonymous_filter") posts = await fetchAll(db, sql, [earliest_time, latest_time, latest_id, latest_time]);
+            else if (filter_state === "randomized_filter") posts = await fetchAll(db, sql, [random_seed, latest_id]);
         };
+        //? Convert the date in DB format to UTC formate for all posts in posts
+        posts.forEach((post, index) => {posts[index].created_at = convertDbTimeToUTCString(post.created_at)});
 
         const newEarliestTime = posts[0]["created_at"]
         const newLatestTime = posts[posts.length - 1]["created_at"]
@@ -209,8 +235,8 @@ export async function handleGetPostForMorePostsScreen (req, res) {
             };
         });
         res.json({
-            earliest_time: convertDbTimeToUTCString(newEarliestTime),
-            latest_time: convertDbTimeToUTCString(newLatestTime),
+            earliest_time: newEarliestTime,
+            latest_time: newLatestTime,
             latest_id: newLatestId,
             reach_end_db: reactionsAddedPosts.length < 10,
             reaction_added_posts: reactionsAddedPosts,

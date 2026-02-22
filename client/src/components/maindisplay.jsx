@@ -18,6 +18,7 @@
 // * on the change in queue then what happens if we fetch for more data from the database and add it to the queue?
 import "../styles/maindisplay.css";
 import { IoIosMore } from "react-icons/io";
+import { IoIosInformationCircle } from "react-icons/io";
 import { GrContact } from "react-icons/gr";
 import { FaInfo } from "react-icons/fa6";
 import { FaPenToSquare } from "react-icons/fa6";
@@ -36,6 +37,7 @@ export function MainDisplay() {
     const isScrolling = states.isScrolling;
     const [postsQueue, setPostsQueue] = useState([]);
     const [animatingPosts, setAnimatingPosts] = useState([]);
+    const [displayHint, setDisplayHint] = useState(true);
     
     //? Ref
     const tiltingContainer = useRef(null);
@@ -55,7 +57,6 @@ export function MainDisplay() {
             const respond = await fetch(`/api/get/post?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
             if (respond.ok) {
                 const data = await respond.json();
-                // console.log(`Fetch posts: `, data.posts);
                 
                 const newEarliestTime = new Date(data["new_earliest_time"]);
                 earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
@@ -120,7 +121,7 @@ export function MainDisplay() {
     };
 
     return (
-        <div className="main-display" onMouseMove = {handleOnMouseMove} >
+        <div className="main-display" onMouseMove = {handleOnMouseMove} onClick = {() => setDisplayHint(false)}>
             <div className="tilting-container" ref = {tiltingContainer}>
                 <div className="scrolling-container">
                     {animatingPosts}
@@ -131,6 +132,16 @@ export function MainDisplay() {
             <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
             <Button id = "info-button" callback = {() => states.setAppStates(true, false, "inspiration-screen")}><FaInfo id = "info-icon"/></Button>
             <Button id = "share-button" callback = {() => states.setAppStates(true, false, "share-screen")}><FaPenToSquare />Share your feelings</Button>
+
+            {displayHint &&
+            <div className="info-bubble">
+                <div className="head">
+                    <IoIosInformationCircle id = "popup-info-icon"/>
+                    <span>Did you know?</span>
+                </div>
+                <p>See more by <b>Hover</b> or <b>Click</b> on <i>Posts</i></p>
+            </div>}
+
         </div>
     )
 }

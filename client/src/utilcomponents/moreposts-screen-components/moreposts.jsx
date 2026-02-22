@@ -4,7 +4,7 @@
 //Todo: Disabled button when loading new post ✅
 //Todo: Set up filter functionality using <select> <option> ✅
 //Todo: Finish the back end for default filter and anonymous filter ✅
-//Todo: Fix the bug that display the wrong date
+//Todo: Fix the bug that display the wrong date ✅
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 
@@ -25,21 +25,30 @@ export function MorePosts () {
     const earliestTime = useRef("");
     const latestTime = useRef("");
     const latestId = useRef("");
+    const randomSeed = useRef(Math.floor(Math.random() * 1000) + 1);
     const reachEndDb = useRef(false);
 
     const fetchMorePostsScreenData = async () => {
         try {
-            const postsResult = await fetch(`/api/dashboard/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}`);
+            const postsResult = await fetch(`/api/dashboard/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}&random_seed=${randomSeed.current}`);
             const data = await postsResult.json();
+            console.log(data);
 
             await new Promise(resolve => setTimeout(resolve, 700));
             setLoading(false);
             
+            //? This is to convert all the UTC date into
+            const reactionsAddedPostsWithFormattedDate = data["reaction_added_posts"].map(post => {
+                return {
+                    ...post,
+                    created_at: new Date(post.created_at)
+                };
+            });
             earliestTime.current = earliestTime.current > new Date(data["earliest_time"]) ? earliestTime.current : new Date(data["earliest_time"]);
             latestTime.current = new Date(data["latest_time"]);
             latestId.current = data["latest_id"];
             reachEndDb.current = data["reach_end_db"];
-            setPosts(prev => [...prev, ...data["reaction_added_posts"]]);
+            setPosts(prev => [...prev, ...reactionsAddedPostsWithFormattedDate]);
         } catch (error) {
             console.log("Cannot connect to the server");
         };
@@ -65,8 +74,8 @@ export function MorePosts () {
         earliestTime.current = "";
         latestTime.current = "";
         latestId.current = "";
-        setLoading(true);
         setPosts([]);
+        setLoading(true);
         fetchMorePostsScreenData();
     };
 
@@ -87,21 +96,21 @@ export function MorePosts () {
 
                         <option value="sort-by-time" onClick = {() => handleFilterClick("default")}>Newest to oldest</option>
                         <option value="sort-by-anonymous" onClick = {() => handleFilterClick("anonymous_filter")}>Anonymous</option>
-                        <option value="sort-by-react">Most reacted</option>
-                        <option value="randomized-sort">Randomized</option>
+                        <option value="randomized-sort" onClick = {() => handleFilterClick("randomized_filter")}>Randomized</option>
                     </select>
                 </div>
             </div>
             <div className="posts-container">
                 {posts.length > 0 ? displayPosts() : null}
             </div>
-            {reachEndDb.current === false ? 
             <div className={clsx("loading-container", loading && "loading")}>
+                {reachEndDb.current === false ? 
                 <Button 
                     id = "load-more-button" 
                     hoverEffect = {false}
                     callback = {handleLoadMoreButtonClick}    
                 >Load more posts</Button>
+                : <h1 className = "notification">All posts fetched</h1>}
                 {loading && 
                 <DotLottieReact
                     src="lottie-animation/more-posts-loading-animation.lottie"
@@ -109,7 +118,7 @@ export function MorePosts () {
                     autoplay
                     style={{width: 500, height: 200, transform: "translateY(-30px) scale(1.1)"}}
                 />}
-            </div> : <h1 className = "notification">All posts fetched</h1>}
+            </div> 
         </div>
     );
 };

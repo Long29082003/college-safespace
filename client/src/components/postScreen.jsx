@@ -133,7 +133,7 @@ export function PostScreen () {
 
     if (created_at) {
         const timeStamp = new Date(created_at);
-        created_at = timeStamp.toLocaleDateString("en-US", {
+        created_at = timeStamp.toLocaleDateString([], {
             month: "short",
             day: "numeric",
             year: "numeric"

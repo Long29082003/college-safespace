@@ -5,7 +5,7 @@ export function Comment ({commentInfo}) {
     const { id, name, message, created_at, filler } = commentInfo;
 
     const date = new Date(created_at);
-    const formattedDate = date.toLocaleString("en-US", {
+    const formattedDate = date.toLocaleString([], {
         month: "short",
         day: "numeric",
         year: "numeric"

@@ -12,12 +12,12 @@ export function PostInMorePost ({postInfo}) {
     const [ isPostHover, setIsPostHover ] = useState(false);
 
     const timeStamp = new Date(created_at);
-    const formattedDate = timeStamp.toLocaleDateString("en-US", {
+    const formattedDate = timeStamp.toLocaleDateString([], {
         month: "short",
         day: "numeric",
         year: "numeric"
     });
-    const formattedTime = timeStamp.toLocaleString("en-US", {
+    const formattedTime = timeStamp.toLocaleString([], {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true

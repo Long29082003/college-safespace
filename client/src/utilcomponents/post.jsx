@@ -43,7 +43,7 @@ export function Post ({postInfo}) {
 
     let { name, recipient, feelings, message, created_at} = postInfo;
     const timeStamp = new Date(created_at);
-    const formattedDate = timeStamp.toLocaleDateString("en-US", {
+    const formattedDate = timeStamp.toLocaleDateString([], {
         month: "short",
         day: "numeric",
         year: "numeric"
