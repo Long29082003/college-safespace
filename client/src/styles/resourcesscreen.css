@@ -1,0 +1,129 @@
+.resources-screen {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 0px;
+    z-index: 1;
+
+    --panel-width: 700px;
+
+    .exit-area {
+        position: relative;
+        height: 100%;
+        width: calc(100% - var(--panel-width));
+        left: calc((100% - var(--panel-width)) * -1);
+    }
+
+    .resources-panel {
+        position: relative;
+        height: 100%;
+        width: var(--panel-width);
+        background-color: var(--main-color);
+        padding: 25px 40px;
+        right: calc(var(--panel-width) * -1);
+        transition: right 1s ease;
+        
+        overflow-y: auto;
+
+        h1 {
+            font-family: "Poppins", sans-serif;
+            font-size: 35px;
+            color: white;
+            font-weight: 600;
+        }
+
+        #exit-button-hover-area {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+
+            #exit-button {
+                height: 65px;
+                width: 65px;
+
+                &::after {
+                    background-color: rgb(244, 85, 85);
+                }
+            }
+        }
+
+        .dropdowns-container {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+
+            .dropdown {
+                margin-left: 10px;
+                display: flex;
+                flex-direction: column;
+
+                .head {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 20px;
+                    font-size: 30px;
+                    font-family: "Arimo", sans-serif;
+                    font-weight: 800;
+                    color: white;
+                    cursor: pointer;
+                    transition: transform 200ms ease;
+
+                    .arrow {
+                        transition: transform 500ms ease;
+                    }
+
+                    &:hover {
+                        transform: translateX(5px);
+
+                        .text {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+
+                .content {
+                    margin-top: 15px;
+                    background-color: white;
+                    padding: 0px 20px;
+                    overflow: hidden;
+                    transition: height 500ms ease,
+                                padding 500ms ease;
+                    height: 0px;
+
+                    h3 {
+                        font-size: 22px;
+                        font-family: "Raleway", sans-serif;
+                    }
+
+                    p {
+                        margin-top: 10px;
+                        font-size: 18px;
+                        font-family: "Cairo", sans-serif;
+                        line-height: 26px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.resources-screen-active .resources-screen {
+    z-index: 2;
+
+    .exit-area {
+        left: 0px;
+    }
+
+    .resources-panel {
+        right: 0px;
+    }
+
+    .dark-background {
+        opacity: 0.2;
+    }
+}

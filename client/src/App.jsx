@@ -8,6 +8,7 @@ import { ShareScreen } from "./components/sharescreen.jsx";
 import { InspirationScreen } from "./components/inspirationscreen.jsx";
 import { PostScreen } from "./components/postScreen.jsx";
 import { MorePostsScreen } from "./components/morePostsScreen.jsx";
+import { ResourcesScreen } from "./components/resourcesscreen.jsx";
 
 const States = createContext(null); 
 
@@ -60,7 +61,8 @@ export function App() {
       "inspiration-screen-active": activeScreen === "inspiration-screen",
       "post-screen-active": activeScreen === "post-screen",
       "post-screen-from-more-posts-active": activeScreen === "post-screen-from-more-posts",
-      "more-posts-screen-active": activeScreen === "more-posts-screen"
+      "more-posts-screen-active": activeScreen === "more-posts-screen",
+      "resources-screen-active": activeScreen === "resources-screen"
     })
   };
 
@@ -90,6 +92,7 @@ export function App() {
           <InspirationScreen />
           <PostScreen />
           <MorePostsScreen />
+          <ResourcesScreen />
         </div>
       </States.Provider>
     </main>
