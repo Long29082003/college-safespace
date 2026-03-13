@@ -1,10 +1,10 @@
-import { DarkBackground } from "../utilcomponents/darkbackground";
+import { DarkBackground } from "../utilcomponents/darkbackground.jsx";
 import { Button } from "../utilcomponents/button.jsx";
 import { tilting } from "../utilFunctions/utils.js";
-import MaSaiGonImg from "../assets/masaigon.avif";
+import MaSaiGonImg from "../../../assets/masaigon.avif";
 
 import { useRef, useContext } from "react";
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
 import "../styles/inspirationscreen.css"; 
 

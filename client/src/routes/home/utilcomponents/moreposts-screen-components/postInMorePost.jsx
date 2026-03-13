@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import "../../styles/moreposts-screen-styles/postinmoreposts.css";
 import { feelingsColors } from "../feelingchips.js";
 
-import { States } from "../../App.jsx";
+import { States } from "../../Home.jsx";
 
 export function PostInMorePost ({postInfo}) {
     //? States

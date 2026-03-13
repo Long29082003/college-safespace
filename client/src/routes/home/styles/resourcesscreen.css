@@ -69,9 +69,12 @@
                     font-size: 30px;
                     font-family: "Arimo", sans-serif;
                     font-weight: 800;
-                    color: white;
+                    color: black;
                     cursor: pointer;
                     transition: transform 200ms ease;
+                    padding: 8px 15px;
+                    background-color: rgb(255, 255, 254);
+                    box-shadow: 2px 2px 1px 1px rgb(255, 208, 127);
 
                     .arrow {
                         transition: transform 500ms ease;
@@ -92,19 +95,35 @@
                     padding: 0px 20px;
                     overflow: hidden;
                     transition: height 500ms ease,
-                                padding 500ms ease;
+                                padding 500ms ease,
+                                transform 250ms ease;
                     height: 0px;
+                    
+                    .fact {
 
-                    h3 {
-                        font-size: 22px;
-                        font-family: "Raleway", sans-serif;
+                        h3 {
+                            font-size: 22px;
+                            font-family: "Raleway", sans-serif;
+                        }
+
+                        p {
+                            margin-top: 10px;
+                            font-size: 18px;
+                            font-family: "Cairo", sans-serif;
+                            line-height: 26px;
+
+                            .line-break {
+                                height: 1rem;
+                            }
+                        }
+
+                        &:not(:first-of-type) {
+                            margin-top: 30px;
+                        }
                     }
 
-                    p {
-                        margin-top: 10px;
-                        font-size: 18px;
-                        font-family: "Cairo", sans-serif;
-                        line-height: 26px;
+                    &:hover {
+                        transform: translateX(10px);
                     }
                 }
             }

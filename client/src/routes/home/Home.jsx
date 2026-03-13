@@ -1,4 +1,4 @@
-import "./App.css";
+import "./Home.css";
 import { useState, createContext, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
@@ -8,11 +8,11 @@ import { ShareScreen } from "./components/sharescreen.jsx";
 import { InspirationScreen } from "./components/inspirationscreen.jsx";
 import { PostScreen } from "./components/postScreen.jsx";
 import { MorePostsScreen } from "./components/morePostsScreen.jsx";
-import { ResourcesScreen } from "./components/resourcesscreen.jsx";
+import { ResourcesScreen } from "./components/resourcesscreen.jsx"; 
 
 const States = createContext(null); 
 
-export function App() {
+export function Home() {
   //? States
   const [isEnterMain, setIsEnterMain] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);

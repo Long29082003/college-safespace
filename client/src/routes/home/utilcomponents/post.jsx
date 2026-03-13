@@ -2,11 +2,11 @@
 // Todo Randomize the postion of post so it has a little bit variety ✅
 // Todo Switch the Post animation from using CSS to web animation API so that you can stop when tab out
 import { TbHandClick } from "react-icons/tb";
-import { feelingsColors } from "../utilcomponents/feelingchips.js";
+import { feelingsColors } from "./feelingchips.js";
 import { useRef, useEffect, useContext } from "react"; 
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
-import { postScrollingKeyFrames, postScrollingTiming} from "../utilcomponents/animationKeyFrames.js";
+import { postScrollingKeyFrames, postScrollingTiming} from "./animationKeyFrames.js";
 
 export function Post ({postInfo}) {
     //? States

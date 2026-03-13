@@ -6,7 +6,6 @@ import path from "node:path";
 export async function handlePostSubmit (req, res) {
 
     let {name, recipient, feelings, message} = req.body;
-    console.log(name, recipient, feelings, message);
     name = name.trim();
     recipient = recipient.trim();
     message = message.trim();

@@ -17,7 +17,7 @@
 //Todo Change the react slider so that it will work on full screen too
 import clsx from "clsx";
 import { useState, useContext, useRef, useEffect } from "react";
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
 import { Button } from "../utilcomponents/button.jsx";
 import { Comment } from "../utilcomponents/comment.jsx";
@@ -130,6 +130,13 @@ export function PostScreen () {
             return <Comment commentInfo = {comment}/>
         });
     };
+
+    message = message.split("\n");
+    const messageWithLineBreak = [];
+    message.forEach((string, index) => {
+        if (index !== 0) messageWithLineBreak.push(<div className = "line-break" key = {`lb-${index}`}></div>);
+        messageWithLineBreak.push(string);
+    });
 
     if (created_at) {
         const timeStamp = new Date(created_at);
@@ -467,7 +474,7 @@ export function PostScreen () {
                     </div>
 
                     <span style = {textColorStyle}>
-                        {message}
+                        {messageWithLineBreak}
                     </span>
                 </div>
 

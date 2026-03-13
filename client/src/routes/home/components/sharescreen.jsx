@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { Button } from "../utilcomponents/button.jsx";
 import { DarkBackground } from "../utilcomponents/darkbackground.jsx";
 import { useState, useContext, useRef } from "react";
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
 import { MdOutlinePermIdentity } from "react-icons/md";
 import { CgMailForward } from "react-icons/cg";

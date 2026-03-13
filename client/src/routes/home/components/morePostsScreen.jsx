@@ -1,6 +1,6 @@
 //Todo Creating a emotion dashboard for emotions
 import { useState, useContext, useEffect } from "react";
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
 import "../styles/morepostsscreen.css";
 import { Button } from "../utilcomponents/button.jsx";

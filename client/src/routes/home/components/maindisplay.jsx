@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "../utilcomponents/button.jsx";
 import { Post } from "../utilcomponents/post.jsx";
 import { useState, useRef, useContext, useEffect } from "react";
-import { States } from "../App.jsx";
+import { States } from "../Home.jsx";
 
 import { tilting } from "../utilFunctions/utils.js";
 
