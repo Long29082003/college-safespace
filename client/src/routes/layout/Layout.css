@@ -33,6 +33,42 @@
             object-fit: cover;
             height: 70%;
         }
+
+        a {
+            position: relative;
+            display: grid;
+            place-items: center;
+            font-family: "Raleway", sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: black;
+            display: flex;
+            transition: transform 500ms ease;
+            z-index: 2;
+
+            &::after {
+                content: "→";
+                display: block;
+                position: absolute;
+                font-size: 30px;
+                left: 90%;
+                opacity: 0;
+                transition: opacity 300ms linear 100ms,
+                            transform 500ms ease,
+                            text-deocration 300ms ease;
+                z-index: 1;
+            }
+
+            &:hover {
+                transform: translateX(-40px);
+                text-decoration: underline;
+
+                &::after {
+                    opacity: 1;
+                    transform: translateX(45px);
+                }
+            }
+        }
     }
 
     .content {
@@ -42,11 +78,52 @@
         place-items: center;
 
         .box {
-            width: max(25%, 340px);
-            height: 450px;
+            overflow-y: auto;
+            width: max(28%, 360px);
+            max-height: 80vh;
             border-radius: 20px;
             box-shadow: 8px -8px 1px 0px rgb(60, 56, 56);
             border: 3px solid black;
+            padding: 30px 20px;
+
+            .links {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                column-gap: 5px;
+
+                a {
+                    font-family: "Raleway", sans-serif;
+                    font-weight: 700;
+                    font-size: 22px;
+                    color: black;
+                    width: 50%;
+                    text-align: center;
+                    padding: 5px 10px;
+                    transition: 150ms ease;
+
+                    &.active {
+                        background-color: black;
+                        color: white;
+                    }
+                }
+                
+                a:first-of-type {
+                    border: 3px solid black;
+                    border-top-left-radius: 10px;
+                    border-bottom-left-radius: 10px;
+                    border-top-right-radius: 2px;
+                    border-bottom-right-radius: 2px;              
+                }
+
+                a:last-of-type {
+                    border: 3px solid black;
+                    border-top-left-radius: 2px;
+                    border-bottom-left-radius: 2px;
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;  
+                }
+            }
         }
     }
 }   
