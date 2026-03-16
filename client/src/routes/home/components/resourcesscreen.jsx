@@ -67,18 +67,18 @@ export function ResourcesScreen () {
                         <div className="content" ref = {dropDownBoxReferences["did-you-know"]} style={adjustDropDownHeight("did-you-know")}>
                             <div className="fact">
                                 <h3>Who created this site?</h3>
-                                <p>
+                                <div className = "paragraph">
                                     This site is created from a passionate student from <b>Joliet Junior College</b> as 
                                     a project for his creative outlet. Although an
                                     attractive and handsome young man he is, he feels quite lonely sometimes.
                                     To that end, he wants to use his skill to create an environment where students 
                                     like him at JJC do not have to feel lonely anymore.   
-                                </p>
+                                </div>
                             </div>
 
                             <div className="fact">
                                 <h3>Who sponsored this site?</h3>
-                                <p>
+                                <div className = "paragraph">
                                     Did you know that this site is proudly sponsored by the Center for Multicultural Access & Success (CMAS) at Joliet Junior College? 
                                     CMAS is dedicated to helping students from all backgrounds thrive in college and beyond. 
                                     They provide one-on-one advising, workshops, leadership development, cultural programs, and access to resources like tutoring and scholarship guidance.
@@ -88,7 +88,7 @@ export function ResourcesScreen () {
                                     <div className="line-break"></div>
                                     By sponsoring this page, CMAS helps ensure that more students can access information, support, and opportunities 
                                     to flourish throughout their educational journey.
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>

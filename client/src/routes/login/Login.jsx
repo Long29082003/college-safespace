@@ -20,16 +20,21 @@ export function Login () {
 
             <form action="">
 
-                <label for = "username">Username:</label>
+                <label htmlFor = "username">Username:</label>
                 <div className="input-container">
                     <input id = "username" type="text" />
                     <FaUserAlt id = "username-icon"/>
                 </div>
 
-                <label for = "password">Password:</label>
+                <label htmlFor = "password">Password:</label>
                 <div className="input-container">
                     <input id = "password" type="password" />
                     <FaKey id = "password-icon"/>
+                </div>
+                
+                <div className="checkbox-container">
+                    <input id = "persist-checkbox" type="checkbox" />
+                    <label htmlFor = "persist-checkbox">Stay logged in</label>
                 </div>
 
                 <Button hoverEffect = {false}>Sign in</Button>

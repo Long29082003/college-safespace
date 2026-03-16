@@ -54,11 +54,14 @@ const createReactionsTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
-        CREATE TABLE IF NOT EXISTS reactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            type TEXT NOT NULL,
-            post_id INTEGER NOT NULL REFERENCES posts(id)
-        )     
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            password TEXT NOT NULL,
+            roles TEXT NOT NULL,
+            refresh_token TEXT NOT NULL,
+            created_at TIMESTAMPZ CURRENT_TIMESTAMP
+        )
     `
 
     try {

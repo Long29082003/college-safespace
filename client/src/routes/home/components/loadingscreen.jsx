@@ -1,9 +1,11 @@
 import "../styles/loadingscreen.css";
+import { Link } from "react-router-dom";
 import { Button } from "../utilcomponents/button.jsx";
 
 export function LoadingScreen ({buttonOnClick}) {
     return (
         <div className="loading-screen">
+            <Link to = "/login">To Login</Link>
             <div className="hover-container">
                 <div className="words-container">
                     <p>Comfort</p>

@@ -1,5 +1,5 @@
 import "./Home.css";
-import { useState, createContext, useEffect, useRef } from "react";
+import { useState, createContext, useEffect, useRef, useContext } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
 import { Background } from "./components/background.jsx";

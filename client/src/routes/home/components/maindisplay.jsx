@@ -17,6 +17,7 @@
 // * the queue change the bomb is planted again. But if we just depends the setTimeout
 // * on the change in queue then what happens if we fetch for more data from the database and add it to the queue?
 import "../styles/maindisplay.css";
+import { FaUserAlt } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
 import { IoIosInformationCircle } from "react-icons/io";
 import { GrContact } from "react-icons/gr";
@@ -27,9 +28,12 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "../utilcomponents/button.jsx";
 import { Post } from "../utilcomponents/post.jsx";
 import { useState, useRef, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { States } from "../Home.jsx";
 
 import { tilting } from "../utilFunctions/utils.js";
+
+import MYPIC from "../../../assets/my-pic.jpg";
 
 export function MainDisplay() {
     //? States passed from App level
@@ -41,6 +45,7 @@ export function MainDisplay() {
     
     //? Ref
     const tiltingContainer = useRef(null);
+    const accountBox = useRef(null);
     const intervalRef = useRef(null);
     //* These following refs are anchors used to search the database
     const earliestPostTime = useRef("");
@@ -120,12 +125,37 @@ export function MainDisplay() {
         tilting(event, tiltingContainer, 0.07, 10);
     };
 
+    const AccountBoxOnMouseEnter = () => {
+        const { scrollHeight } = accountBox.current;
+        accountBox.current.style.height = `${scrollHeight}px`;
+    };
+
+    const AccountBoxOnMouseLeave = () => {
+        accountBox.current.style.height = `75px`;
+    };
+
     return (
         <div className="main-display" onMouseMove = {handleOnMouseMove} onClick = {() => setDisplayHint(false)}>
             <div className="tilting-container" ref = {tiltingContainer}>
                 <div className="scrolling-container">
                     {animatingPosts}
                 </div>
+            </div>
+
+            <div 
+                className="account-box" 
+                ref = {accountBox} 
+                onMouseEnter = {AccountBoxOnMouseEnter}
+                onMouseLeave = {AccountBoxOnMouseLeave}
+            >
+                <div className="head">
+                    <div className="img-container">
+                        <FaUserAlt id = "default-user-icon"/>
+                        {/* <img src={MYPIC} alt="placeholder picture" /> */}
+                    </div>
+                    <p>User</p>
+                </div>
+                <Link to = "/login">Log in</Link>
             </div>
 
             <Button id = "more-button" callback = {() => states.setAppStates(true, false, "resources-screen")}><IoIosMore id = "more-icon"/></Button>

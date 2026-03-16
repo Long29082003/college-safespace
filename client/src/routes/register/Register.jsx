@@ -1,5 +1,7 @@
-//Todo: Create a link tag that connect to register and login page on the home route
+//Todo: Create a link tag that connect to register and login page on the home route ✅
+//Todo: Create a axios instance in another file and import it here
 import { useState, useEffect, useRef } from "react";
+
 
 import { IoIosWarning } from "react-icons/io";
 import { FaCheckCircle } from "react-icons/fa";
@@ -30,20 +32,42 @@ export function Register () {
 
     //? JSX refs
     const usernameInput = useRef(null);
+    const section = useRef(null);
 
     useEffect(() => {
         usernameInput.current.focus();
     }, []);
 
+    
+    const handleRegisterSubmit = (formData) => {
+        const matchingPwd = formData.get("matching-password");
+        const secret = formData.get("secret");
+        if (!USER_REGEX.test(username)) {
+            setError("Incorrect username");
+            section.current.scrollIntoView();
+            return;
+        } else if (!PWD_REGEX.test(password)) {
+            setError("Incorrect password");
+            section.current.scrollIntoView();
+            return;
+        } else if (password !== matchingPwd) {
+            setError("Re-typed password does not match");
+            section.current.scrollIntoView();
+            return;
+        }; 
+
+
+    };
+
     return (
-        <section className="register">
+        <section className="register" ref = {section}>
             {error && 
             <div className="error-message">
                 <IoIosWarning id = "warning-icon"/>
                 {error}
             </div>}
-            <form action="">
-                <label for = "username">
+            <form action={handleRegisterSubmit}>
+                <label htmlFor = "username">
                     <p>New username:<span className="r-asterick">*</span></p>
                     {!username ? null 
                         : isUsernameValid 
@@ -68,7 +92,7 @@ export function Register () {
                     </div> : null }
 
                 </div>
-                <label for = "password">
+                <label htmlFor = "password">
                     <p>New password:<span className="r-asterick">*</span></p>
                     {!password ? null 
                         : isPasswordValid
@@ -92,13 +116,14 @@ export function Register () {
 
                 </div>
 
-                <label for = "matching-password">
+                <label htmlFor = "matching-password">
                     <p>Re-type password:<span className="r-asterick">*</span></p>
                 </label>
                 <div className="input-container">
                     <input 
                         id = "matching-password" 
                         type="password" 
+                        name = "matching-password"
                         required
                         onFocus = {() => setIsMatchingPwdOnFocus(true)}
                         onBlur = {() => setIsMatchingPwdOnFocus(false)}
@@ -110,11 +135,12 @@ export function Register () {
 
                 </div>
 
-                <label for = "secret">Secret</label>
+                <label htmlFor = "secret">Secret</label>
                 <div className="input-container">
                     <input 
                         id = "secret" 
                         type="passowrd"
+                        name="secret"
                         onFocus = {() => setIsSecretOnFocus(true)}
                         onBlur = {() => setIsSecretOnFocus(false)}
                     />
@@ -125,7 +151,7 @@ export function Register () {
 
                 </div>
 
-                <Button hoverEffect = {false}>Register</Button>
+                <Button type = "submit" hoverEffect = {false}>Register</Button>
             </form>
         </section>
     );

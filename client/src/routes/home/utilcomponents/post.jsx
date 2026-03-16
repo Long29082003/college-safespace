@@ -55,14 +55,14 @@ export function Post ({postInfo}) {
     let textColor;
     const firstFeelingColors = feelingsColors.find(feeling => feeling.feeling === feelings[0]);
     if (!firstFeelingColors) {
-        bgColor = "rgb(220, 239, 249)";
+        bgColor = "rgb(226, 236, 241)";
         textColor = "black";
     } else {
         bgColor = firstFeelingColors.bgColor;
         textColor = firstFeelingColors.textColor;
     };
 
-    const backgroundColorStyle = { backgroundColor: bgColor};
+    const backgroundColorStyle = { "--background-color": bgColor};
     const textColorStyle = { "--text-color": textColor};
     //? Put spawn position in Ref so that when change state this thing will not rerun
     //? Dont use useEffect because I need the value before the first render

@@ -57,6 +57,22 @@
             }
         }
 
+        .checkbox-container {
+            margin-top: 5px;
+            display: flex;
+            column-gap: 8px;
+            align-items: center;
+
+            input {
+                height: 30px;
+            }
+            
+            label {
+                font-weight: 500;
+                font-size: 18px;
+            }
+        }
+
         .button-hover-area {
             margin-top: 30px;
 
