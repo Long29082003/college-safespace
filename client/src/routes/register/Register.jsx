@@ -1,3 +1,4 @@
+//Todo: Create a link tag that connect to register and login page on the home route
 import { useState, useEffect, useRef } from "react";
 
 import { IoIosWarning } from "react-icons/io";
