@@ -3,4 +3,4 @@ import { handleUserRegistration } from "../controllers/authControllers.js";
 
 export const authRoute = express.Router();
 
-authRoute.get("/register", handleUserRegistration);
+authRoute.post("/register", handleUserRegistration);

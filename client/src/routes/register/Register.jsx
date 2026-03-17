@@ -1,7 +1,8 @@
 //Todo: Create a link tag that connect to register and login page on the home route ✅
 //Todo: Create a axios instance in another file and import it here
 import { useState, useEffect, useRef } from "react";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import api from "../../api/axios.js";
 
 import { IoIosWarning } from "react-icons/io";
 import { FaCheckCircle } from "react-icons/fa";
@@ -16,6 +17,9 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 export function Register () {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     //? States
     const [ error, setError ] = useState("");
     const [ registerStatus, setRegisterStatus ] = useState(null);
@@ -56,7 +60,36 @@ export function Register () {
             return;
         }; 
 
+        const Register = async () => {
+            try {
+                const response = await api.post("/api/auth/register", {username, password, secret}, {
+                    headers: {"Content-Type": "application/json"},
+                    withCredentials: true
+                });
+                
+                navigate("/login", {state: {from: location}}, {replace: true});
 
+            } catch (error) {
+                if (!error?.response) return setError("Register request running out of time");
+                
+                if (error.response?.status === 409) return setError("Username already exists");
+                else if (error.response?.status === 403) {
+                    setError("Registration unauthorized");
+                    setUsername("");
+                    setPassword("");
+                    setIsMatchingPwdOnFocus(false);
+                    setIsSecretOnFocus(false);
+                } else {
+                    setError("Error ocurred");
+                    setUsername("");
+                    setPassword("");
+                    setIsMatchingPwdOnFocus(false);
+                    setIsSecretOnFocus(false);
+                }
+            };
+        };
+
+        Register();
     };
 
     return (

@@ -59,8 +59,8 @@ const createReactionsTable = async () => {
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             roles TEXT NOT NULL,
-            refresh_token TEXT NOT NULL,
-            created_at TIMESTAMPZ CURRENT_TIMESTAMP
+            refresh_token TEXT,
+            created_at TIMESTAMPZ CURRENT_TIMESTAMP;
         )
     `
 
