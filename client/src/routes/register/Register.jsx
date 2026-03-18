@@ -73,8 +73,14 @@ export function Register () {
                 if (!error?.response) return setError("Register request running out of time");
                 
                 if (error.response?.status === 409) return setError("Username already exists");
-                else if (error.response?.status === 403) {
-                    setError("Registration unauthorized");
+                else if (error.response?.status === 500) {
+                    setError("Issue connecting to DB");
+                    setUsername("");
+                    setPassword("");
+                    setIsMatchingPwdOnFocus(false);
+                    setIsSecretOnFocus(false);
+                } else if (error.response?.status === 401) {
+                    setError("Incorrect credentials");
                     setUsername("");
                     setPassword("");
                     setIsMatchingPwdOnFocus(false);
