@@ -16,7 +16,7 @@ const SALT_ROUND = 10;
 
 export async function handleUserRegistration (req, res) {
     let { username, password, secret } = req.body;
-    if (!username || !password) return res.sendStatus(401);
+    if (!username || !password) return res.sendStatus(400);
 
     const salt = bcrypt.genSaltSync(SALT_ROUND);
     password = bcrypt.hashSync(password, salt);
@@ -41,7 +41,7 @@ export async function handleUserRegistration (req, res) {
         const foundUser = await fetchAll(db, findMatchSql, [username]);
         if (foundUser.length !== 0) return res.sendStatus(409);
 
-        await execute(db, sql, [username, password, roles]);
+        await execute(db, sql, [username, password, JSON.stringify(roles)]);
         res.status(201).json({message: "Account receive succesfully"});
     } catch (error) {
         res.status(500).json({message: "Error connecting to database"});
@@ -53,7 +53,7 @@ export async function handleUserRegistration (req, res) {
 export async function handleUserLogin (req, res) {
 
     const { username, password } = req.body;
-    if (!username || !password) return res.sendStatus(401);
+    if (!username || !password) return res.sendStatus(400);
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
@@ -70,13 +70,15 @@ export async function handleUserLogin (req, res) {
 
     try {
         const foundUser = await fetchAll(db, sql, [username]);
-        const pwdMatch = bcrypt.compareSync(password, foundUser?.password || "");
+        const userData = foundUser[0];
+        const pwdMatch = bcrypt.compareSync(password, userData?.password || "");
+
         if (!pwdMatch || foundUser.length === 0) return res.sendStatus(401); 
 
         const accessToken = jwt.sign(
             {
-                username: foundUser.username,
-                roles: JSON.parse(foundUser.roles)
+                username: userData.username,
+                roles: JSON.parse(userData.roles)
             },
             ACCESS_KEY,
             { expiresIn: "10s" }
@@ -84,21 +86,22 @@ export async function handleUserLogin (req, res) {
 
         const refreshToken = jwt.sign(
             {
-                username: foundUser.username
+                username: userData.username
             },  
             REFRESH_KEY,
             { expiresIn : "30s" }
         );
 
-        await execute(db, changeRefreshTokenSql, [refreshToken, foundUser.username]);
+        await execute(db, changeRefreshTokenSql, [refreshToken, userData.username]);
        
-        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: "30s"});
+        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 30 * 1000});
         res.json({
             accessToken,
-            roles: JSON.parse(foundUser.roles)
+            roles: JSON.parse(userData.roles)
         });
         
     } catch (error) {
+        console.log(error);
         res.status(500).json({message: "Cannot connect to DB"});
     } finally {
         db.close();

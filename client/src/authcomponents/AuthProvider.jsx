@@ -4,7 +4,8 @@ import { Outlet } from "react-router-dom";
 export const AuthContext = createContext();
 
 export const AuthProvider = () => {
-    const [ auth, setAuth ] = useState("Long doan");
+    const [ auth, setAuth ] = useState(null);
+    console.log(auth);
 
     return (
         <AuthContext.Provider value = {{auth, setAuth}}>

@@ -1,0 +1,14 @@
+.post-timeline-chart {
+    border-radius: 15px;
+    padding: 20px 15px;
+    background-color: white;
+
+    h2 {
+        font-family: "Raleway", sans-serif;
+        font-weight: 600;
+        font-size: 30px;
+        padding-bottom: 2px;
+        border-bottom: 1px solid black;
+        margin-bottom: 20px;
+    }
+}
