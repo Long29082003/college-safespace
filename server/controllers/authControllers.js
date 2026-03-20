@@ -97,7 +97,8 @@ export async function handleUserLogin (req, res) {
         res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 30 * 1000});
         res.json({
             accessToken,
-            roles: JSON.parse(userData.roles)
+            roles: JSON.parse(userData.roles),
+            user: userData.username
         });
         
     } catch (error) {

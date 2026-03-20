@@ -14,6 +14,7 @@ import { AuthLayout } from "./routes/layout/Layout.jsx";
 import { Login } from "./routes/login/Login.jsx";
 import { Register } from "./routes/register/Register.jsx";
 import { AdminPage } from "./routes/admin/admin.jsx"
+import { UnauthorizedPage } from "./authcomponents/Unauthorized.jsx";
 
 createRoot(document.getElementById("root")).render(
     <BrowserRouter>
@@ -24,7 +25,13 @@ createRoot(document.getElementById("root")).render(
                     <Route path = "/login" element = {<Login />}></Route>
                     <Route path = "/register" element = {<Register />}></Route>
                 </Route>
-                <Route element = {<AuthRequired allowedRole = "user" />}><Route path = "/admin" element = {<AdminPage />}/></Route>
+
+                //? Protected routes
+                <Route element = {<AuthRequired allowedRole = "user" />}>
+
+                </Route>
+                <Route path = "/admin" element = {<AdminPage />}/>
+                <Route path = "/unauthorized" element = {<UnauthorizedPage />}></Route>
             </Route>
         </Routes>
     </BrowserRouter>

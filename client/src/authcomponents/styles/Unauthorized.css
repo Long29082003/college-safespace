@@ -1,0 +1,50 @@
+.unauthorized-page {
+    display: flex;
+    justify-content: center;
+    column-gap: 90px;
+    padding: 50px 0px;
+    
+    .text {
+        color: rgb(144, 144, 144);
+
+        h1 {
+            max-width: 500px;
+            font-family: "Tinos", sans-serif;
+            font-weight: 600;
+            font-size: 50px;
+        }
+        
+        .icon-container {
+            text-align: right;
+            font-size: 60px;
+        }
+    }
+
+    .link-container {
+        border-left: 5px solid rgb(144, 144, 144);
+        display: grid;
+        place-items: center;    
+        padding-left: 50px;        
+
+        a {
+            border: 2.5px solid transparent;
+            padding: 20px;
+            background-color: rgb(144, 144, 144);
+            border-radius: 10px;
+            color: black;
+            display: grid;
+            place-items: center;
+            font-family: "Tinos", sans-serif;
+            font-weight: 600;
+            font-size: 30px;
+            color: white;
+            transition: all 250ms ease;
+
+            &:hover {
+                color: black;
+                background-color: white;
+                border: 2.5px solid black;
+            }
+        }
+    }
+}
