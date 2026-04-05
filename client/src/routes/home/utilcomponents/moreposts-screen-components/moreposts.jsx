@@ -5,8 +5,14 @@
 //Todo: Set up filter functionality using <select> <option> ✅
 //Todo: Finish the back end for default filter and anonymous filter ✅
 //Todo: Fix the bug that display the wrong date ✅
-import { useState, useEffect, useRef } from "react";
+//Todo: Dealth with Masonry layout
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import clsx from "clsx";
+import Masonry from "masonry-layout";
+import imagesLoaded from "imagesloaded";
+
+import { FaRegRectangleList } from "react-icons/fa6";
+import { AiOutlineAppstore } from "react-icons/ai";
 
 import "../../styles/moreposts-screen-styles/moreposts.css";
 
@@ -18,10 +24,12 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 export function MorePosts () {
     //? States
     const [ posts, setPosts ] = useState([]);
+    const [ displayState, setDisplayState ] = useState("default");
     const [ loading, setLoading ] = useState(false);
 
     //? Reference
     const filterState = useRef("default");
+    const masonryContainer = useRef(null);
     const earliestTime = useRef("");
     const latestTime = useRef("");
     const latestId = useRef("");
@@ -32,7 +40,6 @@ export function MorePosts () {
         try {
             const postsResult = await fetch(`/api/dashboard/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}&random_seed=${randomSeed.current}`);
             const data = await postsResult.json();
-            console.log(data);
 
             await new Promise(resolve => setTimeout(resolve, 700));
             setLoading(false);
@@ -59,11 +66,35 @@ export function MorePosts () {
         fetchMorePostsScreenData();
     }, []);
 
+    useLayoutEffect(() => {
+        if (displayState === "default") return;
+        const grid = masonryContainer.current;
+
+        const masonry = new Masonry(grid, {
+            itemSelector: ".post-in-more-posts-mansory",
+            gutter: 20,
+            originTop: true,
+            originLeft: true,
+            horizontalOrder: true,
+        });
+
+        imagesLoaded(grid).on("progress", () => {
+            masonry.layout();
+        });
+
+        masonryContainer.current.offsetHeight;
+        masonryContainer.current.getBoundingClientRect();
+
+        return () => masonry.destroy();
+    }, [posts, displayState]);
+
+
     const displayPosts = () => {
         return posts.map(post => {
             return (
                 <PostInMorePost
                     postInfo = {{...post}}
+                    displayFormat = {displayState}
                 />
             )
         });
@@ -89,6 +120,21 @@ export function MorePosts () {
             <div className="header">
                 <h1>Posts</h1>
                 <div className="utils-bar">
+                    <div className="display-filter">
+                        <div 
+                            className={clsx("filter-container", displayState === "default" ? "choosen" : false)}
+                            onClick = {() => displayState !== "default" && setDisplayState("default")}
+                        >
+                            <FaRegRectangleList className = "display-filter-icon"/>
+                        </div>
+                        <div 
+                            className={clsx("filter-container", displayState === "flex" ? "choosen" : false)}
+                            onClick = {() => displayState !== "flex" && setDisplayState("flex")}
+                        >
+                            <AiOutlineAppstore className = "display-filter-icon"/>
+                        </div>
+                    </div>
+
                     <select name="select-filter">
                         <button>
                             <selectedcontent></selectedcontent>
@@ -100,9 +146,15 @@ export function MorePosts () {
                     </select>
                 </div>
             </div>
-            <div className="posts-container">
+
+            {displayState === "default" ? 
+            <div className={clsx("posts-container")}>
                 {posts.length > 0 ? displayPosts() : null}
-            </div>
+            </div> :
+            <div className="masonry-container" ref = {masonryContainer}>
+                {posts.length > 0 ? displayPosts() : null}
+            </div>}
+
             <div className={clsx("loading-container", loading && "loading")}>
                 {reachEndDb.current === false ? 
                 <Button 

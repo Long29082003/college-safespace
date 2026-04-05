@@ -49,8 +49,8 @@ export function MorePostsScreen () {
                     className={clsx({"nav": true, "choosen": contentToDisplay === "posts"})} 
                     onClick = {handleDisplayPosts}>Posts</p>
                 <p 
-                className={clsx({"nav": true, "choosen": contentToDisplay === "summary"})} 
-                onClick = {handleDisplaySummary}>Summary</p>
+                    className={clsx({"nav": true, "choosen": contentToDisplay === "summary"})} 
+                    onClick = {handleDisplaySummary}>Summary</p>
                 <Button id = "exit-button" callback = {handleExit}>X</Button>
             </div>
 

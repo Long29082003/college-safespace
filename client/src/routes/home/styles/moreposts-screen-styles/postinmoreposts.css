@@ -1,8 +1,9 @@
-.post-in-more-posts {
+.post-in-more-posts-default {
     position: relative;
     width: max(85%, 400px);
     display: flex;
     flex-direction: row;
+    cursor: pointer;
 
     .time-and-info {
         width: 300px;
@@ -119,5 +120,64 @@
             box-shadow: 4px 4px 2px var(--main-color);
             transform: translateY(-15px);
         }
+    }
+}
+
+.post-in-more-posts-mansory {
+    position: relative;
+    padding: 20px 20px 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 22%;
+    margin-bottom: 20px;
+    transition: box-shadow 500ms ease,
+                transform 500ms ease;
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .persons {
+            font-family: "Raleway", sans-serif;
+            display: flex;
+            flex-direction: column;
+            row-gap: 2px;
+
+            .name {
+                font-size: 18px;
+                font-weight: 500;
+            }
+
+            .recipient {
+                font-size: 17px;
+                font-weight: 400;
+            }
+        }
+
+        .time-date {
+            font-size: 13px;
+            font-family: "Cairo", sans-serif;
+            line-height: 20px;
+            color: gray;
+            text-align: right;
+        }
+    }
+
+    .message {
+        margin-top: 8px;
+        font-family: "Cairo", sans-serif;
+        line-height: 20px;
+        font-weight: 300;
+        transition: color 150ms ease;
+    }
+
+    &:hover {
+        box-shadow: 4px 4px 2px var(--main-color);
+        transform: translateY(-15px);
+    }
+
+    &.large-masonry {
+        width: 44%;
     }
 }

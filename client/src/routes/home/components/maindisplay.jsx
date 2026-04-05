@@ -31,12 +31,16 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { States } from "../Home.jsx";
 
+import { useAuth } from "../../../hooks/useAuth.js";
+
 import { tilting } from "../utilFunctions/utils.js";
 
 import MYPIC from "../../../assets/my-pic.jpg";
 
 export function MainDisplay() {
     //? States passed from App level
+    const { auth } = useAuth();
+
     const states = useContext(States);
     const isScrolling = states.isScrolling;
     const [postsQueue, setPostsQueue] = useState([]);
@@ -153,9 +157,11 @@ export function MainDisplay() {
                         <FaUserAlt id = "default-user-icon"/>
                         {/* <img src={MYPIC} alt="placeholder picture" /> */}
                     </div>
-                    <p>User</p>
+                    <p>{auth.user || "Guest"}</p>
                 </div>
-                <Link to = "/login">Log in</Link>
+                {auth.user ? <Link to = "/admin">To Admin Page</Link>
+                           : <Link to = "/login">Log in</Link>                
+                }
             </div>
 
             <Button id = "more-button" callback = {() => states.setAppStates(true, false, "resources-screen")}><IoIosMore id = "more-icon"/></Button>

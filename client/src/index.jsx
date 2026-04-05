@@ -28,9 +28,8 @@ createRoot(document.getElementById("root")).render(
 
                 //? Protected routes
                 <Route element = {<AuthRequired allowedRole = "user" />}>
-
+                    <Route path = "/admin" element = {<AdminPage />}/>
                 </Route>
-                <Route path = "/admin" element = {<AdminPage />}/>
                 <Route path = "/unauthorized" element = {<UnauthorizedPage />}></Route>
             </Route>
         </Routes>

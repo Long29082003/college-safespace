@@ -23,10 +23,7 @@
             align-items: center;
             padding: 0px 40px;
             padding-bottom: 10px;
-            scale: 0.9;
-            animation: navbarZoomOut linear forwards;
-            animation-timeline: scroll();
-            animation-range: 100px 200px;
+            scale: calc(0.9 + 0.1 * var(--nav-progress));
 
             img {
                 width: max(18%, 150px);
@@ -39,15 +36,19 @@
                 justify-content: flex-end;
 
                 .user-box {
+                    position: relative;
+                    padding: 5px 10px;
                     display: flex;
                     flex-direction: row;
                     align-items: center;
                     column-gap: 10px;
+                    cursor: pointer;
 
-                    span {
+                    & > span {
                         font-family: "Cairo", sans-serif;
                         font-weight: 600;
                         font-size: 25px;
+                        transition: color 500ms ease;
                     }
 
                     .ui-seperator {
@@ -63,46 +64,92 @@
                         place-items: center;
                         border-radius: 50%;
                         overflow: hidden;
-                        background-color: rgb(233, 235, 239);
 
                         #default-user-icon {
                             width: 50%;
                             height: 50%;
+                            transition: color 500ms ease;
+                        }
+                    }
+
+                    .hover-box {
+                        padding: 15px;
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        display: flex;
+                        flex-direction: column;
+                        row-gap: 12px;
+                        background-color: var(--almost-white);
+                        border-radius: 5px;
+                        color: black;
+                        font-weight: 500;
+
+                        .settings-container, .log-out-container {
+                            display: flex;
+                            align-items: center;
+                            column-gap: 5px;
+                            font-family: "Aboreto", sans-serif;
+                            font-weight: bold;
+                            
+                            span {
+                                font-size: 19px;
+                            }
+
+                            #settings-icon {
+                                font-size: 20px;
+                            }
+
+                            #log-out-icon {
+                                font-size: 20px;
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        & > span {
+                            font-weight: bold;
                         }
                     }
                 }
             }
 
-            .log-out-container {
-                padding-left: 15px;
+
+            a {
+                display: block;
+                padding-left: 20px;
                 width: 200px;
                 height: 60px;
                 display: flex;
                 align-items: center;
-                column-gap: 8px;
-                font-size: 25px;
+                color: black;
+                transition: color 500ms ease;
                 cursor: pointer;
 
-                a {
+                span {
+                    font-size: 25px;
                     font-family: "Cairo", sans-serif;
-                    color: black;
-                    transition: color 500ms ease;
+                    line-height: 28px;
                 }
 
-                #logout-logo {
-                    font-size: 40px;
+                #comfort-space-logo {
+                    font-size: 50px;
                     transition: color 500ms ease;
+                    font-weight: 500;
+                    transition: transform 500ms ease;
                 }
 
                 &:hover {
                     color: var(--main-color);
+                    font-weight: bold;
+                    color: var(--main-color);
 
-                    a {
-                        font-weight: bold;
-                        color: var(--main-color);
+                    #comfort-space-logo {
+                        transform: translateX(5px);
                     }
                 }
             }
+        
 
             .background {
                 background-color: white;
@@ -112,26 +159,11 @@
                 height: 200%;
                 width: 150%;
                 transform: translateX(-50%);
-                border-bottom: 2px solid var(--main-color);
-
-                animation: navbarBgChangeColor linear forwards;
-                animation-timeline: scroll();
-                animation-range: 100px 200px;
+                border-bottom: 2px solid var(--main-color); 
+                transition: background-color 350ms ease;
 
                 z-index: -1;
             }
         }
-    }
-}
-
-@keyframes navbarZoomOut {
-    to {
-        scale: 1;
-    }
-}
-
-@keyframes navbarBgChangeColor {
-    to {
-        background-color: var(--main-color);
     }
 }

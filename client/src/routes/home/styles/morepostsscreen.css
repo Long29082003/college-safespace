@@ -1,5 +1,5 @@
 .more-posts-screen {
-    --more-posts-screen-main-color: rgb(248, 248, 249);
+    --more-posts-screen-main-color: var(--almost-white);
 
     position: absolute;
     z-index: 2;

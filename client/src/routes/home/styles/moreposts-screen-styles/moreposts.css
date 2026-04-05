@@ -19,6 +19,51 @@
             display: flex;
             align-items: center;
             padding-right: 30px;
+            column-gap: 20px;
+
+            .display-filter {
+
+                display: flex;
+                flex-direction: row;
+                column-gap: 8px;
+
+                .filter-container {
+                    width: 40px;
+                    height: 40px;
+                    display: grid;
+                    place-items: center;
+                    box-shadow: 0px 0px 2px 1px rgb(0, 0, 0);
+                    transition: background-color 500ms ease;
+
+                    &:first-of-type {
+                        border-top-left-radius: 5px;
+                        border-bottom-left-radius: 5px;
+                    }
+
+                    &:last-of-type {
+                        border-top-right-radius: 5px;
+                        border-bottom-right-radius: 5px;
+                    }
+
+                    .display-filter-icon {
+                        font-size: 24px;
+                        transition: 500ms ease;
+                    }
+
+                    &:hover {
+                        background-color: pink;
+                    }
+
+                    &.choosen {
+                        background-color: plum;
+
+                        .display-filter-icon {
+                            color: white;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
 
             select, ::picker(select) {
                 appearance: base-select;
@@ -106,11 +151,16 @@
     }
 
     .posts-container {
+        /* background-color: pink; */
         margin-top: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
         row-gap: 100px;
+    }
+
+    .masonry-container {
+        transition: 500ms ease;
     }
 
     .loading-container {
