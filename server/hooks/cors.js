@@ -8,7 +8,8 @@ export const corsOption = {
             callback(new Error("Not allowed: CORS"));
         }
     },
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
+    credentials: true
 };
 
 export const credential = (req, res, next) => {

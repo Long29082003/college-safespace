@@ -5,10 +5,13 @@ import { dashboardRoute } from "./routes/dashboardRoutes.js";
 import { authRoute } from "./routes/authRoutes.js";
 
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { corsOption, credential } from "./hooks/cors.js";
 
 const app = express();
 const PORT = 8000;
+
+app.use(cookieParser());
 
 app.use(credential);
 

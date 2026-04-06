@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { FeelingCategoryChart } from "./dashboardcomponents/feelingcategorychart.jsx";
 import { PostTimelineChart } from "./dashboardcomponents/posttimelinechart.jsx";
 
+import { useAxiosPrivate } from "../../../hooks/useAxiosPrivate.js";
+
 import "../styles/dashboard.css";
 
 export function Dashboard () {
+    const axiosPrivate = useAxiosPrivate();
+
     //? States
+    const [ errorMsg, setErrorMsg ] = useState("");
     const [ postCountForEachMonth, setPostCountForEachMonth ] = useState(null);
     const [ totalPost, setTotalPost ] = useState("--");
     const [ feelingCategoriesCount, setFeelingCategoriesCount ] = useState(null);
@@ -26,13 +31,13 @@ export function Dashboard () {
         const loading = async () => {
             try {
                 const [postsResult, reactionsResult, commentsResult ] = await Promise.all([
-                    fetch("/api/dashboard/postinfo"), 
-                    fetch("/api/dashboard/reactioninfo"),
-                    fetch("/api/dashboard/commentinfo")
+                    axiosPrivate.get("/api/auth/refresh"), 
+                    axiosPrivate.get("/api/dashboard/reactioninfo"), 
+                    axiosPrivate.get("/api/dashboard/commentinfo")
                 ]);
-                const postsData = await postsResult.json();
-                const reactionsData = await reactionsResult.json();
-                const commentsData =  await commentsResult.json();
+                const postsData = postsResult.data;
+                const reactionsData = reactionsResult.data;
+                const commentsData =  commentsResult.data;
 
                 setPostCountForEachMonth(postsData["post-count-for-each-month"]);
                 setTotalPost(postsData["total-post"]);
@@ -40,7 +45,10 @@ export function Dashboard () {
                 setReactionSummary(reactionsData);
                 setCommentsSummary(commentsData);
             } catch (error) {
-                console.log("Cannot connect to the server");
+                console.log(error);
+                if (!error.response) setErrorMsg("Cannot connect to the server");
+                else if (error.response?.status === 401) setErrorMsg("Cannot authorize request");
+                else if (error.response?.status === 403) setErrorMsg("User does not have the credential")
             };
         };
 

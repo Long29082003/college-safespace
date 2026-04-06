@@ -81,7 +81,7 @@ export async function handleUserLogin (req, res) {
                 roles: JSON.parse(userData.roles)
             },
             ACCESS_KEY,
-            { expiresIn: "10s" }
+            { expiresIn: "15s" }
         );
 
         const refreshToken = jwt.sign(
@@ -89,12 +89,13 @@ export async function handleUserLogin (req, res) {
                 username: userData.username
             },  
             REFRESH_KEY,
-            { expiresIn : "30s" }
+            { expiresIn : "10m" }
         );
 
         await execute(db, changeRefreshTokenSql, [refreshToken, userData.username]);
+        console.log(refreshToken);
        
-        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 30 * 1000});
+        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 30 * 1000, sameSite: "Lax", secure: false});
         res.json({
             accessToken,
             roles: JSON.parse(userData.roles),
@@ -104,6 +105,49 @@ export async function handleUserLogin (req, res) {
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Cannot connect to DB"});
+    } finally {
+        db.close();
+    }
+};
+
+export async function handleRefreshToken (req, res) {
+    const cookies = req.cookies;
+    if (!cookies) return res.sendStatus(401);
+    const returnedRefreshToken = cookies["jwt"];
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `SELECT username FROM users
+                    WHERE refresh_token = ?
+    `;
+
+    try {
+        const result = await fetchAll(db, sql, [returnedRefreshToken]);
+        const foundUser = result[0];
+        if (!foundUser?.username) return res.sendStatus(403);
+
+        jwt.verify(
+            returnedRefreshToken, 
+            REFRESH_KEY
+            , (error, decoded) => {
+                //? Add another error handling in case refreshToken expires
+                if (error || decoded?.username !== foundUser.username) return res.sendStatus(403);
+
+                const newAccessToken = jwt.sign(
+                    {
+                        username: decoded.username
+                    },
+                    ACCESS_KEY,
+                    { expiresIn: "15s"}
+                );
+
+                return res.json({newAccessToken});
+            }
+        )
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
     } finally {
         db.close();
     }
