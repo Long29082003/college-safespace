@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../api/axios.js";
+import axios from "../api/axios.js";
 import { useAuth } from "./useAuth.js";
 
 export const useRefreshToken = () => {
@@ -6,7 +6,7 @@ export const useRefreshToken = () => {
 
     const refresh = async () => {
         try {
-            const response = await axiosPrivate.get("/api/auth/refresh");
+            const response = await axios.get("/api/auth/refresh");
             const { newAccessToken } = response.data;
             setAuth(prev => {
                 return {

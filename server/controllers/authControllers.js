@@ -93,9 +93,8 @@ export async function handleUserLogin (req, res) {
         );
 
         await execute(db, changeRefreshTokenSql, [refreshToken, userData.username]);
-        console.log(refreshToken);
        
-        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 30 * 1000, sameSite: "Lax", secure: false});
+        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 10 * 60 * 1000, sameSite: "Lax", secure: false});
         res.json({
             accessToken,
             roles: JSON.parse(userData.roles),

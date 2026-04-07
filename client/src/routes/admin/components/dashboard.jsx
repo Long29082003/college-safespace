@@ -31,7 +31,7 @@ export function Dashboard () {
         const loading = async () => {
             try {
                 const [postsResult, reactionsResult, commentsResult ] = await Promise.all([
-                    axiosPrivate.get("/api/auth/refresh"), 
+                    axiosPrivate.get("/api/dashboard/postinfo"), 
                     axiosPrivate.get("/api/dashboard/reactioninfo"), 
                     axiosPrivate.get("/api/dashboard/commentinfo")
                 ]);
