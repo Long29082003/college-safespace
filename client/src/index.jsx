@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client";
 
 import { AuthProvider } from "./authcomponents/AuthProvider.jsx";
 import { AuthRequired } from "./authcomponents/AuthRequired.jsx";
+import { PersistLogin } from "./authcomponents/PersistLogin.jsx";
 
 import { Home } from "./routes/home/Home.jsx";
 import { AuthLayout } from "./routes/layout/Layout.jsx";
@@ -27,9 +28,12 @@ createRoot(document.getElementById("root")).render(
                 </Route>
 
                 //? Protected routes
-                <Route element = {<AuthRequired allowedRole = "user" />}>
-                    <Route path = "/admin" element = {<AdminPage />}/>
+                <Route element = {<PersistLogin />}>
+                    <Route element = {<AuthRequired allowedRole = "user" />}>
+                        <Route path = "/admin" element = {<AdminPage />}/>
+                    </Route>x
                 </Route>
+                
                 <Route path = "/unauthorized" element = {<UnauthorizedPage />}></Route>
             </Route>
         </Routes>

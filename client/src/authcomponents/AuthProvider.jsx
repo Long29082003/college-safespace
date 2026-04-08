@@ -5,10 +5,11 @@ export const AuthContext = createContext();
 
 export const AuthProvider = () => {
     const [ auth, setAuth ] = useState({});
+    const [ persistLoginLoading, setPersistLoginLoading ] = useState(true);
 
     return (
-        <AuthContext.Provider value = {{auth, setAuth}}>
+        <AuthContext.Provider value = {{auth, setAuth, persistLoginLoading, setPersistLoginLoading}}>
             <Outlet/>
         </AuthContext.Provider>
     )
-};
+};  

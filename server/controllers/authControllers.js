@@ -111,12 +111,13 @@ export async function handleUserLogin (req, res) {
 
 export async function handleRefreshToken (req, res) {
     const cookies = req.cookies;
-    if (!cookies) return res.sendStatus(401);
     const returnedRefreshToken = cookies["jwt"];
+    console.log(cookies);
+    if (!returnedRefreshToken) return res.sendStatus(401);
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
-    const sql = `SELECT username FROM users
+    const sql = `SELECT username, roles FROM users
                     WHERE refresh_token = ?
     `;
 
@@ -131,6 +132,7 @@ export async function handleRefreshToken (req, res) {
             , (error, decoded) => {
                 //? Add another error handling in case refreshToken expires
                 if (error || decoded?.username !== foundUser.username) return res.sendStatus(403);
+                const userRoles = JSON.parse(foundUser.roles);
 
                 const newAccessToken = jwt.sign(
                     {
@@ -140,7 +142,7 @@ export async function handleRefreshToken (req, res) {
                     { expiresIn: "15s"}
                 );
 
-                return res.json({newAccessToken});
+                return res.json({newAccessToken, roles: userRoles});
             }
         )
 

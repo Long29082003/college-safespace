@@ -7,11 +7,12 @@ export const useRefreshToken = () => {
     const refresh = async () => {
         try {
             const response = await axios.get("/api/auth/refresh");
-            const { newAccessToken } = response.data;
+            const { newAccessToken, roles } = response.data;
             setAuth(prev => {
                 return {
                     ...prev,
-                    accessToken: newAccessToken
+                    accessToken: newAccessToken,
+                    roles
                 };
             });
             return newAccessToken;

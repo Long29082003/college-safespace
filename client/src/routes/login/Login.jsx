@@ -74,7 +74,10 @@ export function Login () {
                 </div>
                 
                 <div className="checkbox-container">
-                    <input id = "persist-checkbox" type="checkbox" />
+                    <input 
+                        id = "persist-checkbox" 
+                        type="checkbox" 
+                    />
                     <label htmlFor = "persist-checkbox">Stay logged in</label>
                 </div>
 
