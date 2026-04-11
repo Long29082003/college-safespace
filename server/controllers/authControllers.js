@@ -1,5 +1,6 @@
 //Todo: Handle case where username match with existing users ✅
-//Todo: Handling CORS issues
+//Todo: Handling CORS issues ✅
+//Todo: Make refreshToken cookie expires sooner and see what's up
 import { execute, fetchAll } from "../database/wrapper-functions.js";
 import sqlite3 from "sqlite3";
 import path from "node:path";
@@ -52,8 +53,9 @@ export async function handleUserRegistration (req, res) {
 
 export async function handleUserLogin (req, res) {
 
-    const { username, password } = req.body;
+    const { username, password, persistLogin } = req.body;
     if (!username || !password) return res.sendStatus(400);
+    console.log(persistLogin);
 
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
@@ -86,7 +88,8 @@ export async function handleUserLogin (req, res) {
 
         const refreshToken = jwt.sign(
             {
-                username: userData.username
+                username: userData.username,
+                persist: persistLogin
             },  
             REFRESH_KEY,
             { expiresIn : "10m" }
@@ -94,11 +97,14 @@ export async function handleUserLogin (req, res) {
 
         await execute(db, changeRefreshTokenSql, [refreshToken, userData.username]);
        
-        res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 10 * 60 * 1000, sameSite: "Lax", secure: false});
+        //? Send session-cookie when user dont want persistLogin, send normal cookie when user want persistlogin 
+        if (persistLogin) res.cookie("jwt", refreshToken, {httpOnly: true, maxAge: 10 * 60 * 1000, sameSite: "Lax", secure: false});
+        else res.cookie("jwt", refreshToken, {httpOnly: true, sameSite: "Lax", secure: false});
+
         res.json({
             accessToken,
             roles: JSON.parse(userData.roles),
-            user: userData.username
+            user: userData.username,
         });
         
     } catch (error) {
@@ -112,7 +118,6 @@ export async function handleUserLogin (req, res) {
 export async function handleRefreshToken (req, res) {
     const cookies = req.cookies;
     const returnedRefreshToken = cookies["jwt"];
-    console.log(cookies);
     if (!returnedRefreshToken) return res.sendStatus(401);
 
     const db = new sqlite3.Database(path.join("database", "database.db"));

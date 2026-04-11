@@ -12,14 +12,8 @@ export async function handlePostSubmit (req, res) {
     if (!name) name = "Anonymous";
     if (!recipient) recipient = "The multiverse";
 
-    // const db = await getDbConnection();
-    // await db.run(`INSERT INTO posts 
-    //             (name, recipient, feelings, message) 
-    //             VALUES (?, ?, ?, ?)
-    //         `, [name, recipient, JSON.stringify(feelings), message]);
-    // await db.close();
     const db = new sqlite3.Database(path.join("database", "database.db"));
-    const sql = `INSERT INTO posts 
+    const sql = `INSERT INTO submitted_posts 
                 (name, recipient, feelings, message) 
                 VALUES (?, ?, ?, ?)
             `;

@@ -76,4 +76,30 @@ const createReactionsTable = async () => {
     console.log("Function ended");
 };
 
-createReactionsTable();
+const createSubmittedPostsTable = async () => {
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        CREATE TABLE IF NOT EXISTS submitted_posts (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            recipient TEXT NOT NULL,
+            feelings TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP
+        )
+    `
+
+    try {
+        await execute(db, sql)
+        console.log("Create table succesfully");
+    } catch (error) {
+        console.log("Error creating table", error);
+    } finally {
+        db.close();
+    };
+
+    console.log("Function ended");
+};
+
+createSubmittedPostsTable();

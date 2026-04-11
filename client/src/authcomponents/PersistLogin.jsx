@@ -10,7 +10,6 @@ export function PersistLogin () {
     useEffect(() => {
         const fastAuth = async () => {
             const response = await refresh();
-            console.log("hello world!");
             setPersistLoginLoading(false);
         };
 

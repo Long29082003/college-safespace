@@ -24,7 +24,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 export function MorePosts () {
     //? States
     const [ posts, setPosts ] = useState([]);
-    const [ displayState, setDisplayState ] = useState("default");
+    const [ displayState, setDisplayState ] = useState("flex");
     const [ loading, setLoading ] = useState(false);
 
     //? Reference
@@ -122,16 +122,16 @@ export function MorePosts () {
                 <div className="utils-bar">
                     <div className="display-filter">
                         <div 
-                            className={clsx("filter-container", displayState === "default" ? "choosen" : false)}
-                            onClick = {() => displayState !== "default" && setDisplayState("default")}
-                        >
-                            <FaRegRectangleList className = "display-filter-icon"/>
-                        </div>
-                        <div 
                             className={clsx("filter-container", displayState === "flex" ? "choosen" : false)}
                             onClick = {() => displayState !== "flex" && setDisplayState("flex")}
                         >
                             <AiOutlineAppstore className = "display-filter-icon"/>
+                        </div>
+                        <div 
+                            className={clsx("filter-container", displayState === "default" ? "choosen" : false)}
+                            onClick = {() => displayState !== "default" && setDisplayState("default")}
+                        >
+                            <FaRegRectangleList className = "display-filter-icon"/>
                         </div>
                     </div>
 

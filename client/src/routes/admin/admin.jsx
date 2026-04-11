@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
+import { ControlPanel } from "./components/controlpanel.jsx"
 import { Dashboard } from "./components/dashboard.jsx";
 import { lerp } from "./utils.js";
 
@@ -9,14 +11,20 @@ import { FaGear } from "react-icons/fa6";
 import { IoIosLogOut } from "react-icons/io";
 import { CgViewComfortable } from "react-icons/cg";
 
-
 import JJCLogo from "../../assets/jjc-logo.png";
+
+import axios from "../../api/axios.js";
+import { useAuth } from "../../hooks/useAuth.js";
 
 import "./admin.css";
 
 export function AdminPage () {
     const [ navAnimationProgress, setNavAnimationProgress ] = useState(0);
     const [ userBoxHovered, setUserBoxHovered ] = useState(false);
+    const { auth, setAuth } = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     //? References
     const navContentRef = useRef(null);
@@ -31,6 +39,17 @@ export function AdminPage () {
         const clamp = (progress) => Math.max(Math.min(1, progress), 0);
         let progress = clamp((animationRangeStart - top) / animationRange);
         setNavAnimationProgress(progress);
+    };
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get("/api/authorization/logout");
+            if (auth) setAuth({});
+            navigate("/login", {state: {from: location}}, {replace: true});
+        } catch (error) {
+            console.log(error);
+            console.log("Cannot logout");  
+        };
     };
 
     return (
@@ -91,7 +110,7 @@ export function AdminPage () {
                                     <FaGear id = "settings-icon"/>
                                     <span>Settings</span>                                
                                 </div>
-                                <div className="log-out-container">
+                                <div className="log-out-container" onClick = {handleLogout}>
                                     <IoIosLogOut id = "log-out-icon"/>
                                     <span>Log out</span>
                                 </div>
@@ -129,6 +148,9 @@ export function AdminPage () {
                     ></div>
                 </div>
             </nav>
+            
+            <ControlPanel />
+
             <Dashboard />
             <div className="placeholder"></div>
         </div>

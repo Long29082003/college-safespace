@@ -14,8 +14,9 @@ import "./login.css";
 export function Login () {
     const navigate = useNavigate();
     const location = useLocation();
-    const { setAuth } = useAuth();
+    const { setAuth, persistLogin, setPersistLogin } = useAuth();
     const [ error, setError ] = useState("");
+    const [ password, setPassword ] = useState("");
 
     const handleLogin = (formData) => {
         const Login = async () => {
@@ -23,7 +24,7 @@ export function Login () {
             const password = formData.get("password");
 
             try {
-                const response = await axios.post("/api/auth/login", { username, password}
+                const response = await axios.post("/api/auth/login", { username, password, persistLogin }
                     , {
                         headers: { "Content-Type" : "application/json"},
                         withCredentials: true
@@ -69,14 +70,22 @@ export function Login () {
 
                 <label htmlFor = "password">Password:</label>
                 <div className="input-container">
-                    <input id = "password" name = "password" type="password" />
-                    <FaKey id = "password-icon"/>
+                    <input 
+                        id = "password" 
+                        name = "password" 
+                        type="password"
+                        value = {password}
+                        onChange = {(event) => {setPassword(event.currentTarget.value)}} 
+                    />
+                    {password ? null : <FaKey id = "password-icon"/>}
                 </div>
                 
                 <div className="checkbox-container">
                     <input 
                         id = "persist-checkbox" 
                         type="checkbox" 
+                        defaultChecked = {persistLogin}
+                        onClick = {(event) => {setPersistLogin(event.currentTarget.checked)}}
                     />
                     <label htmlFor = "persist-checkbox">Stay logged in</label>
                 </div>

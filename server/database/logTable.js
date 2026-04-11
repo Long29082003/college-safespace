@@ -6,7 +6,7 @@ const logTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
-        SELECT * FROM users
+        SELECT * FROM submitted_posts
     `;
 
     const res = await fetchAll(db, sql);
