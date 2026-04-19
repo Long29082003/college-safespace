@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import clsx from "clsx";
 
@@ -8,6 +9,8 @@ import "../styles/controlpanel.css";
 
 export function ControlPanel () {
     const [ isPanelToPostsHovered, setIsPanelToPostsHovered ] = useState(false);
+
+    const navigate = useNavigate();
 
     return (
         <div className="control-panel">
@@ -93,7 +96,7 @@ export function ControlPanel () {
                 <div className="background"></div>
             </div>
 
-            <div className="panel-to-submitted-posts"><h3>Submitted Posts</h3></div>
+            <div className="panel-to-submitted-posts" onClick = {() => navigate("/submitted_posts")}><h3>Submitted Posts</h3></div>
             <div className="panel-to-post-settings"><FaCog id = "cog-icon"/><h3>Posts Settings</h3></div>
         </div>
     )

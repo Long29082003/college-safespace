@@ -86,6 +86,7 @@ const createSubmittedPostsTable = async () => {
             recipient TEXT NOT NULL,
             feelings TEXT NOT NULL,
             message TEXT NOT NULL,
+            flagged BOOLEAN NOT NULL DEFAULT FALSE,
             created_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP
         )
     `

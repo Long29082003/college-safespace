@@ -14,7 +14,8 @@ import { Home } from "./routes/home/Home.jsx";
 import { AuthLayout } from "./routes/layout/Layout.jsx";
 import { Login } from "./routes/login/Login.jsx";
 import { Register } from "./routes/register/Register.jsx";
-import { AdminPage } from "./routes/admin/admin.jsx"
+import { AdminPage } from "./routes/admin/admin.jsx";
+import { SubmittedPostsPage } from "./routes/submitted_posts/SubmittedPosts.jsx";
 import { UnauthorizedPage } from "./authcomponents/Unauthorized.jsx";
 
 createRoot(document.getElementById("root")).render(
@@ -31,7 +32,8 @@ createRoot(document.getElementById("root")).render(
                 <Route element = {<PersistLogin />}>
                     <Route element = {<AuthRequired allowedRole = "user" />}>
                         <Route path = "/admin" element = {<AdminPage />}/>
-                    </Route>x
+                        <Route path = "/submitted_posts" element = {<SubmittedPostsPage />}/>
+                    </Route>
                 </Route>
                 
                 <Route path = "/unauthorized" element = {<UnauthorizedPage />}></Route>

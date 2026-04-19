@@ -1,0 +1,16 @@
+.auth-loading-page {
+    position: absolute;
+    inset: 0 0 0 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    p {
+        font-size: 35px;
+        font-family: "Raleway", sans-serif;
+        font-weight: 700;
+        color: rgb(62, 103, 239);
+        transform: translateX(40px);
+    }
+}

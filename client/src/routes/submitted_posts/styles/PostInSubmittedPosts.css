@@ -1,0 +1,63 @@
+.post-in-submitted-posts {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    background-color: white;
+    border-radius: 2px;
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .time {
+        font-family: "Aboreto", sans-serif;
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .name {
+        margin-top: 5px;
+        font-family: "Raleway", sans-serif;
+        font-size: 20px;
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+    .recipient {
+        font-family: "Raleway", sans-serif;
+        font-size: 18px;
+
+        span {
+            font-weight: 600;
+        }
+    }
+
+    .content {
+        margin-top: 10px;
+        font-family: "Raleway", sans-serif;
+        color: rgb(43, 43, 43);
+    }
+
+    #flag-icon {
+        display: none;
+        position: absolute;
+        font-size: 23px;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        cursor: pointer;
+    
+        &:hover {
+            color: rgb(249, 198, 57);
+        }
+    }
+}
+
+.post-in-submitted-posts.hovered {
+    #flag-icon {
+        display: inline-block;
+    }
+}

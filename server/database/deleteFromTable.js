@@ -6,8 +6,7 @@ const deleteFromTable = async () => {
     const db = new sqlite3.Database(path.join("database", "database.db"));
 
     const sql = `
-        DELETE FROM users
-            WHERE id <= 5
+        DROP TABLE submitted_posts;
     `;
 
     try {

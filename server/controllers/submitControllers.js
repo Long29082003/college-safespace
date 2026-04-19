@@ -24,7 +24,6 @@ export async function handlePostSubmit (req, res) {
 
 };
 
-
 export async function handleCommentSubmit (req, res) {
 
     let { commentText, commentorName, postId } = req.body;

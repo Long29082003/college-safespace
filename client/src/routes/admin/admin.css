@@ -176,14 +176,13 @@
             .background {
                 background-color: white;
                 position: absolute;
-                top: -100%;
+                top: -300%;
                 left: 50%;
-                height: 200%;
                 width: 150%;
                 transform: translateX(-50%);
                 border-bottom: 2px solid var(--main-color); 
-                transition: background-color 350ms ease;
-
+                transition: background-color 600ms ease;
+                
                 z-index: -1;
             }
         }
