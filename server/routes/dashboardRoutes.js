@@ -6,8 +6,8 @@ export const dashboardRoute = express.Router();
 
 dashboardRoute.get("/postinfo", verifyJWT, handlePostSummarization);
 
-dashboardRoute.get("/reactioninfo", handleReactionSummarization);
+dashboardRoute.get("/reactioninfo", verifyJWT, handleReactionSummarization);
 
-dashboardRoute.get("/commentinfo", handleCommentSummarization);
+dashboardRoute.get("/commentinfo", verifyJWT, handleCommentSummarization);
 
-dashboardRoute.get("/postwithreactions", handleGetPostForMorePostsScreen);
+dashboardRoute.get("/postwithreactions", verifyJWT, handleGetPostForMorePostsScreen);

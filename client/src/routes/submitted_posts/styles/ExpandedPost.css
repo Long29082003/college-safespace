@@ -1,0 +1,84 @@
+.expanded-post {
+    font-family: "Raleway", sans-serif;
+    width: 100%;
+    min-height: 100%;
+    padding: 50px 45px;
+    background-color: white;
+    animation: fadeIn 250ms ease-in-out forwards;
+
+    .header {
+        padding-bottom: 15px;
+        border-bottom: 2px solid black;
+
+        .exit {
+            display: flex;
+            justify-content: flex-end;
+            cursor: pointer;
+
+            #exit-icon {
+                width: 35px;
+                height: 35px;
+                display: grid;
+                place-items: center;
+                border: 2px solid black;
+                font-size: 17px;
+
+                &:hover {
+                    border-color: rgb(167, 4, 4);
+                    color: rgb(167, 4, 4);
+                }
+            }
+        }
+
+        .basic-info {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+
+            .name {
+                font-size: 32px;
+                font-weight: 600;
+            }
+
+            .time {
+                font-size: 25px;
+            }
+        }
+
+        .feelings {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 18px;
+
+            .feeling-chip {
+                font-weight: 500;
+                &::before {
+                    content: "▪";
+                    margin-right: 3px;
+                }
+            }
+        }
+    }
+
+    .content {
+        font-size: 17px;
+        margin-top: 40px;
+
+        .recipient {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    } to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}

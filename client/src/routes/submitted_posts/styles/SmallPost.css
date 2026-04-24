@@ -1,0 +1,131 @@
+.post-in-submitted-posts {
+    position: relative;
+    width: calc(100% - 30px);
+    height: 150px;
+    transition: transform 250ms ease,
+                opacity 100ms ease;
+
+    .move-box {
+        --padding-x: 25px;
+
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 8px;
+        padding: var(--padding-x) 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        cursor: pointer;   
+        transition: padding-right 200ms ease-in-out,
+                    transform 200ms ease-in-out,
+                    opacity 100ms ease;
+
+        .click-area {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .time {
+            pointer-events: none;
+            font-family: "Aboreto", sans-serif;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .name {
+            pointer-events: none;
+            margin-top: 5px;
+            font-family: "Raleway", sans-serif;
+            font-size: 20px;
+
+            span {
+                font-weight: 600;
+            }
+        }
+
+        .recipient {
+            pointer-events: none;
+            font-family: "Raleway", sans-serif;
+            font-size: 18px;
+
+            span {
+                font-weight: 600;
+            }
+        }
+
+        .content {
+            pointer-events: none;
+            margin-top: 10px;
+            font-family: "Raleway", sans-serif;
+            color: rgb(43, 43, 43);
+        }
+
+        .flag-container {
+            height: 100%;
+            width: var(--padding-x);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            position: absolute;
+            right: 0px;
+            background-color: black;
+            display: grid;
+            place-items: center;
+            opacity: 0;
+            transition: opacity 250ms ease-out;
+
+            #flag-icon {
+                font-size: 16px;
+                color: white;
+                cursor: pointer;
+                transition: scale 200ms ease;
+            }
+
+            &:hover {
+
+                #flag-icon {
+                    color: rgb(255, 239, 183);
+                    scale: 1.1;
+                }
+            }
+        }
+    }
+
+
+
+    &:hover {
+
+        .move-box {
+
+            padding-right: 40px;
+            transform: translateX(-15px);
+
+            .click-area {
+                width: calc(100% - var(--padding-x));
+            }
+
+            .flag-container {
+                opacity: 1;
+
+                #flag-icon {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+
+    &.closed {
+        animation: collapseHeight 400ms ease-out forwards;
+    }
+}
+
+
+@keyframes collapseHeight {
+    to {
+        height: 0px;
+        padding: 0px;
+    }
+}

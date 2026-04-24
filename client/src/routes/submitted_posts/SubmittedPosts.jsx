@@ -1,29 +1,41 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { PostInSubmittedPosts } from "./components/PostInSubmittedPosts";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate.js";
+
+import { SmallPost } from "./components/SmallPost.jsx";
+import { ExpandedPost } from "./components/ExpandedPost.jsx";
 
 import clsx from "clsx";
 
 import { RiResetRightFill } from "react-icons/ri";
 import { BiSortAlt2 } from "react-icons/bi";
+import { HiArchiveBoxXMark } from "react-icons/hi2";
+import { FaRegTrashCan } from "react-icons/fa6";
 import "./SubmittedPosts.css";
 
 export function SubmittedPostsPage () {
+    const axiosPrivate = useAxiosPrivate();
     //? States
     const [ displayFlaggedPosts, setDisplayFlaggedPosts ] = useState(false);
     const [ submittedPosts, setSubmittedPosts ] = useState([]);
+    const [ displayedPost, setDisplayedPost ] = useState(null);
+
+    //? These two go together
+    const [ popUpMessage, setPopUpMessage ] = useState(null);
+    const [ popUpClick, setPopUpClick ] = useState(0);
 
     //? Reference used in fetching data
+    const popUpReference = useRef(null);
     const earliestPostTime = useRef("");
     const latestPostTime = useRef("");
     const latestPostId = useRef("");
     const reachEndDB = useRef(false);
 
     const fetchSubmittedPosts = async (limit) => {
-        const response = await fetch(`/api/admin/submitted-posts?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
-        if (response.ok) {
-            const data = await response.json();
+        const response = await axiosPrivate.get(`/api/admin/submitted-posts?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
+        if (response.statusText === "OK") {
+            const data = response.data;
             if (data.status === "normal") {
                 const newEarliestTime = new Date(data["new_earliest_time"]);
                 earliestPostTime.current = !earliestPostTime.current || newEarliestTime > earliestPostTime.current ? newEarliestTime : earliestPostTime.current;
@@ -43,10 +55,31 @@ export function SubmittedPostsPage () {
         fetchSubmittedPosts(10);
     }, []);
 
+    //? Set up a pop up whenever popUpMessage and popUpCLick change
+    useEffect(() => {
+        if (!popUpMessage) return;
+        const popUp = popUpReference.current;
+        popUp.animate(
+            [   
+                { bottom: "80px", opacity: 0, offset: 0},
+                { bottom: "100px", opacity: 1, offset: 0.1 },
+                { bottom: "100px", opacity: 1, offset: 0.6 },
+                { bottom: "100px", opacity: 0, offset: 1}
+            ],
+            { duration: 2000, fill: "forwards", easing: "ease" }
+        )
+        
+    }, [popUpClick]);
+
     const displayPostInSubmittedPosts = () =>  {
         return submittedPosts.map(post => {
-            return <PostInSubmittedPosts
+            return <SmallPost
                         postInfo = {{...post}}
+                        setSubmittedPosts = {setSubmittedPosts}
+                        displayedPost = {displayedPost}
+                        setDisplayedPost = {setDisplayedPost}
+                        setPopUpMessage = {setPopUpMessage}
+                        setPopUpClick = {setPopUpClick}
                         key = {post.id}
                    />
         });
@@ -79,6 +112,7 @@ export function SubmittedPostsPage () {
                             onClick = {handleFlaggedPostsClicked}
                         >Flagged</span>
                     </div>
+                    
                     <div className="submitted-posts-container"
                         style = {submittedPosts.length === 0 ? {justifyContent: "center", alignItems: "center"} : {}}
                     >
@@ -88,10 +122,26 @@ export function SubmittedPostsPage () {
                     </div>
                 </div>
                 <div className="column-2">
-                    <div className="utils"></div>
-                    <div className="display"></div>
+                    {displayedPost !== null ? 
+                    <div className="utils">
+                        <div className="reject-button">Delete<FaRegTrashCan id = "trash-can-icon"/></div>
+                        <div className="accept-button">Accept<span>✅</span></div>
+                    </div>: null}
+                    <div className="display">
+                        {displayedPost !== null ? 
+                        <ExpandedPost 
+                            displayedPostInfo = {displayedPost}
+                            setDisplayedPost = {setDisplayedPost}
+                        /> : 
+                        <div className = "no-displayed-post">
+                            <HiArchiveBoxXMark />
+                            <span>No displayed post</span>
+                        </div>}
+                    </div>
                 </div>
             </div>
+
+            {popUpMessage ? <div className="pop-up" ref = {popUpReference}>{popUpMessage}</div> : null}
         </div>
     )
 };

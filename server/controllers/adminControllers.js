@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { fetchAll } from "../database/wrapper-functions.js";
+import { fetchAll, execute } from "../database/wrapper-functions.js";
 import path from "node:path";
 
 import { convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
@@ -72,4 +72,30 @@ export const handleGetSubmittedPosts = async (req, res) => {
         status = "no-post";
         res.json({status});
     };
+};
+
+export const handleFlagSubmittedPost = async (req, res) => {
+    const { id } = req.body;
+
+    const sql = `
+        UPDATE submitted_posts
+            SET flagged = CASE 
+                WHEN flagged = 0 THEN 1
+                WHEN flagged = 1 THEN 0
+                ELSE flagged = 0
+                END
+            WHERE id = ?;
+    `;
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    try {
+        await execute(db, sql, [id]);
+        res.json({ id });
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(501);
+    } finally {
+        db.close();
+    }
 };

@@ -1,5 +1,6 @@
 .submitted-posts-page {
-    padding: 50px 50px;
+    position: relative;
+    padding: 25px 50px;
 
     a {
         font-family: "Raleway", sans-serif;
@@ -14,7 +15,7 @@
     }
 
     .container {
-        margin-top: 50px;
+        margin-top: 25px;
         width: 100%;
         height: 85vh;
         display: flex;
@@ -28,7 +29,10 @@
             height: 100%;
             width: 30%;
             border-radius: 20px;
-            overflow-y: hidden;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
             
             .utils {
                 padding: 0px 15px;
@@ -55,6 +59,7 @@
             }
 
             .filter-by-category {
+                width: 100%;
                 padding: 16px 0px;
                 display: flex;
                 align-items: center;
@@ -79,9 +84,15 @@
             }
 
             .submitted-posts-container {
+                width: calc(100% + 30px);
                 display: flex;
                 flex-direction: column;
                 column-gap: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                row-gap: 15px;
+                overflow-y: auto;
 
                 .no-post-notification {
                     font-family: "Cairo", sans-serif;
@@ -92,8 +103,104 @@
         }
 
         .column-2 {
+            position: relative;
             height: 100%;
             width: 70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            row-gap: 15px;
+
+            .utils {
+                padding: 15px 0px;
+                padding-right: 30px;
+                width: 100%;
+                height: 50px;
+                background-color: white;
+                border-radius: 4px 4px 0 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-end;
+                column-gap: 25px;
+                opacity: 0;
+                transform: translateY(50px);
+                animation: fadeIn 250ms ease-in-out forwards 50ms;
+
+                .reject-button, .accept-button {
+                    border: 2px solid black;
+                    border-radius: 2px;
+                    padding: 0px 15px;
+                    font-family: "Cairo", sans-serif;
+                    font-weight: 700;
+                    font-size: 18px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    column-gap: 8px;
+                    transition: background-color 100ms linear;
+
+                    #trash-can-icon {
+                        color: rgb(203, 5, 5);
+                    }
+                }
+
+                .reject-button:hover {
+                    background-color: rgb(253, 232, 232);
+                }
+
+                .accept-button:hover {
+                    background-color: rgb(227, 255, 227);
+                }
+
+                .icon {
+                    font-size: 25px;
+                    font-weight: 600;
+                    transition: 500ms ease;
+
+                    &:hover {
+                        scale: 1.02;
+                        color: var(--main-color);
+                    }
+                }
+            }
+
+            .display {
+                width: 100%;
+                height: calc(100% - 65px);
+                overflow-y: auto;
+
+                .no-displayed-post {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    column-gap: 30px;
+
+                    font-family: "Raleway", sans-serif;
+                    font-size: 37px;
+                    color: var(--gray);
+                }
+            }
         }
+    }
+
+    .pop-up {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 30px;
+        background-color: rgb(238, 244, 253);
+        font-family: "Raleway", sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--blue);
+        pointer-events: none;
     }
 }
