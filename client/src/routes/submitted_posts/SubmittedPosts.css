@@ -198,7 +198,7 @@
         padding: 15px 30px;
         background-color: rgb(238, 244, 253);
         font-family: "Raleway", sans-serif;
-        font-weight: 700;
+        font-weight: bold;
         font-size: 20px;
         color: var(--blue);
         pointer-events: none;

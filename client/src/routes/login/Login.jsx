@@ -35,6 +35,7 @@ export function Login () {
                 navigate("/admin", {state: {from: location}}, {replace: true});
 
             } catch (error) {
+                setPassword("");
                 if (!error?.response) {
                     setError("No response from server");
                 } else if (error.response?.status === 400) {

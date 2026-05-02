@@ -20,7 +20,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { feelings, expandedFeelings } from "../utilcomponents/feelingchips.js";
 import "../styles/sharescreen.css";
 
-import { tilting } from "../utilFunctions/utils.js";
+import { tilting, wordCount } from "../utilFunctions/utils.js";
 
 export function ShareScreen () {
     //? States
@@ -41,6 +41,9 @@ export function ShareScreen () {
     const questionThree = useRef(null);
     const questionFourth = useRef(null);
     const questionSubmit = useRef(null);
+
+    //? Derived state
+    const messageWordCount = wordCount(textInTextArea);
 
     //? UI rendering
 
@@ -163,8 +166,11 @@ export function ShareScreen () {
         setShowHiddenFeelingsContainer(true);
     };
 
-    const handleTextAreaInput = (event) => {
-        setTextInTextArea(event.currentTarget.value);
+    //? If the user write pass the word limit then restrict them writing
+    const handleTypingOnMessage = (event) => {
+        const keyStroke = event.nativeEvent.data;
+        if (messageWordCount === 1000 && keyStroke === " ") return; 
+        else setTextInTextArea(event.currentTarget.value);
     };
 
     const handleFormPostSubmit = (formData) => {
@@ -232,7 +238,7 @@ export function ShareScreen () {
             setShowHiddenFeelingsContainer(false);
             setFormSubmitLoading(null);
         }, 1000)
-    }
+    };
 
     return (
         <div 
@@ -297,7 +303,18 @@ export function ShareScreen () {
 
                     <div className="question-four" tabIndex = {0} onKeyDown = {handleKeyDownOnQuestions} ref = {questionFourth}>
                         <h1>Write your message</h1>
-                        <textarea name = "message" onInput = {handleTextAreaInput}/>
+                        <div className="textarea-container">
+                            <div className="message-word-count">
+                                <span>Words</span>
+                                <span>
+                                    <span className="count" style = {messageWordCount >= 10 ? {color: "rgb(218, 64, 64)"} : null}>
+                                        {messageWordCount}
+                                    </span><span> / 1000</span>
+                                </span>
+                            </div>
+                            <textarea value = {textInTextArea} name = "message" onChange = {handleTypingOnMessage} />
+                        </div>
+                        
                         <div className="questions-button-container">
                             <Button type = "button" callback = {handleQuestionFourPreviousButtonClick}>Previous</Button>
                             <Button type = "button" callback = {handleQuestionFourNextButtonClick}>Next</Button>

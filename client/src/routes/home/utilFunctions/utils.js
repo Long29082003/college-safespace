@@ -16,3 +16,9 @@ export const tilting = (event, ref, translateScale, rotateScale) => {
                                                 translateY(${translateYPixel}px)`;
 };
 
+export const wordCount = (word) => {
+    return word.trim()
+               .split(/\s+/)
+               .filter(word => word.length > 0)
+               .length
+};

@@ -12,12 +12,13 @@
 
         .exit {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             cursor: pointer;
 
             #exit-icon {
                 width: 35px;
                 height: 35px;
+                padding: 6px;
                 display: grid;
                 place-items: center;
                 border: 2px solid black;
