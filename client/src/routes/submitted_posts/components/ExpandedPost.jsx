@@ -1,8 +1,17 @@
 import { FaXmark } from "react-icons/fa6";
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 import "../styles/ExpandedPost.css";
 
-export function ExpandedPost({displayedPostInfo, setDisplayedPost}) {
+export function ExpandedPost(
+    {
+        displayedPostInfo, 
+        isProceedLoading, 
+        setDisplayedPost, 
+        setIsRequestFailedMsgOut,
+        setDisplaySuccessfulProceed
+    }) {
     let { id, name, recipient, feelings, message, created_at } = displayedPostInfo;
 
     message = message.split("\n");
@@ -29,20 +38,34 @@ export function ExpandedPost({displayedPostInfo, setDisplayedPost}) {
         });
     };
 
+    const handleExit = () => {
+        setDisplayedPost(null);
+        setIsRequestFailedMsgOut(false);
+        setDisplaySuccessfulProceed({state: false, message: null});
+    };
+
     return (
-        <div className = "expanded-post">
-            <div className="header">
-                <div className="exit" onClick = {() => setDisplayedPost(null)}><FaXmark id = "exit-icon"/></div>
-                <div className="basic-info">
-                    <div className="name">{name}</div>
-                    <div className="time">{created_at}</div>
+        <div className = "expanded-post" style = {isProceedLoading ? {display: "grid", placeItems: "center"} : null}>
+            {isProceedLoading === false ? 
+            <>
+                <div className="header">
+                    <div className="exit" onClick = {handleExit}><FaXmark id = "exit-icon"/></div>
+                    <div className="basic-info">
+                        <div className="name">{name}</div>
+                        <div className="time">{created_at}</div>
+                    </div>
+                    <div className="feelings">Feeling {displayFeelings()}</div>
                 </div>
-                <div className="feelings">Feeling {displayFeelings()}</div>
-            </div>
-            <div className="content">
-                <div className="recipient">To {recipient}</div>
-                {messageWithLineBreak}
-            </div>
+                <div className="content">
+                    <div className="recipient">To {recipient}</div>
+                    {messageWithLineBreak}
+                </div>
+            </> : <DotLottieReact
+                      src="/lottie-animation/Insider-loading.lottie"
+                      loop
+                      autoplay
+                      style = {{height: "300px", width: "300px"}}
+                  />}
         </div>
     )    
 }

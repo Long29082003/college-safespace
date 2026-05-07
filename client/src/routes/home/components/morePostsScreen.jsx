@@ -5,7 +5,6 @@ import { States } from "../Home.jsx";
 import "../styles/morepostsscreen.css";
 import { Button } from "../utilcomponents/button.jsx";
 import { MorePosts } from "../utilcomponents/moreposts-screen-components/moreposts.jsx";
-import { Dashboard } from "../utilcomponents/moreposts-screen-components/dashboard.jsx";
 
 import clsx from "clsx";
 
@@ -34,7 +33,6 @@ export function MorePostsScreen () {
     const displayContent = () => {
         if (contentToDisplay === null) return;
         else if (contentToDisplay === "posts") return <MorePosts/>;
-        else if (contentToDisplay === "summary") return <Dashboard/>
     };
 
     const handleExit = () => {
@@ -48,9 +46,6 @@ export function MorePostsScreen () {
                 <p 
                     className={clsx({"nav": true, "choosen": contentToDisplay === "posts"})} 
                     onClick = {handleDisplayPosts}>Posts</p>
-                <p 
-                    className={clsx({"nav": true, "choosen": contentToDisplay === "summary"})} 
-                    onClick = {handleDisplaySummary}>Summary</p>
                 <Button id = "exit-button" callback = {handleExit}>X</Button>
             </div>
 

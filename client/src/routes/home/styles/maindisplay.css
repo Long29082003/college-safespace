@@ -174,7 +174,8 @@
         overflow: hidden;
         
         height: 75px;
-        transition: height 500ms ease;
+        transition: height 500ms ease,
+                    left 1.5s cubic-bezier(0.66, 0.02, 0.25, 1);
 
         .head {
             display: flex;
@@ -375,6 +376,10 @@
 }
 
 /* * Buttons move */
+.is-not-scrolling .main-display .account-box {
+    left: calc(-100% - 10px);
+}
+
 .is-not-scrolling .main-display #more-button-hover-area {
     right: calc(-100% - 10px);
 }

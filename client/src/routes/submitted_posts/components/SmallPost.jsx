@@ -8,10 +8,21 @@ import clsx from "clsx";
 
 import "../styles/SmallPost.css";
 
+import { FaRegTrashCan } from "react-icons/fa6";
 import { FaFlag } from "react-icons/fa";
 
-
-export function SmallPost ({postInfo, setSubmittedPosts, displayedPost, setDisplayedPost, setPopUpMessage, setPopUpClick}) {
+export function SmallPost (
+    {
+        displayFlaggedPosts,
+        postInfo, 
+        setSubmittedPosts, 
+        displayedPost, 
+        setDisplayedPost, 
+        setPopUpMessage, 
+        setPopUpClick, 
+        setIsRequestFailedMsgOut,
+        setDisplaySuccessfulProceed,
+    }) {
     const axiosPrivate = useAxiosPrivate();
     //? States
     const [ isHovered, setIsHovered ] = useState(false);
@@ -34,8 +45,11 @@ export function SmallPost ({postInfo, setSubmittedPosts, displayedPost, setDispl
     message = message.length >= 50 ? message.slice(0, 51) + " ..." : message;
 
     const handleClick = () => {
-        if (displayedPost?.id === id) setDisplayedPost(null);
-        else {
+        setIsRequestFailedMsgOut(false);
+        setDisplaySuccessfulProceed({state: false, message: null});
+        if (displayedPost?.id === id) {
+            setDisplayedPost(null);
+        } else {
             setDisplayedPost({...postInfo});
         };
     };
@@ -44,19 +58,45 @@ export function SmallPost ({postInfo, setSubmittedPosts, displayedPost, setDispl
         const sendFlagPostRequest = async (id) => {
             try {
                 const response = await axiosPrivate.post("/api/admin/flag-submitted-post", { id });
-                console.log(response.data);
                 const { id: returnedId } = response.data.id;
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 600));
                 setSubmittedPosts(prev => {
                     const filter = prev.filter(post => post.id !== returnedId);
                     return filter;
                 });
+                setPopUpMessage("Post Flagged");
             } catch (error) {
                 console.log(error);
                 if (!error?.response) setPopUpMessage("Error: Cannot connect to server");
                 else if (error.response?.status === 401) setPopUpMessage("Error: Cannot authorize request");
                 else if (error.reponse?.status === 403) setPopUpMessage("Error: User does not have the credential");
                 else if (error.response?.status === 500) setPopUpMessage("Error: Internal server error"); 
+            } finally {
+                setPopUpClick(prev => prev + 1);
+                setDisplayedPost(null);
+            };
+        };
+
+        const sendDeletePostRequest = async (id) => {
+            try {
+                const response = await axiosPrivate.post("/api/admin/delete-submitted-post", {
+                                                            id
+                                                        });
+                const { id: returnedId } = response.data;
+                await new Promise(resolve => setTimeout(resolve, 600));
+                setSubmittedPosts(prev => {
+                    const filter = prev.filter(post => post.id !== returnedId);
+                    return filter;
+                });
+                setPopUpMessage("Post Deleted");
+            } catch (error) {
+                console.log(error);
+                if (!error?.response) setPopUpMessage("Error: Cannot connect to server");
+                else if (error.response?.status === 400) setPopUpMessage("Error: Bad request");
+                else setPopUpMessage(`Error ${error.response?.status}: Something went wrong`); 
+            } finally {
+                setPopUpClick(prev => prev + 1);
+                setDisplayedPost(null);
             };
         };
 
@@ -67,12 +107,10 @@ export function SmallPost ({postInfo, setSubmittedPosts, displayedPost, setDispl
         };
 
         Object.assign(smallPost.style, styles);
-        setPopUpMessage("Post Flagged");
-        setPopUpClick(prev => prev + 1);
-        setDisplayedPost(null);
         setIsClosed(true);
 
-        sendFlagPostRequest(id);
+        if (!displayFlaggedPosts) sendFlagPostRequest(id); 
+        else if (displayFlaggedPosts) sendDeletePostRequest(id);
     };
 
     return (
@@ -89,7 +127,7 @@ export function SmallPost ({postInfo, setSubmittedPosts, displayedPost, setDispl
                 <div className="recipient"><span>To: </span>{recipient}</div>
                 <div className="content">{message}</div>
                 <div className="flag-container" onClick = {handleFlagClick}>
-                    <FaFlag id = "flag-icon" />
+                    {displayFlaggedPosts ? <FaRegTrashCan id = "trashcan-icon"/> : <FaFlag id = "flag-icon" />}
                 </div>
             </div>
         </div>

@@ -38,7 +38,7 @@ export function MorePosts () {
 
     const fetchMorePostsScreenData = async () => {
         try {
-            const postsResult = await fetch(`/api/dashboard/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}&random_seed=${randomSeed.current}`);
+            const postsResult = await fetch(`/api/get/postwithreactions?filter_state=${filterState.current}&earliest_time=${earliestTime.current && earliestTime.current.toISOString()}&latest_time=${latestTime.current && latestTime.current.toISOString()}&latest_id=${latestId.current}&random_seed=${randomSeed.current}`);
             const data = await postsResult.json();
 
             await new Promise(resolve => setTimeout(resolve, 700));

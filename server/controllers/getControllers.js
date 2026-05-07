@@ -3,6 +3,7 @@ import { fetchAll } from "../database/wrapper-functions.js";
 import path from "node:path"
 
 import { convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
+import { returnStringOfIds } from "../utils/util_functions.js";
 
 export const handleGetPosts = async (req, res) => {
     
@@ -156,4 +157,130 @@ export const handleGetReactions = async (req, res) => {
     } finally {
         db.close();
     };
+};
+
+
+
+const sqlBasedOnFilter = {
+    default: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                ORDER BY created_at DESC
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+            SELECT * FROM posts
+                WHERE created_at > ?
+                OR (created_at = ? AND id < ?)
+                OR created_at < ?
+                ORDER BY created_at DESC, id DESC
+                LIMIT 10
+        `
+    },
+    anonymous_filter: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                WHERE name = "Anonymous"
+                ORDER BY created_at DESC
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+            SELECT * FROM posts
+                WHERE name = "Anonymous" AND (created_at > ?
+                OR (created_at = ? AND id < ?)
+                OR created_at < ?)
+                ORDER BY created_at DESC, id DESC
+                LIMIT 10
+        `
+    },
+    randomized_filter: {
+        "first-fetch-sql": `
+            SELECT * FROM posts
+                ORDER BY ((id + ?) * 1103515245 + 12345) % 2147483648
+                LIMIT 10
+        `,
+        "subsequent-fetch-sql": `
+        WITH ordered AS (
+            SELECT *,
+                ROW_NUMBER() OVER (
+                ORDER BY ((id + ?) * 1103515245 + 12345) % 2147483648
+                ) AS rn
+            FROM posts
+            )
+            SELECT *
+            FROM ordered
+            WHERE rn > (SELECT rn FROM ordered WHERE id = ?)
+            LIMIT 10;
+        `
+    }
+
+}
+
+export async function handleGetPostWithReactions (req, res) {
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    let { filter_state, earliest_time, latest_time, latest_id, random_seed } = req.query;
+
+    const sqlSet = sqlBasedOnFilter[filter_state];
+    const isFirstFetch = !earliest_time || !latest_time || !latest_id;
+    let sql;
+    let posts;
+
+    try {
+        if (isFirstFetch) {
+            sql = sqlSet["first-fetch-sql"];
+
+            if (filter_state === "default" || filter_state === "anonymous_filter") posts = await fetchAll(db, sql);
+            else if (filter_state === "randomized_filter") posts = await fetchAll(db, sql, [random_seed]);
+        } else {
+            earliest_time = convertUTCStringToDbTime(earliest_time);
+            latest_time = convertUTCStringToDbTime(latest_time);
+            latest_id = Number(latest_id);
+            sql = sqlSet["subsequent-fetch-sql"];
+
+            if (filter_state === "default" || filter_state === "anonymous_filter") posts = await fetchAll(db, sql, [earliest_time, latest_time, latest_id, latest_time]);
+            else if (filter_state === "randomized_filter") posts = await fetchAll(db, sql, [random_seed, latest_id]);
+        };
+        //? Convert the date in DB format to UTC formate for all posts in posts
+        posts.forEach((post, index) => {posts[index].created_at = convertDbTimeToUTCString(post.created_at)});
+
+        const newEarliestTime = posts[0]["created_at"]
+        const newLatestTime = posts[posts.length - 1]["created_at"]
+        const newLatestId = posts[posts.length - 1]["id"];
+
+        const listOfIds = posts.map(post => post.id);
+        
+        const postsReactionSql = `
+                SELECT post_id, COUNT(id) as reactions_count
+                FROM reactions
+                WHERE reactions.post_id IN (${returnStringOfIds(listOfIds)})
+                GROUP BY post_id
+            `
+        
+        const postsReaction = await fetchAll(db, postsReactionSql);
+        const reactionsAddedPosts = posts.map(post => {
+            const count = postsReaction.find(postHasReaction => postHasReaction.post_id === post.id) && 
+                            postsReaction.find(postHasReaction => postHasReaction.post_id === post.id)["reactions_count"]
+                            || 0;
+
+            return {
+                ...post,
+                reaction_count: count
+            };
+        });
+        res.json({
+            earliest_time: newEarliestTime,
+            latest_time: newLatestTime,
+            latest_id: newLatestId,
+            reach_end_db: reactionsAddedPosts.length < 10,
+            reaction_added_posts: reactionsAddedPosts,
+        });
+
+    } catch (error) {
+        console.log("Error when connect to db");
+        console.log(error);
+        res.status(501).json({message: "Cannot connect to database"})
+    }
+
 };

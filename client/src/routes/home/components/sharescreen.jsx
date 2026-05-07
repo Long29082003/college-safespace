@@ -307,7 +307,7 @@ export function ShareScreen () {
                             <div className="message-word-count">
                                 <span>Words</span>
                                 <span>
-                                    <span className="count" style = {messageWordCount >= 10 ? {color: "rgb(218, 64, 64)"} : null}>
+                                    <span className="count" style = {messageWordCount >= 990 ? {color: "rgb(218, 64, 64)"} : null}>
                                         {messageWordCount}
                                     </span><span> / 1000</span>
                                 </span>

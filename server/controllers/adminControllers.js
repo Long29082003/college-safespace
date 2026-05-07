@@ -149,6 +149,7 @@ export const handleGetFlaggedSubmittedPosts = async (req, res) => {
 };
 
 export const handleFlagSubmittedPost = async (req, res) => {
+
     const { id } = req.body;
 
     const sql = `
@@ -172,4 +173,63 @@ export const handleFlagSubmittedPost = async (req, res) => {
     } finally {
         db.close();
     }
+};
+
+export const handleApproveSubmittedPost = async (req, res) => {
+
+    const { id, name, recipient, feelings, message } = req.body;
+
+    if (!id || !name || !recipient || !feelings || !message) return res.sendStatus(400);
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const deleteSubmittedPostSql = `
+        DELETE FROM submitted_posts
+            WHERE id = ?
+    `;
+
+    const submitPostSql = `
+        INSERT INTO posts (
+            name, recipient, feelings, message
+        ) VALUES (?, ?, ?, ?)
+    `;
+
+    try {
+        await execute(db, deleteSubmittedPostSql, [id]);
+        console.log("Delete post from submitted_posts successfully");
+        await execute(db, submitPostSql, [name, recipient, feelings, message]);
+        console.log("Post post into posts successfully");
+        res.status(200).json({message: "Posted submitted post successfully", id});
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        db.close();
+    };
+};
+
+export const handleDeleteSubmittedPost = async (req, res) => {
+
+    const { id } = req.body;
+
+    if (!id ) return res.sendStatus(400);
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const deleteSubmittedPostSql = `
+        DELETE FROM submitted_posts
+            WHERE id = ?
+    `;
+
+    try {
+        await execute(db, deleteSubmittedPostSql, [id]);
+        console.log("Delete post from submitted_posts successfully");
+        res.status(200).json({message: "Delete submitted post successfully", id});
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        db.close();
+    };
+
 };

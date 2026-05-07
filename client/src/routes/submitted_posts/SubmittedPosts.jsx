@@ -8,6 +8,7 @@ import { ExpandedPost } from "./components/ExpandedPost.jsx";
 
 import clsx from "clsx";
 
+import { FaXmark } from "react-icons/fa6";
 import { RiResetRightFill } from "react-icons/ri";
 import { BiSortAlt2 } from "react-icons/bi";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
@@ -30,6 +31,18 @@ export function SubmittedPostsPage () {
     const [ popUpMessage, setPopUpMessage ] = useState(null);
     const [ popUpClick, setPopUpClick ] = useState(0);
 
+    //? These two go together
+    const [ displayPopupWindow, setDisplayPopupWindow ] = useState(false);
+    const [ isDeleteOrApprove, setIsDeleteOrApprove ] = useState(null);
+
+    //? State for delete or approve loading
+    const [ isProceedLoading, setIsProceedLoading ] = useState(false);
+    const [ displaySuccessfulProceed, setDisplaySuccessfulProceed ] = useState({state: false, message: null});
+
+    //? State to display error when request fails in column-2 utils
+    const [ requestFailedMessage, setRequestFailedMessage ] = useState(null);
+    const [ isRequestFailedMsgOut, setIsRequestFailedMsgOut ] = useState(false);
+
     //? Reference used in fetching data
     const popUpReference = useRef(null);
     const earliestPostTime = useRef("");
@@ -39,12 +52,19 @@ export function SubmittedPostsPage () {
     //? Derived state
     const isErrorPopUp = popUpMessage?.slice(0, 5).toLowerCase() === "error" ? true : false;
 
-    const fetchSubmittedPosts = async (limit) => {
+    const fetchSubmittedPosts = async (limit, controller) => {
         try {
-            const response = await axiosPrivate.get(`/api/admin/submitted-posts?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
+            const response = await axiosPrivate.get(`/api/admin/submitted-posts`,
+                                                { 
+                                                    params: {
+                                                        limit: limit,
+                                                        earliest_time: earliestPostTime.current && earliestPostTime.current.toISOString() || "",
+                                                        latest_time: latestPostTime.current && latestPostTime.current.toISOString() || "",
+                                                        latest_id: latestPostId.current
+                                                    },
+                                                    signal: controller.signal 
+                                                });
             const data = response.data;
-
-            await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
             if (data.status === "normal") {
                 const newEarliestTime = new Date(data["new_earliest_time"]);
@@ -82,12 +102,19 @@ export function SubmittedPostsPage () {
         };
     };  
 
-    const fetchFlaggedSubmittedPosts = async (limit) => {
+    const fetchFlaggedSubmittedPosts = async (limit, controller) => {
         try {
-            const response = await axiosPrivate.get(`/api/admin/flagged-submitted-posts?limit=${limit}&earliest_time=${earliestPostTime.current && earliestPostTime.current.toISOString() || ""}&latest_time=${latestPostTime.current && latestPostTime.current.toISOString() || ""}&latest_id=${latestPostId.current}`);
+            const response = await axiosPrivate.get(`/api/admin/flagged-submitted-posts`,
+                                                { 
+                                                    params: {
+                                                        limit: limit,
+                                                        earliest_time: earliestPostTime.current && earliestPostTime.current.toISOString() || "",
+                                                        latest_time: latestPostTime.current && latestPostTime.current.toISOString() || "",
+                                                        latest_id: latestPostId.current
+                                                    },
+                                                    signal: controller.signal 
+                                                });
             const data = response.data;
-
-            await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
             if (data.status === "normal") {
                 const newEarliestTime = new Date(data["new_earliest_time"]);
@@ -125,9 +152,88 @@ export function SubmittedPostsPage () {
         };
     }; 
 
+    const approveSubmittedPost = async () => {
+        setIsDeleteOrApprove(null);
+        const { id, name, recipient, feelings, message } = displayedPost;
+        try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const response = await axiosPrivate.post("/api/admin/approve-submitted-post", {
+                                                            id,
+                                                            name,
+                                                            recipient,
+                                                            feelings,
+                                                            message
+                                                    });
+            const data = response.data;
+            setDisplayedPost(null);
+            setSubmittedPosts(prev => prev.filter(post => post.id !== data.id));
+            setDisplaySuccessfulProceed({state: true, message: "Post approved!"});
+        } catch (error) {
+            if (!error.response) {
+                setPopUpMessage("Error: Server does not response");
+                setRequestFailedMessage(`Cannot complete action. Internet connection issue`);
+                setIsRequestFailedMsgOut(true);
+            } else if (error.response?.status === 400) {
+                setPopUpMessage("Error: Bad request");
+                setRequestFailedMessage(`Cannot complete action. Error code: ${error.response?.status}`);
+                setIsRequestFailedMsgOut(true);
+            } else {
+                setPopUpMessage("Error: Something went wrong");
+                setRequestFailedMessage(`Cannot complete action. Error code: ${error.response?.status}`);
+                setIsRequestFailedMsgOut(true);
+            };
+        } finally {
+            setIsProceedLoading(false);
+        };
+    };
+
+    const deleteSubmittedPost = async () => {
+        setIsDeleteOrApprove(null);
+        const { id, name, recipient, feelings, message } = displayedPost;
+        try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const response = await axiosPrivate.post("/api/admin/delete-submitted-post", {
+                                                            id
+                                                    });
+            const data = response.data;
+            setDisplayedPost(null);
+            setSubmittedPosts(prev => prev.filter(post => post.id !== data.id));
+            setDisplaySuccessfulProceed({state: true, message: "Post deleted!"});
+        } catch (error) {
+            if (!error.response) {
+                setPopUpMessage("Error: Server does not response");
+                setRequestFailedMessage(`Cannot complete action. Internet connection issue`);
+                setIsRequestFailedMsgOut(true);
+            } else if (error.response?.status === 400) {
+                setPopUpMessage("Error: Bad request");
+                setRequestFailedMessage(`Cannot complete action. Error code: ${error.response?.status}`);
+                setIsRequestFailedMsgOut(true);
+            } else {
+                setPopUpMessage("Error: Something went wrong");
+                setRequestFailedMessage(`Cannot complete action. Error code: ${error.response?.status}`);
+                setIsRequestFailedMsgOut(true);
+            };
+        } finally {
+            setIsProceedLoading(false);
+        };
+    };
+
     useEffect(() => {
         fetchSubmittedPosts(10);
     }, []);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        if (displayFlaggedPosts === false) fetchSubmittedPosts(10, controller);
+        else if (displayFlaggedPosts === true) fetchFlaggedSubmittedPosts(10, controller);
+
+        return () => {
+            controller.abort();
+        };
+    }, [displayFlaggedPosts]);
 
     //? Set up a pop up whenever popUpMessage and popUpCLick change
     useEffect(() => {
@@ -148,26 +254,40 @@ export function SubmittedPostsPage () {
     const displayPostInSubmittedPosts = () =>  {
         return submittedPosts.map(post => {
             return <SmallPost
+                        displayFlaggedPosts = {displayFlaggedPosts}
                         postInfo = {{...post}}
                         setSubmittedPosts = {setSubmittedPosts}
                         displayedPost = {displayedPost}
                         setDisplayedPost = {setDisplayedPost}
                         setPopUpMessage = {setPopUpMessage}
                         setPopUpClick = {setPopUpClick}
+                        setIsRequestFailedMsgOut = {setIsRequestFailedMsgOut}
+                        setDisplaySuccessfulProceed = {setDisplaySuccessfulProceed}
                         key = {post.id}
                    />
         });
     };
 
+    const displayPopupWindowMessage = () => {
+        if (isDeleteOrApprove === "delete") return "This post will be deleted permanently. Do you want to proceed?";
+        else if (isDeleteOrApprove === "approve") return "This post will be displayed on page. Do you want to proceed?";
+        else return "Do you want to proceed?";
+    };
+
+    const displayPopupWindowProceedButtonText = () => {
+        if (isDeleteOrApprove === "delete") return "Delete";
+        else if (isDeleteOrApprove === "approve") return "Approve";
+        else return "Proceed";      
+    };
+
     const handleAllPostsClicked = () => {
         if (displayFlaggedPosts === true) {
             setDisplayFlaggedPosts(false); 
-            setSubmittedPosts([]); 
+            setSubmittedPosts([]);
             setIsSmallPostsLoading(true);
             earliestPostTime.current = "";
             latestPostTime.current = "";
             latestPostId.current = "";
-            fetchSubmittedPosts(10);
         };
     };
 
@@ -179,8 +299,29 @@ export function SubmittedPostsPage () {
             earliestPostTime.current = "";
             latestPostTime.current = "";
             latestPostId.current = "";
-            fetchFlaggedSubmittedPosts(10);
         };
+    };
+
+    const handleApproveButtonClick = () => {
+        setDisplayPopupWindow(true);
+        setIsDeleteOrApprove("approve");
+    };
+
+    const handleDeleteButtonClick = () => {
+        setDisplayPopupWindow(true);
+        setIsDeleteOrApprove("delete");
+    };
+
+    const handlePopupWindowExit = () => {
+        setDisplayPopupWindow(false);
+        setIsDeleteOrApprove(null);
+    };
+
+    const handlePopupWindowProceedButtonClick = () => {
+        setDisplayPopupWindow(false);
+        setIsProceedLoading(true);
+        if (isDeleteOrApprove === "delete") deleteSubmittedPost();
+        else if (isDeleteOrApprove === "approve") approveSubmittedPost();
     };
 
     return (
@@ -220,19 +361,38 @@ export function SubmittedPostsPage () {
                 <div className="column-2">
                     {displayedPost !== null ? 
                     <div className="utils">
-                        <div className="reject-button">Delete<FaRegTrashCan id = "trash-can-icon"/></div>
-                        <div className="accept-button">Accept<span>✅</span></div>
+                        <div className="reject-button" onClick = {handleDeleteButtonClick}>Delete<FaRegTrashCan id = "trash-can-icon"/></div>
+                        <div className="accept-button" onClick = {handleApproveButtonClick}>Accept<span>✅</span></div>
                     </div>: null}
+
+                    {displayedPost !== null ?
+                    <div 
+                        className = {clsx("request-failed-message", isRequestFailedMsgOut ? "out" : "in")}
+                        onClick = {() => setIsRequestFailedMsgOut(false)}
+                    >
+                        {requestFailedMessage}
+                    </div> : null }
+
                     <div className="display">
                         {displayedPost !== null ? 
                         <ExpandedPost 
                             displayedPostInfo = {displayedPost}
+                            isProceedLoading = {isProceedLoading}
                             setDisplayedPost = {setDisplayedPost}
+                            setDisplayPopupWindow = {setDisplayPopupWindow}
+                            setIsDeleteOrApprove = {setIsDeleteOrApprove}
+                            setIsRequestFailedMsgOut = {setIsRequestFailedMsgOut}
+                            setDisplaySuccessfulProceed = {setDisplaySuccessfulProceed}
                         /> : 
                         <div className = "no-displayed-post">
-                            <HiArchiveBoxXMark />
-                            <span>No displayed post</span>
-                        </div>}
+                            {displaySuccessfulProceed.state ? 
+                                <span style = {{color: "black"}}>{displaySuccessfulProceed.message}</span>
+                                : <>
+                                      <HiArchiveBoxXMark />
+                                      <span>No displayed post</span>
+                                  </>}
+                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -244,6 +404,33 @@ export function SubmittedPostsPage () {
                 style = {isErrorPopUp ? {backgroundColor: "rgb(251, 222, 222)", color: "black"} : null}
             >{popUpMessage}</div> 
             : null}
+
+            {displayPopupWindow ? 
+            <div className="popup-window">
+                <div className="interact-popup">
+                    <div className="icon-container"><FaXmark className = "exit-icon" onClick = {handlePopupWindowExit}/></div>
+                    <div className="notification">{displayPopupWindowMessage()}</div>
+                    <div className="buttons-container">
+                        <button id = "cancel-button" type = "button" onClick = {handlePopupWindowExit}>Cancel</button>
+                        <button 
+                            id = "proceed-button" 
+                            type = "button"
+                            style = {isDeleteOrApprove === "delete" ? 
+                                {
+                                    backgroundColor: "rgb(251, 104, 104)",
+                                    color: "white",
+                                    fontWeight: "bold"
+                                } : {
+                                    backgroundColor: "var(--main-color)",
+                                    color: "white"
+                                }
+                            }
+                            onClick = {handlePopupWindowProceedButtonClick}
+                        >{displayPopupWindowProceedButtonText()}</button>
+                    </div>
+                </div>
+                <div className="background"></div>
+            </div> : null}
         </div>
     )
 };
