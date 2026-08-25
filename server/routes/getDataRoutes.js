@@ -1,5 +1,12 @@
 import express from "express";
-import { handleGetPosts, handleGetRandomPosts, handleGetComments, handleGetReactions, handleGetPostWithReactions } from "../controllers/getControllers.js";
+import { 
+    handleGetPosts, 
+    handleGetRandomPosts, 
+    handleGetComments, 
+    handleGetReactions, 
+    handleGetPostWithReactions,
+    handleGetCampfireMsg 
+} from "../controllers/getControllers.js";
 
 export const getDataRoute = express.Router();
 
@@ -12,3 +19,5 @@ getDataRoute.get("/comment", handleGetComments);
 getDataRoute.get("/reaction", handleGetReactions);
 
 getDataRoute.get("/postwithreactions", handleGetPostWithReactions)
+
+getDataRoute.get("/campfiremsg", handleGetCampfireMsg);

@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { fetchAll } from "../database/wrapper-functions.js";
 import path from "node:path"
 
-import { convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
+import { fillerMotivationalMsg, convertUTCStringToDbTime, convertDbTimeToUTCString } from "../utils/util_functions.js";
 import { returnStringOfIds } from "../utils/util_functions.js";
 
 export const handleGetPosts = async (req, res) => {
@@ -62,6 +62,29 @@ export const handleGetPosts = async (req, res) => {
         new_latest_time: newLatestTime,
         new_latest_id: newLatestId
     });
+};
+
+export const handleGetCampfireMsg = async (req, res) => {
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        SELECT * from campfire
+    `;
+
+    try {
+        const message = await fetchAll(db, sql);
+        let data = [];
+
+        if (message.length === 0) data = [...fillerMotivationalMsg];
+        else data = [...message, ...fillerMotivationalMsg];
+
+        res.json({"campfire-message": data});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Error: Cannot connect to database"});
+    };
+
 };
 
 export const handleGetRandomPosts = async (req, res) => {

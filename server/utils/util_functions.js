@@ -31,6 +31,20 @@ const feelingCategories = [
   }
 ];
 
+export const fillerMotivationalMsg = [
+  {id: -10, message: "Small steps still move you forwards."},
+  {id: -9, message: "The fire stays lit for everyone."},
+  {id: -8, message: "The fire remembers every visitor."},
+  {id: -7, message: "Even tiny sparks can start a fire."},
+  {id: -6, message: "Have a rest. This fire does not need to burn right."},
+  {id: -5, message: "Keep the fire going for yourselves too."},
+  {id: -4, message: "Leave a spark behind for the next visitor."},
+  {id: -3, message: "Someone left this fire going for the next person."},
+  {id: -2, message: "Progress can be quiet."},
+  {id: -1, message: "Your presence matters here."},
+  {id: 0, message: "Come in and take a seat."}
+];
+
 //Todo Ask chatgpt to divide the feelings into 6 big categories, then count feelings and put them in respective category
 export const sortedCounts = (object) => {
     if (typeof(object) !== "object" || !object) throw new Error("Invalid input");

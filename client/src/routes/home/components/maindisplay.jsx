@@ -23,6 +23,7 @@ import { IoIosInformationCircle } from "react-icons/io";
 import { GrContact } from "react-icons/gr";
 import { FaInfo } from "react-icons/fa6";
 import { FaPenToSquare } from "react-icons/fa6";
+import { GiCampfire } from "react-icons/gi";
 import { v4 as uuidv4 } from "uuid"; 
 
 import { Button } from "../utilcomponents/button.jsx";
@@ -34,8 +35,6 @@ import { States } from "../Home.jsx";
 import { useAuth } from "../../../hooks/useAuth.js";
 
 import { tilting } from "../utilFunctions/utils.js";
-
-import MYPIC from "../../../assets/my-pic.jpg";
 
 export function MainDisplay() {
     //? States passed from App level
@@ -155,7 +154,6 @@ export function MainDisplay() {
                 <div className="head">
                     <div className="img-container">
                         <FaUserAlt id = "default-user-icon"/>
-                        {/* <img src={MYPIC} alt="placeholder picture" /> */}
                     </div>
                     <p>{auth.user || "Guest"}</p>
                 </div>
@@ -168,6 +166,7 @@ export function MainDisplay() {
             <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
             <Button id = "info-button" callback = {() => states.setAppStates(true, false, "inspiration-screen")}><FaInfo id = "info-icon"/></Button>
             <Button id = "share-button" callback = {() => states.setAppStates(true, false, "share-screen")}><FaPenToSquare />Share your feelings</Button>
+            <Button id = "campfire-button" callback = {() => states.setAppStates(true, false, "campfire-screen")}><GiCampfire id = "campfire-icon"/></Button>
 
             {displayHint &&
             <div className="info-bubble">

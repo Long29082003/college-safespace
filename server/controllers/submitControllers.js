@@ -73,3 +73,28 @@ export async function handleSubmitReaction (req, res) {
         db.close();
     };
 };
+
+
+export async function handleSubmitCampfireMessage (req, res) {
+
+    const { message } = req.body;
+
+    if (!message) return res.sendStatus(400);
+
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        INSERT INTO campfire (message)
+            VALUES (?)
+    `;
+
+    try {
+        await execute(db, sql, [message]);
+        res.json({message: "message sent successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    } finally {
+        db.close();
+    };
+};

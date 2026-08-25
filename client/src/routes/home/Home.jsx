@@ -2,13 +2,13 @@ import "./Home.css";
 import { useState, createContext, useEffect, useRef, useContext } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
-import { Background } from "./components/background.jsx";
 import { MainDisplay } from "./components/maindisplay.jsx";
 import { ShareScreen } from "./components/sharescreen.jsx";
 import { InspirationScreen } from "./components/inspirationscreen.jsx";
 import { PostScreen } from "./components/postScreen.jsx";
 import { MorePostsScreen } from "./components/morePostsScreen.jsx";
 import { ResourcesScreen } from "./components/resourcesscreen.jsx"; 
+import { CampFireScreen } from "./components/campfirescreen.jsx";
 
 const States = createContext(null); 
 
@@ -62,7 +62,8 @@ export function Home() {
       "post-screen-active": activeScreen === "post-screen",
       "post-screen-from-more-posts-active": activeScreen === "post-screen-from-more-posts",
       "more-posts-screen-active": activeScreen === "more-posts-screen",
-      "resources-screen-active": activeScreen === "resources-screen"
+      "resources-screen-active": activeScreen === "resources-screen",
+      "campfire-screen-active": activeScreen === "campfire-screen"
     })
   };
 
@@ -86,13 +87,13 @@ export function Home() {
       />
       <States.Provider value = {{isEnterMain, isScrolling, activeScreen, setAppStates, activePostInPostScreen}}>
         <div className="main-screen">
-          <Background />
           <MainDisplay />
           <ShareScreen />
           <InspirationScreen />
           <PostScreen />
           <MorePostsScreen />
           <ResourcesScreen />
+          <CampFireScreen />
         </div>
       </States.Provider>
     </main>

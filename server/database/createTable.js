@@ -103,4 +103,26 @@ const createSubmittedPostsTable = async () => {
     console.log("Function ended");
 };
 
-createSubmittedPostsTable();
+const createCampfireMessageTable = async () => {
+    const db = new sqlite3.Database(path.join("database", "database.db"));
+
+    const sql = `
+        CREATE TABLE IF NOT EXISTS campfire (
+            id INTEGER PRIMARY KEY,
+            message TEXT NOT NULL
+        )
+    `
+
+    try {
+        await execute(db, sql)
+        console.log("Create table succesfully");
+    } catch (error) {
+        console.log("Error creating table", error);
+    } finally {
+        db.close();
+    };
+
+    console.log("Function ended");
+};
+
+createCampfireMessageTable();

@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import "./Layout.css";
 
-import JJCLogo from "../../assets/jjc-logo.png";
-
 export function AuthLayout () {
     const [ currentRoute, setCurrentRoute ]  = useState(null);
     const location = useLocation();
@@ -17,7 +15,6 @@ export function AuthLayout () {
     return (
         <div className="auth-layout">
             <nav>
-                <img className = "logo" src = {JJCLogo} />
                 <Link to = "/">Back to Comfort Space</Link>
             </nav>
             <div className="content">

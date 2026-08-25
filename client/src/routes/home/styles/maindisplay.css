@@ -311,6 +311,25 @@
         }
     }
 
+    #campfire-button-hover-area {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        transition: all 1.5s cubic-bezier(0.66, 0.02, 0.25, 1);
+
+        #campfire-button {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            place-items: center;
+
+            #campfire-icon {
+                font-size: 20px;
+            }
+        }
+    }
+
     .info-bubble {
         z-index: 2;
         position: absolute;
@@ -394,6 +413,10 @@
 
 .is-not-scrolling .main-display #share-button-hover-area {
     bottom: calc(-100% - 10px);
+}
+
+.is-not-scrolling .main-display #campfire-button-hover-area {
+    right: calc(-100% - 10px);
 }
 
 .is-not-scrolling .main-display .info-bubble {

@@ -36,7 +36,8 @@ export function InspirationScreen () {
                     <div className="creator-note-text">
                         "One thing I’ve realized since coming to JJC is that every student is a kaleidoscope—reflecting thousands of stories and emotions. 
                         Some stories are waiting to be told, some struggles are quietly bottled up, and some vulnerabilities are deeply hidden. 
-                        I hope this space can offer a sense of comfort for sharing any part of your story, and remind you that there are people who are willing to listen."
+                        I hope this space can offer a sense of peace and comfort for anyone to take off something that needs to be shared, 
+                        and to be a reminder that there are always people who are willing to listen to your story."
                     </div>
                 </div>
                 <div className="page-rules">

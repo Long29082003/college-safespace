@@ -115,6 +115,12 @@
                             .line-break {
                                 height: 1rem;
                             }
+
+                            a {
+                                font-weight: bold;
+                                color: var(--main-color);
+                                text-decoration: underline;
+                            }
                         }
 
                         &:not(:first-of-type) {
