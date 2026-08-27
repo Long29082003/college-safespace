@@ -231,7 +231,7 @@ export function ShareScreen () {
     }
 
     const handleExit = () => {
-        states.setAppStates(false, true, null);
+        states.setAppStates(false, true, null, true);
         setTimeout(() => {
             setFormQuestionState("question-one-active");
             setActiveFeelings([]);

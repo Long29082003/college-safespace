@@ -21,7 +21,7 @@ export function Button ({children, callback, id = "", className = "", type = "bu
     };
 
     return (
-        <div className="button-hover-area" id = {`${id}-hover-area`} onMouseMove = {hoverEffect ? handleOnMouseMove : null} onMouseLeave = {handleOnMouseLeave}>
+        <div className="button-hover-area allow-pe" id = {`${id}-hover-area`} onMouseMove = {hoverEffect ? handleOnMouseMove : null} onMouseLeave = {handleOnMouseLeave}>
             <div className={clsx("button-container", className || "")} ref = {buttonContainer}>
                 <button type = {type} id = {id} onClick = {callback}>{children}</button>
             </div>

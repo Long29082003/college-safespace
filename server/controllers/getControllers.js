@@ -48,7 +48,8 @@ export const handleGetPosts = async (req, res) => {
     posts = posts.map(post => {
         return {
             ...post,
-            "created_at": convertDbTimeToUTCString(post["created_at"])
+            "created_at": convertDbTimeToUTCString(post["created_at"]),
+            isAddedToAnimation: false,
         };
     });
 

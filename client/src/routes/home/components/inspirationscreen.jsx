@@ -25,7 +25,7 @@ export function InspirationScreen () {
             top: 0,
             behavior: "smooth"
         });
-        states.setAppStates(false, true, null);
+        states.setAppStates(false, true, null, true);
     };
 
     return (

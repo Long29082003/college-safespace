@@ -30,8 +30,7 @@ import "../styles/postscreen.css";
 
 export function PostScreen () {
     //? States
-    const states = useContext(States);
-    const { activeScreen, activePostInPostScreen, setAppStates } = states;
+    const { activeScreen, activePostInPostScreen, setAppStates } = useContext(States);
     const [ comments, setComments ] = useState([]);
     const [ reactionsCount, setReactionsCount ] = useState(null);
     const [ commentFormState, setCommentFormState ] = useState("question-one");
@@ -42,7 +41,6 @@ export function PostScreen () {
     const [ playConfetti, setPlayConfetti ] = useState(false);
     const [ disableReactions, setDisableReactions ] = useState(false);
 
-    const [ messageAnimationProgress, setMessageAnimationProgress ] = useState(0);
     let { id, name, recipient, feelings, message, created_at } = activePostInPostScreen;
 
     //? Refs
@@ -174,23 +172,6 @@ export function PostScreen () {
 
     const backgroundColorStyle = { backgroundColor: bgColor};
     const textColorStyle = { "--text-color": textColor};
-
-
-    //? This code is for the animation to fill the color of text in .full-post-message when user scroll down
-    const handleOnScroll = (event) => {
-        const { scrollTop, clientHeight } = event.currentTarget;
-        const messageContainerRect = messageContainer.current.getBoundingClientRect();
-        const messageContainerOriginalPosition = Math.round(scrollTop + messageContainerRect.top); //✅
-        const clamp = (min, max, number) => Math.max(Math.min(max, number), min);
-
-        const offSetEntry = 0.65 * clientHeight;
-        const offSetExit = -0.64 * clientHeight;
-
-        let progress = ( scrollTop + offSetEntry - messageContainerOriginalPosition ) / (messageContainerRect.height + offSetEntry + offSetExit);
-        progress = clamp(0, 1, progress);
-
-        setMessageAnimationProgress(progress * 100);
-    };
 
     const updateUserCommentText = (event) => {
         setUserCommentBoxText(event.currentTarget.value);
@@ -396,11 +377,11 @@ export function PostScreen () {
             top: 0,
             behavior: "smooth"
         });
-        setAppStates(false, true, activeScreen === "post-screen-from-more-posts" ? "more-posts-screen" : null);
+        setAppStates(false, true, activeScreen === "post-screen-from-more-posts" ? "more-posts-screen" : null, true);
     };
 
     return (
-        <div className="post-screen" onScroll = {handleOnScroll} ref = {postScreen}>
+        <div className="post-screen" ref = {postScreen}>
 
             <div className="full-post" style = {backgroundColorStyle}>
                 <div className="full-post-utils">
@@ -412,7 +393,7 @@ export function PostScreen () {
                             <div className="name">From {name}</div>
                             <div className="recipient">to {recipient}</div>
                         </div>
-                        <div className="date-reactions-container">
+                        <div className="date-reactions-container allow-pe">
                             <div className="date">{created_at}</div>
                             <div 
                                 className="reactions-count" 
@@ -444,11 +425,10 @@ export function PostScreen () {
 
                 <div 
                     className="full-post-message" 
-                    style = {{"--animation-progress": `${messageAnimationProgress}%`}} 
                     ref = {messageContainer}
                 >
                     <div className="scrollable-range">
-                        <div className="reactions-container" style = {{top: activeScreen === "post-screen-from-more-posts" ? "300px": "100px"}}>
+                        <div className="reactions-container allow-pe" style = {{top: activeScreen === "post-screen-from-more-posts" ? "300px": "100px"}}>
                             <div className="reactions" ref = {reactions} style = {disableReactions ? returnReactionsStyle() : null}> 
                                 <div className="like-animation-container" style = {disableReactions ? likeAnimationContainerStyle : null}>
                                     <DotLottieReact
@@ -478,78 +458,81 @@ export function PostScreen () {
                     </span>
                 </div>
 
-                <div className="full-post-comment">
-                    <div className="head">
-                        <h2>Comments</h2>
-                        <span className="comment-number">{numberOfComments}</span>
+            </div>
+
+            <div className="post-comments">
+                <div className="head">
+                    <h2>Comments</h2>
+                    <span className="comment-number">{numberOfComments}</span>
+                </div>
+
+                <div className="comments-container">
+                    {displayComments()}
+                </div>
+
+                <form 
+                    className={clsx("user-comment-form", `${commentFormState}-active`, commentSubmitLoadingState)} 
+                    ref = {commentForm}
+                >
+                    <div className="input-container">
+                        <div className="question-one">
+                            <p>1. Enter your comment</p>
+                            <textarea 
+                                className = "allow-pe"
+                                name="comment" 
+                                rows = "1" 
+                                value = {userCommentBoxText} 
+                                onInput = {updateUserCommentText}
+                            ></textarea>
+                        </div>
+                        <div className="question-two" ref = {questionTwo}>
+                            <p>2. You will be seen as</p>
+                            <input 
+                                className = "allow-pe"
+                                name = "commentor" 
+                                type="text" 
+                                value = {userCommentNameText}
+                                onInput = {updateUserNameText}
+                            />
+                        </div>
                     </div>
 
-                    <form 
-                        className={clsx("user-comment-form", `${commentFormState}-active`, commentSubmitLoadingState)} 
-                        ref = {commentForm}
+                    <div 
+                        className={clsx("button-container", canClickButton ? "button-enabled" : "button-disabled")} 
+                        style = {{"--text-color": canClickButton ? textColor : "rgb(146, 141, 141)"}}
                     >
-                        <div className="input-container">
-                            <div className="question-one">
-                                <p>1. Enter your comment</p>
-                                <textarea 
-                                    name="comment" 
-                                    rows = "1" 
-                                    value = {userCommentBoxText} 
-                                    onInput = {updateUserCommentText}
-                                ></textarea>
-                            </div>
-                            <div className="question-two" ref = {questionTwo}>
-                                <p>2. You will be seen as</p>
-                                <input 
-                                    name = "commentor" 
-                                    type="text" 
-                                    value = {userCommentNameText}
-                                    onInput = {updateUserNameText}
+                        <Button 
+                            type = "button" 
+                            callback = {handleCommentButtonClick}
+                        >{commentFormState === "question-one" ? "Next" : "Submit"}</Button>
+
+                        <div className="animations-container">
+
+                            <div className="loading-animation-container">
+                                <DotLottieReact
+                                    src="lottie-animation/comment-loading-animation.lottie"
+                                    loop
+                                    style = {{width: 160, height: 130}}
+                                    dotLottieRefCallback={(dotLottie) => {
+                                        loadingAnimation.current = dotLottie;
+                                    }}
                                 />
                             </div>
-                        </div>
 
-                        <div 
-                            className={clsx("button-container", canClickButton ? "button-enabled" : "button-disabled")} 
-                            style = {{"--text-color": canClickButton ? textColor : "rgb(146, 141, 141)"}}
-                        >
-                            <Button 
-                                type = "button" 
-                                callback = {handleCommentButtonClick}
-                            >{commentFormState === "question-one" ? "Next" : "Submit"}</Button>
-
-                            <div className="animations-container">
-
-                                <div className="loading-animation-container">
-                                    <DotLottieReact
-                                        src="lottie-animation/comment-loading-animation.lottie"
-                                        loop
-                                        style = {{width: 160, height: 130}}
-                                        dotLottieRefCallback={(dotLottie) => {
-                                            loadingAnimation.current = dotLottie;
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="submitted-animation-container">
-                                    <DotLottieReact
-                                        src="lottie-animation/submit_complete_animation.lottie"
-                                        loop = {false}
-                                        style={{width: 110, height: 110}}
-                                        dotLottieRefCallback={(dotLottie) => {
-                                            submittedAnimation.current = dotLottie;
-                                        }}
-                                    />
-                                </div>
-
+                            <div className="submitted-animation-container">
+                                <DotLottieReact
+                                    src="lottie-animation/submit_complete_animation.lottie"
+                                    loop = {false}
+                                    style={{width: 110, height: 110}}
+                                    dotLottieRefCallback={(dotLottie) => {
+                                        submittedAnimation.current = dotLottie;
+                                    }}
+                                />
                             </div>
-                        </div>
-                    </form>
 
-                    <div className="comments-container">
-                        {displayComments()}
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 
             {playConfetti ? displayConfetti() : null}

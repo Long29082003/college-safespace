@@ -1,5 +1,5 @@
 import "./Home.css";
-import { useState, createContext, useEffect, useRef, useContext } from "react";
+import { useState, createContext, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { LoadingScreen } from "./components/loadingscreen.jsx";
 import { MainDisplay } from "./components/maindisplay.jsx";
@@ -15,7 +15,10 @@ const States = createContext(null);
 export function Home() {
   //? States
   const [isEnterMain, setIsEnterMain] = useState(false);
+
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isFalling, setIsFalling] = useState(false);
+
   const [hideScroll, setHideScroll] = useState(true);
   const [activeScreen, setActiveScreen] = useState(null);
   const [activePostInPostScreen, setActivePostInPostScreen] = useState({
@@ -24,7 +27,8 @@ export function Home() {
                                                                   recipient: "",
                                                                   feelings: "[]",
                                                                   message: "",
-                                                                  created_at: "" 
+                                                                  created_at: "",
+                                                                  isAddedToAnimation: null,
                                                               });
 
   //? useEffect to check if user tab out;
@@ -73,20 +77,29 @@ export function Home() {
     setIsScrolling(true);
   };
 
-  const setAppStates = (hideScrollState, scrollingState, activeScreenState, newActivePostInPostScreen = null) => {
+  const setAppStates = (hideScrollState, scrollingState, activeScreenState, isFalling = null, newActivePostInPostScreen = null) => {
     setHideScroll(hideScrollState);
     setIsScrolling(scrollingState);
     setActiveScreen(activeScreenState);
+    setIsFalling(isFalling ? isFalling : scrollingState );
     if (newActivePostInPostScreen) setActivePostInPostScreen(newActivePostInPostScreen);
   };
 
   return (
     <main className = {displayClasses()}>
-      <LoadingScreen 
+      {/* <LoadingScreen 
         buttonOnClick = {enterMain}
-      />
-      <States.Provider value = {{isEnterMain, isScrolling, activeScreen, setAppStates, activePostInPostScreen}}>
-        <div className="main-screen">
+      /> */}
+      <States.Provider value = {{
+                                    isEnterMain, 
+                                    isScrolling, 
+                                    activeScreen, 
+                                    setAppStates, 
+                                    activePostInPostScreen,
+                                    isFalling,
+                               }}
+      >
+        <div className="main-screen" id = "MAIN-SCREEN">
           <MainDisplay />
           <ShareScreen />
           <InspirationScreen />

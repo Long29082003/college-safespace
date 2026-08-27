@@ -21,7 +21,7 @@ export function ResourcesScreen () {
     }
 
     const handleExit = () => {
-        states.setAppStates(false, true, null);
+        states.setAppStates(false, true, null, true);
         setDisplayDropDownState(
             {
                 "did-you-know": false,

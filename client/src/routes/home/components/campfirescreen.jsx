@@ -94,7 +94,7 @@ export function CampFireScreen() {
                 />
                 <Button id = "msg-submit-button" className = {clsx(!allowSubmit ? "closed" : null)} callback = {handleSubmitCampfireMessage}><FaRegPaperPlane id = "msg-submit-icon"/></Button>
             </div>
-            <Button id = "exit-button" callback = {() => states.setAppStates(false, true, null)}>X</Button>
+            <Button id = "exit-button" callback = {() => states.setAppStates(false, true, null, true)}>X</Button>
             <DarkBackground />
 
             {/* //? Props below */}

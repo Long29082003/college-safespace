@@ -12,10 +12,13 @@
 // Todo: Work on Inspiration page ✅
 // Todo: Maybe watch video to see scroll animation ✅
 
+// Todo: Test if whether putting the scene component in would work
+
 // * The way the setTimeout work is that its like a ticking bomb. After the interval
 // * the bomb will explode take one post from queue put it in animating list and becasue
 // * the queue change the bomb is planted again. But if we just depends the setTimeout
 // * on the change in queue then what happens if we fetch for more data from the database and add it to the queue?
+import { createContext } from "react";
 import "../styles/maindisplay.css";
 import { FaUserAlt } from "react-icons/fa";
 import { IoIosMore } from "react-icons/io";
@@ -26,8 +29,9 @@ import { FaPenToSquare } from "react-icons/fa6";
 import { GiCampfire } from "react-icons/gi";
 import { v4 as uuidv4 } from "uuid"; 
 
+import { Scene } from "./maindisplay-components/scene.jsx";
+
 import { Button } from "../utilcomponents/button.jsx";
-import { Post } from "../utilcomponents/post.jsx";
 import { useState, useRef, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { States } from "../Home.jsx";
@@ -36,29 +40,26 @@ import { useAuth } from "../../../hooks/useAuth.js";
 
 import { tilting } from "../utilFunctions/utils.js";
 
+const PostsState = createContext(null);
+
 export function MainDisplay() {
     //? States passed from App level
     const { auth } = useAuth();
 
-    const states = useContext(States);
-    const isScrolling = states.isScrolling;
+    const {setAppStates} = useContext(States);
     const [postsQueue, setPostsQueue] = useState([]);
-    const [animatingPosts, setAnimatingPosts] = useState([]);
     const [displayHint, setDisplayHint] = useState(true);
     
     //? Ref
-    const tiltingContainer = useRef(null);
     const accountBox = useRef(null);
-    const intervalRef = useRef(null);
     //* These following refs are anchors used to search the database
     const earliestPostTime = useRef("");
     const latestPostTime = useRef("");
     const latestPostId = useRef("");
     const reachEndDB = useRef(false);
 
-    const intervalToDisplayPosts = 6000;
+    //? -----------------------useEffect-----------------------
 
-    //? useEffect
     //* Fetch posts into queue after the queue run low
     useEffect(() => {
         async function fetchPosts (limit) {
@@ -99,35 +100,6 @@ export function MainDisplay() {
         return () => {};
     }, [postsQueue]);
 
-    useEffect(() => {
-        if (!isScrolling) {
-            return;
-        };
-
-        if (postsQueue.length === 0) return;
-
-        intervalRef.current = setInterval(() => {
-            const post = postsQueue[0];
-            setAnimatingPosts(prev => {
-                return [
-                    ...prev,
-                    <Post key = {uuidv4()} postInfo={post}/>
-                ];
-            });
-            setPostsQueue(prev => prev.slice(1));
-        }, intervalToDisplayPosts);
-
-        return () => {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        };
-    }, [postsQueue, isScrolling]);
-
-    const handleOnMouseMove = (event) => {
-        if (!isScrolling) return;
-        tilting(event, tiltingContainer, 0.07, 10);
-    };
-
     const AccountBoxOnMouseEnter = () => {
         const { scrollHeight } = accountBox.current;
         accountBox.current.style.height = `${scrollHeight}px`;
@@ -138,45 +110,46 @@ export function MainDisplay() {
     };
 
     return (
-        <div className="main-display" onMouseMove = {handleOnMouseMove} onClick = {() => setDisplayHint(false)}>
-            <div className="tilting-container" ref = {tiltingContainer}>
-                <div className="scrolling-container">
-                    {animatingPosts}
-                </div>
-            </div>
+        <PostsState.Provider value = {{postsQueue, setPostsQueue}}>
+            <div className="main-display" onClick = {() => setDisplayHint(false)}>
 
-            <div 
-                className="account-box" 
-                ref = {accountBox} 
-                onMouseEnter = {AccountBoxOnMouseEnter}
-                onMouseLeave = {AccountBoxOnMouseLeave}
-            >
-                <div className="head">
-                    <div className="img-container">
-                        <FaUserAlt id = "default-user-icon"/>
+                <Scene />
+
+                <div 
+                    className="account-box" 
+                    ref = {accountBox} 
+                    onMouseEnter = {AccountBoxOnMouseEnter}
+                    onMouseLeave = {AccountBoxOnMouseLeave}
+                >
+                    <div className="head">
+                        <div className="img-container">
+                            <FaUserAlt id = "default-user-icon"/>
+                        </div>
+                        <p>{auth.user || "Guest"}</p>
                     </div>
-                    <p>{auth.user || "Guest"}</p>
+                    {auth.user ? <Link to = "/admin">To Admin Page</Link>
+                            : <Link to = "/login">Log in</Link>                
+                    }
                 </div>
-                {auth.user ? <Link to = "/admin">To Admin Page</Link>
-                           : <Link to = "/login">Log in</Link>                
-                }
+
+                <Button id = "more-button" callback = {() => setAppStates(true, false, "resources-screen", false)}><IoIosMore id = "more-icon"/></Button>
+                <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
+                <Button id = "info-button" callback = {() => setAppStates(true, false, "inspiration-screen", false)}><FaInfo id = "info-icon"/></Button>
+                <Button id = "share-button" callback = {() => setAppStates(true, false, "share-screen", false)}><FaPenToSquare />Share your feelings</Button>
+                <Button id = "campfire-button" callback = {() => setAppStates(true, false, "campfire-screen", false)}><GiCampfire id = "campfire-icon"/></Button>
+
+                {displayHint &&
+                <div className="info-bubble">
+                    <div className="head">
+                        <IoIosInformationCircle id = "popup-info-icon"/>
+                        <span>Did you know?</span>
+                    </div>
+                    <p>See more by <b>Hover</b> or <b>Click</b> on <i>Posts</i></p>
+                </div>}
+
             </div>
-
-            <Button id = "more-button" callback = {() => states.setAppStates(true, false, "resources-screen")}><IoIosMore id = "more-icon"/></Button>
-            <Button id = "contact-button"><GrContact id = "contact-icon"/></Button>
-            <Button id = "info-button" callback = {() => states.setAppStates(true, false, "inspiration-screen")}><FaInfo id = "info-icon"/></Button>
-            <Button id = "share-button" callback = {() => states.setAppStates(true, false, "share-screen")}><FaPenToSquare />Share your feelings</Button>
-            <Button id = "campfire-button" callback = {() => states.setAppStates(true, false, "campfire-screen")}><GiCampfire id = "campfire-icon"/></Button>
-
-            {displayHint &&
-            <div className="info-bubble">
-                <div className="head">
-                    <IoIosInformationCircle id = "popup-info-icon"/>
-                    <span>Did you know?</span>
-                </div>
-                <p>See more by <b>Hover</b> or <b>Click</b> on <i>Posts</i></p>
-            </div>}
-
-        </div>
+        </PostsState.Provider>
     )
 }
+
+export { PostsState };

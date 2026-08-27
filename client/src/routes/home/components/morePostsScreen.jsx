@@ -26,7 +26,7 @@ export function MorePostsScreen () {
     };
 
     const handleEnterDashboard = () => {
-        states.setAppStates(true, false, "more-posts-screen");
+        states.setAppStates(true, false, "more-posts-screen", false);
         setContentToDisplay("posts");
     };
 
@@ -36,7 +36,7 @@ export function MorePostsScreen () {
     };
 
     const handleExit = () => {
-        states.setAppStates(false, true, null);
+        states.setAppStates(false, true, null, true);
         setTimeout(() => setContentToDisplay(null), 1000);
     };
     
